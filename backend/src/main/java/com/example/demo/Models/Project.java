@@ -1,0 +1,64 @@
+package com.example.demo.Models;
+
+import java.util.HashMap;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "Project")
+public class Project {
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int projectID;
+    private String name;
+    private HashMap<Integer, TaskList> lists;
+    // private HashMap<Integer, File> files;
+    // private HashMap<Integer, Comment> comments;
+
+    public Project(int projectID, String name) {
+        this.projectID = projectID;
+        this.name = name;
+        this.lists = new HashMap<>();
+        // this.files = new HashMap<>();
+        // this.comments = new HashMap<>();
+    }
+
+    public int getProjectID() {
+        return projectID;
+    }
+
+    public void setProjectID(int projectID) {
+        this.projectID = projectID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public HashMap<Integer, TaskList> getLists() {
+        return lists;
+    }
+
+    public void setLists(HashMap<Integer, TaskList> lists) {
+        this.lists = lists;
+    }
+
+    // public HashMap<Integer, File> getFiles() {
+    // return files;
+    // }
+
+    // public void setFiles(HashMap<Integer, File> files) {
+    // this.files = files;
+    // }
+
+    // public HashMap<Integer, Comment> getComments() {
+    // return comments;
+    // }
+
+    // public void setComments(HashMap<Integer, Comment> comments) {
+    // this.comments = comments;
+    // }
+}
