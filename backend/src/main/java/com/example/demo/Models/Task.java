@@ -1,12 +1,11 @@
-package com.example.demo.models;
+package com.example.demo.Models;
 
 import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "tasks")
-public class Task
-{
+public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +23,8 @@ public class Task
     private int listID;
 
     // Constructors
-    public Task() {}
+    public Task() {
+    }
 
     public Task(String title, Date deadline, String status, int listID) {
         this.title = title;
