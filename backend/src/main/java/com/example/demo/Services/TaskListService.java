@@ -49,4 +49,15 @@ public class TaskListService {
         }
         return false;
     }
+
+    public boolean deleteTaskListsByProjectID(int projectID) {
+        List<TaskList> taskLists = taskListRepository.findByProjectID(projectID);
+        if (taskLists.isEmpty()) {
+            return false;
+        }
+
+        taskListRepository.deleteAll(taskLists);
+        return true;
+    }
+
 }

@@ -29,7 +29,7 @@ function Project({ id }) {
             <div>
                 {/* Add all lists */}
                 {Object.values(project.lists).map((list) => (
-                    <List key={list.listID} listID={list.listID} name={list.name} />
+                    <List key={list.listID} listID={list.listID} name={list.name} projectID={list.projectID} />
                 ))}
                 <button>Add List</button>
             </div>

@@ -1,6 +1,6 @@
 import React from "react";
 
-const List = ({ listID, name }) => {
+const List = ({ listID, name, projectID }) => {
     return (
         <div>
             <h2>{name} (ID: {listID})</h2>

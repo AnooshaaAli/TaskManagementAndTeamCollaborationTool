@@ -95,4 +95,23 @@ public class ProjectController {
 
         return ResponseEntity.ok(project);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Project> deleteProject(@PathVariable int id) {
+        // Check if project exists
+        Optional<Project> projectOptional = projectService.getProjectById(id);
+        if (projectOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Project project = projectOptional.get();
+
+        // Delete all associated task lists
+        String deleteTaskListsUrl = "http://localhost:8080/lists/project/" + id;
+        restTemplate.exchange(deleteTaskListsUrl, HttpMethod.DELETE, null, Void.class);
+
+        projectService.deleteProject(id);
+        return ResponseEntity.ok(project);
+    }
+
 }

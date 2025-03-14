@@ -57,4 +57,14 @@ public class TaskListController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @DeleteMapping("/project/{projectID}")
+    public ResponseEntity<Void> deleteTaskListsByProject(@PathVariable int projectID) {
+        boolean deleted = taskListService.deleteTaskListsByProjectID(projectID);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 }
