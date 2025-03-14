@@ -1,9 +1,9 @@
 import React from "react";
 
-const List = ({ name }) => {
+const List = ({ listID, name }) => {
     return (
         <div>
-            <h2>{name}</h2>
+            <h2>{name} (ID: {listID})</h2>
             <div>
                 blah blah
             </div>
