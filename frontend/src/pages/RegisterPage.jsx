@@ -70,19 +70,22 @@ const RegisterPage = () => {
   };
   
   return (
-    <div className="register-container">
+    <div className="register-container dark-theme">
+    <div className="logo-container">
+      <Logo size="md" />
+    </div>
       <div className="register-wrapper">
         <div className="register-header">
-          <Logo size="lg" />
           <h2 className="register-title">Create an Account</h2>
           <p className="register-subtitle">Join our task management platform</p>
         </div>
         
-        <Card>
+        <Card className="register-card">
           <form onSubmit={handleSubmit}>
             <Input
               label="Full Name"
               id="fullName"
+              name="fullName"
               placeholder="John Doe"
               value={formData.fullName}
               onChange={handleChange}
@@ -94,6 +97,7 @@ const RegisterPage = () => {
               label="Email"
               type="email"
               id="email"
+              name="email"
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
@@ -105,6 +109,7 @@ const RegisterPage = () => {
               label="Password"
               type="password"
               id="password"
+              name="password"
               placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}
@@ -116,6 +121,7 @@ const RegisterPage = () => {
               label="Confirm Password"
               type="password"
               id="confirmPassword"
+              name="confirmPassword"
               placeholder="••••••••"
               value={formData.confirmPassword}
               onChange={handleChange}
@@ -123,7 +129,7 @@ const RegisterPage = () => {
               required
             />
             
-            <div style={{ marginTop: '24px' }}>
+            <div className="form-button-container">
               <Button type="submit" variant="primary" fullWidth>
                 Register
               </Button>
