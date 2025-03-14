@@ -2,7 +2,7 @@ package com.example.demo.Models;
 
 import jakarta.persistence.*;
 
-// import java.util.HashMap;
+import java.util.HashMap;
 
 @Entity
 @Table(name = "List")
@@ -12,22 +12,24 @@ public class TaskList {
     private int listID;
     private String name;
     private int projectID;
-    // private HashMap<Integer, Task> tasks;
+    private HashMap<Integer, Task> tasks;
+
+    public TaskList() {
+    }
 
     public TaskList(int listID, String name, int projectID) {
         this.listID = listID;
         this.name = name;
         this.projectID = projectID;
-        // tasks=new HashMap<Integer, Task>();
+        tasks = new HashMap<Integer, Task>();
     }
 
-    // public List(int listID, String name, int projectID, HashMap<Integer, Task>
-    // tasks) {
-    // this.listID = listID;
-    // this.name = name;
-    // this.projectID = projectID;
-    // this.tasks = tasks;
-    // }
+    public TaskList(int listID, String name, int projectID, HashMap<Integer, Task> tasks) {
+        this.listID = listID;
+        this.name = name;
+        this.projectID = projectID;
+        this.tasks = tasks;
+    }
 
     public int getListID() {
         return listID;
@@ -53,11 +55,11 @@ public class TaskList {
         this.projectID = projectID;
     }
 
-    // public HashMap<Integer, Task> getTasks() {
-    // return tasks;
-    // }
+    public HashMap<Integer, Task> getTasks() {
+        return tasks;
+    }
 
-    // public void setTasks(HashMap<Integer, Task> tasks) {
-    // this.tasks = tasks;
-    // }
+    public void setTasks(HashMap<Integer, Task> tasks) {
+        this.tasks = tasks;
+    }
 }

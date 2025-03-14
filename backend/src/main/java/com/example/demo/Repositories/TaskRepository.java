@@ -1,10 +1,11 @@
-package com.example.demo.repositories;
+package com.example.demo.Repositories;
 
-import com.example.demo.models.Task;
+import com.example.demo.Models.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Integer> {
-    // JpaRepository provides built-in CRUD methods, no need to manually implement them
+    // JpaRepository provides built-in CRUD methods, no need to manually implement
+    // them
 }

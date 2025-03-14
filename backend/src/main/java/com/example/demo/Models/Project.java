@@ -6,17 +6,22 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "Project")
 public class Project {
-    @Id 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int projectID;
     private String name;
+    private int teamLeadID;
     private HashMap<Integer, TaskList> lists;
     // private HashMap<Integer, File> files;
     // private HashMap<Integer, Comment> comments;
 
-    public Project(int projectID, String name) {
+    public Project() {
+    }
+
+    public Project(int projectID, String name, int teamLeadID) {
         this.projectID = projectID;
         this.name = name;
+        this.teamLeadID = teamLeadID;
         this.lists = new HashMap<>();
         // this.files = new HashMap<>();
         // this.comments = new HashMap<>();
@@ -28,6 +33,14 @@ public class Project {
 
     public void setProjectID(int projectID) {
         this.projectID = projectID;
+    }
+
+    public int getTeamLeadID() {
+        return teamLeadID;
+    }
+
+    public void setTeamLeadID(int teamLeadID) {
+        this.teamLeadID = teamLeadID;
     }
 
     public String getName() {
