@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function CreateProject({ onProjectCreated }) {
+function CreateProject({ userID, onProjectCreated }) {
     const [showInput, setShowInput] = useState(false);
     const [projectName, setProjectName] = useState("");
 
@@ -10,7 +10,7 @@ function CreateProject({ onProjectCreated }) {
         const response = await fetch(`http://localhost:8080/projects`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: projectName })
+            body: JSON.stringify({ name: projectName, teamLeadID: userID })
         });
 
         if (response.ok) {

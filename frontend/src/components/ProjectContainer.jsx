@@ -3,19 +3,20 @@ import ProjectPreview from "./ProjectPreview.jsx";
 import Project from "./Project.jsx"; // Import full project view
 import CreateProject from "./CreateProject.jsx";
 
-const ProjectContainer = () => {
+const ProjectContainer = ({ userID }) => {
     const [projects, setProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
 
     useEffect(() => {
-        fetch("http://localhost:8080/projects")
+        if (!userID) return;
+        fetch("http://localhost:8080/projects/teamlead/" + userID)
             .then(response => response.json())
             .then(data => {
                 console.log("Fetched projects:", data);
                 setProjects(Object.values(data));
             })
             .catch(error => console.error("Error fetching projects:", error));
-    }, []);
+    }, [userID]);
 
     const addProject = (newProject) => {
         setProjects(prev => [...prev, newProject]); // Add the new project to state
@@ -40,7 +41,7 @@ const ProjectContainer = () => {
                             />
                         ))
                     )}
-                    <CreateProject onProjectCreated={addProject} />
+                    <CreateProject userID={userID} onProjectCreated={addProject} />
                 </div>
             )}
         </div>
