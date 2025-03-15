@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import List from "./List.jsx";
-import CreateList from "./CreateList.jsx"; // Import the new component
+import CreateList from "./CreateList.jsx";
+import DeleteProject from './DeleteProject.jsx';
 
 function Project({ id }) {
     const [project, setProject] = useState(null);
@@ -42,6 +43,7 @@ function Project({ id }) {
 
                 <CreateList projectID={id} onListCreated={addListToProject} />
             </div>
+            <DeleteProject projectID={id} onDelete={() => { console.log("Project deleted!"); }} />
         </div>
     );
 }

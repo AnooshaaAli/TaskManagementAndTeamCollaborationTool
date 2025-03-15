@@ -10,7 +10,7 @@ function App() {
       {/* saleha testing stuff */}
       {/* <List name="To Do" />
       <List name="Done" /> */}
-      <Project id="7" />
+      <Project id="9" />
     </div>
   );
 }
