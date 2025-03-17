@@ -21,7 +21,7 @@ public class TaskList {
         this.listID = listID;
         this.name = name;
         this.projectID = projectID;
-        tasks = new HashMap<Integer, Task>();
+        this.tasks = new HashMap<Integer, Task>();
     }
 
     public TaskList(int listID, String name, int projectID, HashMap<Integer, Task> tasks) {
