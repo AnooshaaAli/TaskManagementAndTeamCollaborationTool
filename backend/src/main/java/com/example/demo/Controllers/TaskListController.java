@@ -1,11 +1,16 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.Models.TaskList;
+import com.example.demo.Models.Task;
 import com.example.demo.Services.TaskListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpMethod;
+import org.springframework.core.ParameterizedTypeReference;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +20,9 @@ import java.util.List;
 public class TaskListController {
     @Autowired
     private TaskListService taskListService;
+    @Autowired
+    private RestTemplate restTemplate;
+
 
     @PostMapping
     public ResponseEntity<TaskList> createTaskList(@RequestBody TaskList taskList) {
@@ -65,6 +73,33 @@ public class TaskListController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    // task functions
+    @GetMapping("/{listID}/tasks")
+    public ResponseEntity<HashMap<Integer, Task>> getTasksByListID(@PathVariable int listID) {
+        String taskApiUrl = "http://localhost:8080/tasks/list/" + listID;
+
+        // Fetch tasks from the Task Service
+        ResponseEntity<List<Task>> taskResponse = restTemplate.exchange(
+                taskApiUrl,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Task>>() {});
+
+        if (taskResponse.getBody() != null && !taskResponse.getBody().isEmpty()) {
+            List<Task> taskList = taskResponse.getBody();
+
+            // Convert List<Task> to HashMap<Integer, Task>
+            HashMap<Integer, Task> taskMap = new HashMap<>();
+            for (Task task : taskList) {
+                taskMap.put(task.getTaskID(), task); // Use getTaskID()
+            }
+
+            return ResponseEntity.ok(taskMap);
+        }
+
+        return ResponseEntity.noContent().build();
     }
 
 }

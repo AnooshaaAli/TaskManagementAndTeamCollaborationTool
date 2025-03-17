@@ -14,6 +14,10 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
+    public List<Task> getTasksByListID(int listID) {
+        return taskRepository.findByListID(listID);
+    }
+    
     // Create a new task
     public Task createTask(Task task) {
         return taskRepository.save(task);

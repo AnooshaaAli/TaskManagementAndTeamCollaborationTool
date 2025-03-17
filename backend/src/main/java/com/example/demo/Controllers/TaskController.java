@@ -4,6 +4,7 @@ import com.example.demo.Models.Task;
 import com.example.demo.Services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -13,6 +14,21 @@ public class TaskController {
 
     @Autowired
     private TaskService taskService;
+
+    // Get tasks by listID
+    @GetMapping("/list/{listID}")
+    public ResponseEntity<List<Task>> getTasksByListID(@PathVariable int listID) {
+        List<Task> tasks = taskService.getTasksByListID(listID);
+        System.out.println("Here here");
+        for (Task task: tasks) {
+            System.out.println(task.getTaskID());
+            System.out.println(task.getTitle());
+        }
+        if (tasks.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(tasks);
+    }
 
     // Create a new task
     @PostMapping
