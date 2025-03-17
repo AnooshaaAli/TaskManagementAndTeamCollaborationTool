@@ -3,6 +3,7 @@ import './App.css';
 import Project from "./components/Project.jsx"
 import List from "./components/List.jsx"
 import TaskItem from "./components/TaskItem.jsx";
+import ProjectContainer from "./components/ProjectContainer.jsx";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       {<RegisterPage />}
       {/* saleha testing stuff }
       {/* <List name="To Do" />
+<<<<<<< afsah
       <List name="Done" /> }
       <Project id="7" />
     </div>*/

@@ -96,6 +96,24 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
+    // GET: Get projects by team lead ID (does not return the lists inside)
+    @GetMapping("/teamlead/{teamLeadId}")
+    public ResponseEntity<HashMap<Integer, Project>> getProjectsByTeamLead(@PathVariable int teamLeadId) {
+        List<Project> projects = projectService.getProjectsByTeamLead(teamLeadId);
+
+        if (projects.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        // Convert List to HashMap
+        HashMap<Integer, Project> projectMap = new HashMap<>();
+        for (Project project : projects) {
+            projectMap.put(project.getProjectID(), project);
+        }
+
+        return ResponseEntity.ok(projectMap);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Project> deleteProject(@PathVariable int id) {
         // Check if project exists
