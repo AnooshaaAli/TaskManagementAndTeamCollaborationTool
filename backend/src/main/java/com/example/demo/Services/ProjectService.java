@@ -32,4 +32,8 @@ public class ProjectService {
     public Optional<Project> getProjectById(int id) {
         return projectRepository.findById(id);
     }
+
+    public List<Project> getProjectsByTeamLead(int teamLeadId) {
+        return projectRepository.findByTeamLeadID(teamLeadId);
+    }
 }
