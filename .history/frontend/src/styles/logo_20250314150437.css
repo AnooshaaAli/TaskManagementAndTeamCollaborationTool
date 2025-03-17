@@ -1,0 +1,33 @@
+/* Add this to your existing logo.css */
+
+.astronaut-logo {
+  filter: brightness(1.05);
+}
+
+@keyframes neonPulse {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.2); }
+  100% { filter: brightness(1); }
+}
+
+.logo {
+  position: relative;
+}
+
+.logo::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.logo-sm .astronaut-logo path,
+.logo-md .astronaut-logo path,
+.logo-lg .astronaut-logo path {
+  animation: neonPulse 4s infinite ease-in-out;
+}

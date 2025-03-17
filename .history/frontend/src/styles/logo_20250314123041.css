@@ -1,0 +1,26 @@
+/* Logo component styles */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .logo-sm {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .logo-md {
+    width: 65px;
+    height: 65px;
+  }
+  
+  .logo-lg {
+    width: 90px;
+    height: 90px;
+  }
+  
+  /* Add a subtle metallic effect to make the logo look more like a silver charm */
+  .logo svg {
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+  }

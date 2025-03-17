@@ -5,7 +5,7 @@ import Project from "./components/Project.jsx"
 function App() {
   return (
     <div>
-      <RegisterPage />
+      <RegisterPage /> */}
       {/* saleha testing stuff */}
       {/* <List name="To Do" />
       <List name="Done" /> */}

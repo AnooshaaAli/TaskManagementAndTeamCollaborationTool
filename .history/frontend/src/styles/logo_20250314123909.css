@@ -1,0 +1,91 @@
+/* Logo component styles */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Different logo sizes */
+.logo-sm {
+    width: 45px;
+    height: 45px;
+}
+
+.logo-md {
+    width: 65px;
+    height: 65px;
+}
+
+.logo-lg {
+    width: 90px;
+    height: 90px;
+}
+
+/* Styling for the SVG to create a metallic charm effect */
+.logo svg {
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4)) 
+            drop-shadow(0 0 6px rgba(0, 0, 0, 0.2));
+    fill: url(#metallic-gradient);
+}
+
+/* Adding a subtle metallic gradient */
+.logo svg path {
+    stroke: #C0C0C0;
+    stroke-width: 1.2;
+    fill: url(#metallic-gradient);
+}
+
+/* Define the metallic gradient */
+svg defs {
+    display: block;
+}
+
+svg linearGradient#metallic-gradient {
+    stop:first-child {
+        stop-color: #e6e6e6;
+    }
+    stop:nth-child(2) {
+        stop-color: #b0b0b0;
+    }
+    stop:nth-child(3) {
+        stop-color: #f7f7f7;
+    }
+}
+
+/* Logo component styles */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Adjusted sizes */
+.logo-sm {
+    width: 40px;
+    height: 40px;
+}
+
+.logo-md {
+    width: 55px;
+    height: 55px;
+}
+
+.logo-lg {
+    width: 80px;
+    height: 80px;
+}
+
+/* Apply a metallic silver effect */
+.logo svg {
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
+}
+
+/* Make the legs and body silvery */
+.logo path, 
+.logo rect, 
+.logo circle { /* Adjust depending on SVG structure */
+    fill: silver !important; /* Ensure a silvery color */
+    stroke: #ccc; /* Add a slight stroke for depth */
+    stroke-width: 1px;
+}
