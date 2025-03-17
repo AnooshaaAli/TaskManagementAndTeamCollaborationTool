@@ -1,0 +1,27 @@
+/* Logo component styles */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Adjusted sizes */
+.logo-sm {
+    width: 70px;
+    height: 110px;
+}
+
+.logo-md {
+    width: 80px;
+    height: 130px;
+}
+
+.logo-lg {
+    width: 90px;
+    height: 150px;
+}
+
+/* Apply a glow effect for the stars */
+.astronaut-logo {
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
+}

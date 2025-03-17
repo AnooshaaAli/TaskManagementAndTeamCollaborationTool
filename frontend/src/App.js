@@ -7,18 +7,11 @@ import ProjectContainer from "./components/ProjectContainer.jsx";
 
 function App() {
   return (
-    /*<div>
-      {<RegisterPage />}
-      {/* saleha testing stuff }
-      {/* <List name="To Do" />
-<<<<<<< afsah
-      <List name="Done" /> }
-      <Project id="7" />
-    </div>*/
-    /* Afsah code here */
     <div>
-      <h1>Task Management Board</h1>
-      <Project id = "1"/>
+      <RegisterPage />
+     
+//       <h1>Task Management Board</h1>
+//       <Project id = "1"/>
     </div>
 
   );

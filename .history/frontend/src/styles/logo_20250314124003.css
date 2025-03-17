@@ -1,0 +1,37 @@
+/* Logo component styles */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Adjusted sizes */
+.logo-sm {
+    width: 40px;
+    height: 40px;
+}
+
+.logo-md {
+    width: 55px;
+    height: 55px;
+}
+
+.logo-lg {
+    width: 80px;
+    height: 80px;
+}
+
+/* Apply a metallic silver effect */
+.logo svg {
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
+}
+
+/* Specifically target the legs */
+.logo svg path,  
+.logo svg rect,  
+.logo svg circle,  
+.logo svg line {  
+    fill: silver !important; /* Apply silver color */
+    stroke: #ccc !important; /* Light gray stroke */
+    stroke-width: 1.5px;
+}

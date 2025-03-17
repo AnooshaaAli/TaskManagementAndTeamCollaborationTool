@@ -1,0 +1,42 @@
+/* Logo component styles */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Adjusted sizes */
+.logo-sm {
+    width: 16px;
+    height: 16px;
+}
+
+.logo-md {
+    width: 18px;
+    height: 18px;
+}
+
+.logo-lg {
+    width: 40px;
+    height: 40px;
+}
+
+/* Apply a metallic silver effect with improved glow for dark UI */
+.astronaut-logo {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+}
+
+/* Enhanced metallic effect */
+.astronaut-logo polygon,
+.astronaut-logo rect,
+.astronaut-logo line {
+    /* Silver metallic gradient effect */
+    fill: #E5E7EB;
+    stroke: #BDBDBD;
+}
+
+/* Keep the helmet dark to match UI theme */
+.astronaut-logo circle:nth-child(2) {
+    fill: #1E1E24;
+    stroke: #E5E7EB;
+}

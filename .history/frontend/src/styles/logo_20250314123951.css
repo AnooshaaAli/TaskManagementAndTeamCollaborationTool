@@ -1,0 +1,36 @@
+/* Logo component styles */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Adjusted sizes */
+.logo-sm {
+    width: 40px;
+    height: 40px;
+}
+
+.logo-md {
+    width: 55px;
+    height: 55px;
+}
+
+.logo-lg {
+    width: 80px;
+    height: 80px;
+}
+
+/* Apply a metallic silver effect */
+.logo svg {
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
+}
+
+/* Make the legs and body silvery */
+.logo path, 
+.logo rect, 
+.logo circle { /* Adjust depending on SVG structure */
+    fill: silver !important; /* Ensure a silvery color */
+    stroke: #ccc; /* Add a slight stroke for depth */
+    stroke-width: 1px;
+}

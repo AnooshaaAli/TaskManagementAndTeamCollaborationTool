@@ -1,0 +1,55 @@
+/* Add this to your existing logo.css */
+
+.astronaut-logo {
+  filter: brightness(1.1) contrast(1.1);
+}
+
+.logo {
+  position: relative;
+}
+
+.logo::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.logo::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0) 60%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes subtleGlow {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.logo-sm .astronaut-logo path,
+.logo-md .astronaut-logo path,
+.logo-lg .astronaut-logo path {
+  animation: subtleGlow 4s infinite ease-in-out;
+}
+
+/* For the dark theme compatibility */
+body {
+  --glow-color: rgba(255, 255, 255, 0.05);
+}
+
+.logo-container {
+  position: relative;
+  overflow: hidden;
+}
