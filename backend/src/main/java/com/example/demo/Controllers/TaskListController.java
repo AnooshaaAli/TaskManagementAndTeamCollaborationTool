@@ -45,11 +45,34 @@ public class TaskListController {
     @GetMapping("/project/{projectID}")
     public ResponseEntity<HashMap<Integer, TaskList>> getTaskListsByProject(@PathVariable int projectID) {
         HashMap<Integer, TaskList> taskLists = taskListService.getTaskListsByProjectID(projectID);
+        
         if (taskLists.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
+
+        // Fetch tasks for each task list
+        for (TaskList taskList : taskLists.values()) {
+            String taskApiUrl = "http://localhost:8080/tasks/list/" + taskList.getListID();
+
+            ResponseEntity<HashMap<Integer, Task>> taskResponse = restTemplate.exchange(
+                    taskApiUrl,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<HashMap<Integer, Task>>() {});
+            
+
+            if (taskResponse.getBody() != null && !taskResponse.getBody().isEmpty()) {
+                taskList.setTasks(taskResponse.getBody());
+            } else {
+                taskList.setTasks(new HashMap<>()); // Set an empty HashMap if no tasks are found
+            }
+            System.out.println("List ID: " + taskList.getListID() + ", Number of tasks: " + (taskList.getTasks() != null ? taskList.getTasks().size() : "null"));
+
+        }
+
         return ResponseEntity.ok(taskLists);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<TaskList> updateTaskList(@PathVariable int id, @RequestBody TaskList updatedTaskList) {
@@ -75,31 +98,6 @@ public class TaskListController {
         return ResponseEntity.notFound().build();
     }
 
-    // task functions
-    @GetMapping("/{listID}/tasks")
-    public ResponseEntity<HashMap<Integer, Task>> getTasksByListID(@PathVariable int listID) {
-        String taskApiUrl = "http://localhost:8080/tasks/list/" + listID;
 
-        // Fetch tasks from the Task Service
-        ResponseEntity<List<Task>> taskResponse = restTemplate.exchange(
-                taskApiUrl,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<Task>>() {});
-
-        if (taskResponse.getBody() != null && !taskResponse.getBody().isEmpty()) {
-            List<Task> taskList = taskResponse.getBody();
-
-            // Convert List<Task> to HashMap<Integer, Task>
-            HashMap<Integer, Task> taskMap = new HashMap<>();
-            for (Task task : taskList) {
-                taskMap.put(task.getTaskID(), task); // Use getTaskID()
-            }
-
-            return ResponseEntity.ok(taskMap);
-        }
-
-        return ResponseEntity.noContent().build();
-    }
 
 }

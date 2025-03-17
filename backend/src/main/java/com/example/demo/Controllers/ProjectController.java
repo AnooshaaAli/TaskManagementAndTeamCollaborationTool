@@ -92,6 +92,12 @@ public class ProjectController {
             HashMap<Integer, TaskList> taskLists = taskListsResponse.getBody();
             project.setLists(taskLists);
         }
+        for (TaskList list: project.getLists().values())
+        {
+            System.out.println("Here here");
+            System.out.println("List ID: " + list.getListID() + ", Number of tasks: " + (list.getTasks() != null ? list.getTasks().size() : "null"));
+        }
+        
 
         return ResponseEntity.ok(project);
     }
