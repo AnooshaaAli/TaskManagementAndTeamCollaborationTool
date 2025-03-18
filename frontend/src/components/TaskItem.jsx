@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+//import '../styles/projectBoard.css';
 
 const TaskItem = ({ task, onEdit, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
