@@ -7,6 +7,7 @@ const ProjectContainer = ({ userID }) => {
     const [projects, setProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
 
+    console.log(userID);
     useEffect(() => {
         if (!userID) return;
         fetch("http://localhost:8080/projects/teamlead/" + userID)
