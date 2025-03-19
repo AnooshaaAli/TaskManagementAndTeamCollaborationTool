@@ -5,12 +5,10 @@ import Input from '../components/Input';
 import Logo from '../components/Logo';
 import "../styles/styles.css";
 
-const RegisterPage = () => {
+const LoginPage = () => {
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   });
 
   const [errors, setErrors] = useState({});
@@ -23,21 +21,23 @@ const RegisterPage = () => {
       [name]: value
     });
 
-    // Clear error when user types
     if (errors[name]) {
       setErrors({
         ...errors,
         [name]: ''
       });
     }
+    
+    if (errors.auth) {
+      setErrors({
+        ...errors,
+        auth: ''
+      });
+    }
   };
 
   const validateForm = () => {
     const newErrors = {};
-
-    if (!formData.username) {
-      newErrors.username = 'Username is required';
-    }
 
     if (!formData.email) {
       newErrors.email = 'Email is required';
@@ -47,12 +47,6 @@ const RegisterPage = () => {
 
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     setErrors(newErrors);
@@ -64,32 +58,41 @@ const RegisterPage = () => {
   
     if (validateForm()) {
       try {
-        const response = await fetch("http://localhost:8080/auth/register", {
+        const response = await fetch("http://localhost:8080/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            username: formData.username,
             email: formData.email,
             password: formData.password
           })
         });
   
-        const data = await response.json(); 
+        const data = await response.json();
   
         if (response.ok) {
-          setMessage(data.message || "Registration Successful! 🎉");
-          setFormData({ username: "", email: "", password: "", confirmPassword: "" });
+          setMessage("Login Successful! Redirecting...");
+  
+          localStorage.setItem("jwtToken", data.token);
+  
           setTimeout(() => {
-            window.location.href = "/login";
+            window.location.href = "/dashboard";
           }, 1500);
         } else {
-          setMessage(data.message || "Registration failed.");
+          setErrors({
+            ...errors,
+            password: data.message || "Invalid email or password."
+          });
+          setMessage(""); 
         }
       } catch (error) {
-        setMessage("Something went wrong. Please try again.");
+        setErrors({
+          ...errors,
+          auth: "Something went wrong. Please try again."
+        });
+        setMessage("");
       }
     }
-  };  
+  };
 
   return (
     <div className="register-container dark-theme">
@@ -98,23 +101,12 @@ const RegisterPage = () => {
       </div>
       <div className="register-wrapper">
         <div className="register-header">
-          <h2 className="register-title">Create an Account</h2>
-          <p className="register-subtitle">Join our task management platform</p>
+          <h2 className="register-title">Welcome Back</h2>
+          <p className="register-subtitle">Log in to your account</p>
         </div>
 
         <Card className="register-card">
           <form onSubmit={handleSubmit}>
-            <Input
-              label="Username"
-              id="username"
-              name="username"
-              placeholder="johndoe718"
-              value={formData.username}
-              onChange={handleChange}
-              error={errors.username}
-              required
-            />
-
             <Input
               label="Email"
               type="email"
@@ -139,30 +131,32 @@ const RegisterPage = () => {
               required
             />
 
-            <Input
-              label="Confirm Password"
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              placeholder="••••••••"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              error={errors.confirmPassword}
-              required
-            />
+            <div className="form-group">
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <a href="/forgot-password" className="form-link">
+                  Forgot password?
+                </a>
+              </div>
+            </div>
+            
+            {errors.auth && (
+              <div className="form-group">
+                <p className="error-text">{errors.auth}</p>
+              </div>
+            )}
 
             <div className="form-button-container">
               <Button type="submit" variant="primary" fullWidth>
-                Register
+                Log In
               </Button>
             </div>
 
             {message && <p className="form-message">{message}</p>}
 
             <div className="form-footer">
-              Already have an account?{' '}
-              <a href="/login" className="form-link">
-                Sign in
+              Don't have an account?{' '}
+              <a href="/register" className="form-link">
+                Create one
               </a>
             </div>
           </form>
@@ -172,4 +166,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default LoginPage;
