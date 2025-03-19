@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TaskItem from "./TaskItem.jsx";
 import DeleteList from "./DeleteList.jsx";
+import "../styles/list.css";
 
 const List = ({ listID, name, projectID, onDelete }) => {
     const [tasks, setTasks] = useState([]);
@@ -26,7 +27,7 @@ const List = ({ listID, name, projectID, onDelete }) => {
     }, [listID]);
 
     return (
-        <div>
+        <div className="list">
             <h2>{name} (ID: {listID})</h2>
 
             {loading ? <p>Loading tasks...</p> : (
