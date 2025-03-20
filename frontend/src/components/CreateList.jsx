@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import "../styles/buttonComponents.css";
 
 function CreateList({ projectID, onListCreated }) {
     const [showInput, setShowInput] = useState(false);
@@ -35,7 +36,7 @@ function CreateList({ projectID, onListCreated }) {
             <button onClick={() => { setShowInput(false); setListName(""); }}>✖</button>
         </div>
     ) : (
-        <button onClick={() => setShowInput(true)}>Add List</button>
+        <button className="createList" onClick={() => setShowInput(true)}>Add List</button>
     );
 }
 

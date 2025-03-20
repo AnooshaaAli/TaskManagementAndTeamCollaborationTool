@@ -19,11 +19,6 @@ public class TaskController {
     @GetMapping("/list/{listID}")
     public ResponseEntity<List<Task>> getTasksByListID(@PathVariable int listID) {
         List<Task> tasks = taskService.getTasksByListID(listID);
-        System.out.println("Here here");
-        for (Task task: tasks) {
-            System.out.println(task.getTaskID());
-            System.out.println(task.getTitle());
-        }
         if (tasks.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
