@@ -39,7 +39,7 @@ function Project({ id }) {
             <h2>{project.name}</h2>
             <div>
                 {project.lists && Object.values(project.lists).map(list => (
-                    <List key={list.listID} projectID = {id} list = {list} onDelete={deleteListFromProject} setProject={setProject} />
+                    <List key={list.listID} list = {list}  setProject={setProject} /> /* onDelete={deleteListFromProject} */
                 ))}
 
                 <CreateList projectID={id} onListCreated={addListToProject} />

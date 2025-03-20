@@ -3,7 +3,7 @@ import TaskItem from "./TaskItem.jsx"; // Import TaskItem component
 //import '../styles/projectBoard.css';
 
 
-const List = ({ projectID, list , setProject}) => {
+const List = ({ list , setProject}) => {
     const [tasks, setTasks] = useState(list.tasks || []); // Maintain local state for tasks
     const [newTaskTitle, setNewTaskTitle] = useState(""); // State for new task input
     const [newTaskDeadline, setNewTaskDeadline] = useState(""); // State for task deadline
