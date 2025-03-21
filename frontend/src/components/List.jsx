@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import TaskItem from "./TaskItem.jsx"; // Import TaskItem component
-//import '../styles/projectBoard.css';
+import TaskItem from "./TaskItem.jsx";
+import DeleteList from "./DeleteList.jsx";
+import "../styles/list.css";
 
-
-const List = ({ list , onUpdateList }) => {
+const List = ({ list , onUpdateList, onDelete }) => {
     const [listState, setListState] = useState(list); // Store the entire list, not just tasks
     const [newTaskTitle, setNewTaskTitle] = useState(""); // State for new task input
     const [newTaskDeadline, setNewTaskDeadline] = useState(""); // State for task deadline
@@ -34,8 +34,6 @@ const List = ({ list , onUpdateList }) => {
         setListState(updatedList);
         onUpdateList(updatedList);
     };
-
-
 
     if (!list) {
         return <p>Loading...</p>; // Handle undefined list safely
@@ -136,7 +134,7 @@ const List = ({ list , onUpdateList }) => {
 
     // Render the component
     return (
-        <div>
+        <div className="list">
             <h2>{list.name} (ID: {list.listID})</h2>
 
             <div>
@@ -160,10 +158,12 @@ const List = ({ list , onUpdateList }) => {
                     {Object.values(listState.tasks).map((task) => (
                         <TaskItem key={task.taskID} task={task} onEdit={handleEditTask} onDelete={handleDeleteTask} />
                     ))}
+
                 </div>
             ) : (
                 <p>No tasks in this list.</p>
             )}
+            <DeleteList listID={listID} onDeleteSuccess={() => onDelete(listID)} />
         </div>
     );
 

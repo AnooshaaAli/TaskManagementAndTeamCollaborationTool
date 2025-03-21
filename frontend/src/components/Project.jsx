@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import List from "./List.jsx";
 import CreateList from "./CreateList.jsx";
 import DeleteProject from './DeleteProject.jsx';
+import "../styles/project.css";
 
 function Project({ id }) {
     const [project, setProject] = useState(null);
@@ -47,9 +48,9 @@ function Project({ id }) {
     return (
         <div>
             <h2>{project.name}</h2>
-            <div>
-                {project.lists && Object.values(project.lists).map(list => (
-                    <List key={list.listID} list={list} onUpdateList={updateListInProject} />
+            <div className="project">
+                 {project.lists && Object.values(project.lists).map(list => (
+                    <List key={list.listID} list={list} onUpdateList={updateListInProject} onDelete={deleteListFromProject} />
                 ))}
 
                 <CreateList projectID={id} onListCreated={addListToProject} />
