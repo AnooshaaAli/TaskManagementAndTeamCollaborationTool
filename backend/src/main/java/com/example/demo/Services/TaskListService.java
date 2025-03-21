@@ -1,9 +1,7 @@
 package com.example.demo.Services;
 
 import com.example.demo.Models.TaskList;
-import com.example.demo.Models.Task;
 import com.example.demo.Repositories.TaskListRepository;
-import com.example.demo.Repositories.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +13,6 @@ import java.util.Optional;
 public class TaskListService {
     @Autowired
     private TaskListRepository taskListRepository;
-    @Autowired
-    private TaskRepository taskRepository;
 
     public TaskList saveTaskList(TaskList taskList) {
         return taskListRepository.save(taskList);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import List from "./List.jsx";
 import CreateList from "./CreateList.jsx";
 import DeleteProject from './DeleteProject.jsx';
+import "../styles/project.css";
 
 function Project({ id }) {
     const [project, setProject] = useState(null);
@@ -21,11 +22,22 @@ function Project({ id }) {
     };
 
     const deleteListFromProject = (listID) => {
-        setProject((prev) => ({
+        setProject(prev => ({
             ...prev,
             lists: Object.fromEntries(
                 Object.entries(prev.lists).filter(([key]) => key !== String(listID))
             )
+        }));
+    };
+
+    // Function to update a specific list inside project.lists
+    const updateListInProject = (updatedList) => {
+        setProject(prev => ({
+            ...prev,
+            lists: {
+                ...prev.lists,
+                [updatedList.listID]: updatedList // Only update the modified list
+            }
         }));
     };
 
@@ -36,14 +48,14 @@ function Project({ id }) {
     return (
         <div>
             <h2>{project.name}</h2>
-            <div>
-                {Object.values(project.lists).map(list => (
-                    <List key={list.listID} listID={list.listID} name={list.name} projectID={list.projectID} onDelete={deleteListFromProject} />
+            <div className="project">
+                 {project.lists && Object.values(project.lists).map(list => (
+                    <List key={list.listID} list={list} onUpdateList={updateListInProject} onDelete={deleteListFromProject} />
                 ))}
 
                 <CreateList projectID={id} onListCreated={addListToProject} />
             </div>
-            <DeleteProject projectID={id} onDelete={() => { console.log("Project deleted!"); }} />
+            <DeleteProject projectID={id} onDelete={() => console.log("Project deleted!")} />
         </div>
     );
 }
