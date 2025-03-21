@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.HashMap;
 
 @Service
 public class TaskService {
@@ -14,8 +15,19 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
-    public List<Task> getTasksByListID(int listID) {
-        return taskRepository.findByListID(listID);
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
+
+    public HashMap<Integer, Task> getTasksByListID(int listID) {
+        List<Task> taskList = taskRepository.findByListID(listID); // Fetch list of tasks
+
+        HashMap<Integer, Task> taskMap = new HashMap<>();
+        for (Task task : taskList) {
+            taskMap.put(task.getTaskID(), task); // Convert List to HashMap
+        }
+
+        return taskMap;
     }
     
     // Create a new task

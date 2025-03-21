@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/tasks")
@@ -15,14 +16,16 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    // Get tasks by listID
+    // Get tasks by listID and return as HashMap
     @GetMapping("/list/{listID}")
-    public ResponseEntity<List<Task>> getTasksByListID(@PathVariable int listID) {
-        List<Task> tasks = taskService.getTasksByListID(listID);
-        if (tasks.isEmpty()) {
+    public ResponseEntity<HashMap<Integer, Task>> getTasksByListID(@PathVariable int listID) {
+        HashMap<Integer, Task> taskMap = taskService.getTasksByListID(listID);
+
+        if (taskMap.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(tasks);
+
+        return ResponseEntity.ok(taskMap);
     }
 
     // Create a new task

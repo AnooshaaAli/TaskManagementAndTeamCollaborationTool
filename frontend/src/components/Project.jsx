@@ -22,11 +22,22 @@ function Project({ id }) {
     };
 
     const deleteListFromProject = (listID) => {
-        setProject((prev) => ({
+        setProject(prev => ({
             ...prev,
             lists: Object.fromEntries(
                 Object.entries(prev.lists).filter(([key]) => key !== String(listID))
             )
+        }));
+    };
+
+    // Function to update a specific list inside project.lists
+    const updateListInProject = (updatedList) => {
+        setProject(prev => ({
+            ...prev,
+            lists: {
+                ...prev.lists,
+                [updatedList.listID]: updatedList // Only update the modified list
+            }
         }));
     };
 
@@ -38,13 +49,13 @@ function Project({ id }) {
         <div>
             <h2>{project.name}</h2>
             <div className="project">
-                {Object.values(project.lists).map(list => (
-                    <List key={list.listID} listID={list.listID} name={list.name} projectID={list.projectID} onDelete={deleteListFromProject} />
+                 {project.lists && Object.values(project.lists).map(list => (
+                    <List key={list.listID} list={list} onUpdateList={updateListInProject} onDelete={deleteListFromProject} />
                 ))}
 
                 <CreateList projectID={id} onListCreated={addListToProject} />
             </div>
-            <DeleteProject projectID={id} onDelete={() => { console.log("Project deleted!"); }} />
+            <DeleteProject projectID={id} onDelete={() => console.log("Project deleted!")} />
         </div>
     );
 }
