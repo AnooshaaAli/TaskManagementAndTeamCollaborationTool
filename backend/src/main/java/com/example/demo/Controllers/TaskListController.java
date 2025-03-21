@@ -14,6 +14,7 @@ import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/lists")
@@ -32,10 +33,33 @@ public class TaskListController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TaskList> getTaskListById(@PathVariable int id) {
-        return taskListService.getTaskListById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Optional<TaskList> optionalTaskList = taskListService.getTaskListById(id);
+
+        if (optionalTaskList.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        TaskList taskList = optionalTaskList.get();
+
+        // Fetch tasks for this specific list
+        String taskApiUrl = "http://localhost:8080/tasks/list/" + taskList.getListID();
+
+        ResponseEntity<HashMap<Integer, Task>> taskResponse = restTemplate.exchange(
+                taskApiUrl,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<HashMap<Integer, Task>>() {}
+        );
+
+        if (taskResponse.getBody() != null && !taskResponse.getBody().isEmpty()) {
+            taskList.setTasks(taskResponse.getBody());
+        } else {
+            taskList.setTasks(new HashMap<>()); // Set an empty HashMap if no tasks are found
+        }
+
+        return ResponseEntity.ok(taskList);
     }
+
 
     @GetMapping
     public ResponseEntity<List<TaskList>> getAllTaskLists() {

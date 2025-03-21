@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import List from "./List.jsx";
 import CreateList from "./CreateList.jsx";
 import DeleteProject from './DeleteProject.jsx';
-//import '../styles/projectBoard.css';
 
 function Project({ id }) {
     const [project, setProject] = useState(null);
@@ -22,11 +21,22 @@ function Project({ id }) {
     };
 
     const deleteListFromProject = (listID) => {
-        setProject((prev) => ({
+        setProject(prev => ({
             ...prev,
             lists: Object.fromEntries(
                 Object.entries(prev.lists).filter(([key]) => key !== String(listID))
             )
+        }));
+    };
+
+    // Function to update a specific list inside project.lists
+    const updateListInProject = (updatedList) => {
+        setProject(prev => ({
+            ...prev,
+            lists: {
+                ...prev.lists,
+                [updatedList.listID]: updatedList // Only update the modified list
+            }
         }));
     };
 
@@ -39,12 +49,12 @@ function Project({ id }) {
             <h2>{project.name}</h2>
             <div>
                 {project.lists && Object.values(project.lists).map(list => (
-                    <List key={list.listID} list = {list}  setProject={setProject} /> /* onDelete={deleteListFromProject} */
+                    <List key={list.listID} list={list} onUpdateList={updateListInProject} />
                 ))}
 
                 <CreateList projectID={id} onListCreated={addListToProject} />
             </div>
-            <DeleteProject projectID={id} onDelete={() => { console.log("Project deleted!"); }} />
+            <DeleteProject projectID={id} onDelete={() => console.log("Project deleted!")} />
         </div>
     );
 }
