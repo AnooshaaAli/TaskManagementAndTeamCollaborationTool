@@ -72,5 +72,30 @@ public class AuthController {
         // 🔹 Consistently return JSON for user not found case
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                              .body(Collections.singletonMap("message", "User not found."));
-    }    
+    }
+    
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String token) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
+            Optional<Account> account = accountService.getAccountByEmail(email);
+            
+            if (account.isPresent()) {
+                Account user = account.get();
+                response.put("userID", user.getId());
+                response.put("username", user.getUsername());
+                response.put("email", user.getEmail());
+
+                return ResponseEntity.ok(response);
+            }
+            
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                .body(Collections.singletonMap("message", "User not found."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body(Collections.singletonMap("message", "Invalid token."));
+        }
+    }
 }
