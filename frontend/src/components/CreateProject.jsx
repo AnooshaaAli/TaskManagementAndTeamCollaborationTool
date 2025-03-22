@@ -4,12 +4,17 @@ function CreateProject({ userID, onProjectCreated }) {
     const [showInput, setShowInput] = useState(false);
     const [projectName, setProjectName] = useState("");
 
+    const token = localStorage.getItem("jwtToken");
+
     const handleCreateProject = async () => {
         if (!projectName.trim()) return; // Prevent empty submissions
 
         const response = await fetch(`http://localhost:8080/projects`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({ name: projectName, teamLeadID: userID })
         });
 

@@ -7,8 +7,17 @@ import "../styles/project.css";
 function Project({ id }) {
     const [project, setProject] = useState(null);
 
+
     useEffect(() => {
-        fetch(`http://localhost:8080/projects/${id}`)
+        const token = localStorage.getItem("jwtToken");
+        console.log(token);
+        fetch(`http://localhost:8080/projects/${id}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`, // Attach the token
+                "Content-Type": "application/json"
+            }
+        })
             .then(response => response.json())
             .then(data => setProject(data))
             .catch(error => console.error('Error fetching project:', error));
@@ -49,7 +58,7 @@ function Project({ id }) {
         <div>
             <h2>{project.name}</h2>
             <div className="project">
-                 {project.lists && Object.values(project.lists).map(list => (
+                {project.lists && Object.values(project.lists).map(list => (
                     <List key={list.listID} list={list} onUpdateList={updateListInProject} onDelete={deleteListFromProject} />
                 ))}
 

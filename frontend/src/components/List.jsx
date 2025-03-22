@@ -3,16 +3,24 @@ import TaskItem from "./TaskItem.jsx";
 import DeleteList from "./DeleteList.jsx";
 import "../styles/list.css";
 
-const List = ({ list , onUpdateList, onDelete }) => {
+const List = ({ list, onUpdateList, onDelete }) => {
     const [listState, setListState] = useState(list); // Store the entire list, not just tasks
     const [newTaskTitle, setNewTaskTitle] = useState(""); // State for new task input
     const [newTaskDeadline, setNewTaskDeadline] = useState(""); // State for task deadline
+
+    const token = localStorage.getItem("jwtToken");
 
     // Fetch the latest list data when the component mounts or listID changes
     useEffect(() => {
         const fetchList = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/lists/${list.listID}`); // Fetch updated list
+                const response = await fetch(`http://localhost:8080/lists/${list.listID}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`, // Attach the token
+                        "Content-Type": "application/json"
+                    }
+                }); // Fetch updated list
                 if (!response.ok) {
                     throw new Error("Failed to fetch list");
                 }
@@ -38,7 +46,7 @@ const List = ({ list , onUpdateList, onDelete }) => {
     if (!list) {
         return <p>Loading...</p>; // Handle undefined list safely
     }
-    
+
     // Handle Create Task
     const handleCreateTask = async () => {
         if (!newTaskTitle.trim()) return;
@@ -53,7 +61,10 @@ const List = ({ list , onUpdateList, onDelete }) => {
         try {
             const response = await fetch("http://localhost:8080/tasks", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify(newTask),
             });
 
@@ -84,7 +95,10 @@ const List = ({ list , onUpdateList, onDelete }) => {
         try {
             const response = await fetch(`http://localhost:8080/tasks/${updatedTask.taskID}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify(updatedTask),
             });
 
@@ -111,6 +125,10 @@ const List = ({ list , onUpdateList, onDelete }) => {
         try {
             const response = await fetch(`http://localhost:8080/tasks/${taskID}`, {
                 method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
             });
 
             if (!response.ok) {
@@ -163,7 +181,7 @@ const List = ({ list , onUpdateList, onDelete }) => {
             ) : (
                 <p>No tasks in this list.</p>
             )}
-            <DeleteList listID={listID} onDeleteSuccess={() => onDelete(listID)} />
+            <DeleteList listID={list.listID} onDeleteSuccess={() => onDelete(list.listID)} />
         </div>
     );
 
