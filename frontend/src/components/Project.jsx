@@ -19,7 +19,14 @@ function Project({ id }) {
     // project data
     useEffect(() => {
         setLoading(true);
-        fetch(`http://localhost:8080/projects/${id}`)
+        const token = localStorage.getItem("jwtToken");
+        fetch(`http://localhost:8080/projects/${id}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`, // Attach the token
+                "Content-Type": "application/json"
+            }
+         })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch project');

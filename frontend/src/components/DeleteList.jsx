@@ -7,11 +7,17 @@ function DeleteList({ listID, onDeleteSuccess }) {
     const [showConfirm, setShowConfirm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
+    const token = localStorage.getItem("jwtToken");
+
     const handleDelete = async () => {
         setIsDeleting(true);
         try {
             const response = await fetch(`http://localhost:8080/lists/${listID}`, {
                 method: "DELETE",
+                headers: {
+                  "Authorization": `Bearer ${token}`, // Attach the token
+                  "Content-Type": "application/json"
+                }
             });
 
             if (!response.ok) {

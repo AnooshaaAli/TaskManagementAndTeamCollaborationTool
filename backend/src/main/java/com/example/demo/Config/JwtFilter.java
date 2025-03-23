@@ -1,4 +1,5 @@
 package com.example.demo.Config;
+
 import org.springframework.web.filter.OncePerRequestFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,6 +25,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+      
     throws ServletException, IOException {
     String authHeader = request.getHeader("Authorization");
     System.out.println("Incoming Request: " + request.getRequestURI());

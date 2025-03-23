@@ -8,9 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.core.ParameterizedTypeReference;
-
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,6 @@ public class TaskListController {
     @Autowired
     private RestTemplate restTemplate;
 
-
     @PostMapping
     public ResponseEntity<TaskList> createTaskList(@RequestBody TaskList taskList) {
         TaskList savedTaskList = taskListService.saveTaskList(taskList);
@@ -32,7 +32,8 @@ public class TaskListController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskList> getTaskListById(@PathVariable int id) {
+    public ResponseEntity<TaskList> getTaskListById(@PathVariable int id,
+            @RequestHeader("Authorization") String authHeader) {
         Optional<TaskList> optionalTaskList = taskListService.getTaskListById(id);
 
         if (optionalTaskList.isEmpty()) {
@@ -40,16 +41,19 @@ public class TaskListController {
         }
 
         TaskList taskList = optionalTaskList.get();
-
         // Fetch tasks for this specific list
         String taskApiUrl = "http://localhost:8080/tasks/list/" + taskList.getListID();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", authHeader);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<HashMap<Integer, Task>> taskResponse = restTemplate.exchange(
                 taskApiUrl,
                 HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<HashMap<Integer, Task>>() {}
-        );
+                entity,
+                new ParameterizedTypeReference<HashMap<Integer, Task>>() {
+                });
 
         if (taskResponse.getBody() != null && !taskResponse.getBody().isEmpty()) {
             taskList.setTasks(taskResponse.getBody());
@@ -60,43 +64,46 @@ public class TaskListController {
         return ResponseEntity.ok(taskList);
     }
 
-
     @GetMapping
     public ResponseEntity<List<TaskList>> getAllTaskLists() {
         return ResponseEntity.ok(taskListService.getAllTaskLists());
     }
 
     @GetMapping("/project/{projectID}")
-    public ResponseEntity<HashMap<Integer, TaskList>> getTaskListsByProject(@PathVariable int projectID) {
+    public ResponseEntity<HashMap<Integer, TaskList>> getTaskListsByProject(@PathVariable int projectID,
+            @RequestHeader("Authorization") String authHeader) {
         HashMap<Integer, TaskList> taskLists = taskListService.getTaskListsByProjectID(projectID);
-        
+
         if (taskLists.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", authHeader);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
         // Fetch tasks for each task list
         for (TaskList taskList : taskLists.values()) {
-            String taskApiUrl = "http://localhost:8080/tasks/list/" + taskList.getListID();
+            String taskApiUrl = "http://localhost:8080/tasks/list/" +
+                    taskList.getListID();
 
             ResponseEntity<HashMap<Integer, Task>> taskResponse = restTemplate.exchange(
                     taskApiUrl,
                     HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<HashMap<Integer, Task>>() {});
-            
+                    entity,
+                    new ParameterizedTypeReference<HashMap<Integer, Task>>() {
+                    });
 
             if (taskResponse.getBody() != null && !taskResponse.getBody().isEmpty()) {
                 taskList.setTasks(taskResponse.getBody());
             } else {
                 taskList.setTasks(new HashMap<>()); // Set an empty HashMap if no tasks are found
             }
-            System.out.println("List ID: " + taskList.getListID() + ", Number of tasks: " + (taskList.getTasks() != null ? taskList.getTasks().size() : "null"));
-
+            System.out.println("List ID: " + taskList.getListID() + ", Number of tasks: "
+                    + (taskList.getTasks() != null ? taskList.getTasks().size() : "null"));
         }
 
         return ResponseEntity.ok(taskLists);
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<TaskList> updateTaskList(@PathVariable int id, @RequestBody TaskList updatedTaskList) {
@@ -106,7 +113,8 @@ public class TaskListController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTaskList(@PathVariable int id) {
+    public ResponseEntity<Void> deleteTaskList(@PathVariable int id,
+            @RequestHeader("Authorization") String authHeader) {
         if (taskListService.deleteTaskList(id)) {
             return ResponseEntity.noContent().build();
         }
@@ -121,7 +129,5 @@ public class TaskListController {
         }
         return ResponseEntity.notFound().build();
     }
-
-
 
 }

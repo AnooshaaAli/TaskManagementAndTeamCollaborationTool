@@ -9,6 +9,8 @@ function CreateList({ projectID, onListCreated }) {
     const [listName, setListName] = useState("");
     const [isCreating, setIsCreating] = useState(false);
 
+    const token = localStorage.getItem("jwtToken");
+
     const handleCreateList = async () => {
         if (!listName.trim()) return; 
 
@@ -16,7 +18,10 @@ function CreateList({ projectID, onListCreated }) {
         try {
             const response = await fetch(`http://localhost:8080/lists`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify({ name: listName, projectID })
             });
 

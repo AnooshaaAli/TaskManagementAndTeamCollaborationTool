@@ -12,12 +12,18 @@ const List = ({ list, onUpdateList, onDelete }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isCreating, setIsCreating] = useState(false);
-
+    const token = localStorage.getItem("jwtToken");
     useEffect(() => {
         const fetchList = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`http://localhost:8080/lists/${list.listID}`);
+                const response = await fetch(`http://localhost:8080/lists/${list.listID}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`, // Attach the token
+                        "Content-Type": "application/json"
+                    }
+                }); 
                 if (!response.ok) {
                     throw new Error("Failed to fetch list");
                 }
@@ -39,7 +45,11 @@ const List = ({ list, onUpdateList, onDelete }) => {
         setListState(updatedList);
         onUpdateList(updatedList);
     };
-    
+
+    if (!list) {
+        return <p>Loading...</p>; // Handle undefined list safely
+    }
+
     const handleCreateTask = async () => {
         if (!newTaskTitle.trim()) return;
 
@@ -54,7 +64,10 @@ const List = ({ list, onUpdateList, onDelete }) => {
         try {
             const response = await fetch("http://localhost:8080/tasks", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify(newTask),
             });
 
@@ -87,7 +100,10 @@ const List = ({ list, onUpdateList, onDelete }) => {
         try {
             const response = await fetch(`http://localhost:8080/tasks/${updatedTask.taskID}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify(updatedTask),
             });
 
@@ -114,6 +130,10 @@ const List = ({ list, onUpdateList, onDelete }) => {
         try {
             const response = await fetch(`http://localhost:8080/tasks/${taskID}`, {
                 method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
             });
 
             if (!response.ok) {

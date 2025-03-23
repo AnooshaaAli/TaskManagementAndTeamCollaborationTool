@@ -14,8 +14,41 @@ const ProjectContainer = ({ userID }) => {
         if (!userID) return;
     
         setIsLoading(true);
-        fetch("http://localhost:8080/projects/teamlead/" + userID)
-            .then(response => response.json())
+        const token = localStorage.getItem("jwtToken");
+
+        console.log(token);
+
+        fetch("http://localhost:8080/projects/teamlead/" + userID, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`, // Attach the token
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();  // Only parse if response is OK
+            })
+
+        const token = localStorage.getItem("jwtToken");
+
+        console.log(token);
+
+        fetch("http://localhost:8080/projects/teamlead/" + userID, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`, // Attach the token
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();  // Only parse if response is OK
+            })
             .then(data => {
                 console.log("Fetched projects:", data);
                 setProjects(Object.values(data));
@@ -26,6 +59,7 @@ const ProjectContainer = ({ userID }) => {
                 setIsLoading(false);
             });
     }, [userID]);    
+
 
     const addProject = (newProject) => {
         setProjects(prev => [...prev, newProject]);

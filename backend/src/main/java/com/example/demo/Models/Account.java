@@ -36,8 +36,8 @@ public class Account {
     
     public String getPassword() {
         return password;
-    }    
-    
+    }
+
     public String getUsername() {
         return username;
     }

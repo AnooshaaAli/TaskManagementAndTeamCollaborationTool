@@ -8,12 +8,18 @@ function DeleteProject({ projectID, onDelete }) {
     const [showConfirm, setShowConfirm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
+    const token = localStorage.getItem("jwtToken");
+
     const handleDelete = async () => {
         setIsDeleting(true);
         try {
             console.log("Project Id: ", projectID);
             const response = await fetch(`http://localhost:8080/projects/${projectID}`, {
                 method: "DELETE",
+                headers: {
+                  "Authorization": `Bearer ${token}`, // Attach the token
+                  "Content-Type": "application/json"
+                 }
             });
 
             if (!response.ok) {

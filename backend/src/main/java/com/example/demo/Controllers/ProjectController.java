@@ -7,6 +7,8 @@ import com.example.demo.Services.TeamService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +39,8 @@ public class ProjectController {
 
     // POST: Create a new project
     @PostMapping
-    public ResponseEntity<Project> createProject(@RequestBody Project project) {
+    public ResponseEntity<Project> createProject(@RequestBody Project project,
+            @RequestHeader("Authorization") String authHeader) {
         Project savedProject = projectService.createProject(project);
         String taskListApiUrl = "http://localhost:8080/lists";
 
@@ -45,10 +48,16 @@ public class ProjectController {
         Map<String, Object> todoListRequest = Map.of("name", "To-Do", "projectID", projectID);
         Map<String, Object> doneListRequest = Map.of("name", "Done", "projectID", projectID);
 
-        ResponseEntity<TaskList> todoResponse = restTemplate.postForEntity(taskListApiUrl, todoListRequest,
-                TaskList.class);
-        ResponseEntity<TaskList> doneResponse = restTemplate.postForEntity(taskListApiUrl, doneListRequest,
-                TaskList.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", authHeader);
+        headers.set("Content-Type", "application/json");
+
+        // Create HttpEntity with request body and headers
+        HttpEntity<Map<String, Object>> todoEntity = new HttpEntity<>(todoListRequest, headers);
+        HttpEntity<Map<String, Object>> doneEntity = new HttpEntity<>(doneListRequest, headers);
+
+        ResponseEntity<TaskList> todoResponse = restTemplate.postForEntity(taskListApiUrl, todoEntity, TaskList.class);
+        ResponseEntity<TaskList> doneResponse = restTemplate.postForEntity(taskListApiUrl, doneEntity, TaskList.class);
 
         HashMap<Integer, TaskList> taskLists = new HashMap<Integer, TaskList>();
         if (todoResponse.getBody() != null) {
@@ -75,7 +84,9 @@ public class ProjectController {
 
     // GET: Get a project by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Project> getProjectById(@PathVariable int id) {
+    public ResponseEntity<Project> getProjectById(@PathVariable int id,
+            @RequestHeader("Authorization") String authHeader) {
+        System.out.println("-------------------------------ENTERED: " + id);
         Optional<Project> projectOptional = projectService.getProjectById(id);
 
         if (projectOptional.isEmpty()) {
@@ -85,11 +96,15 @@ public class ProjectController {
         Project project = projectOptional.get();
         String taskListApiUrl = "http://localhost:8080/lists/project/" + id;
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", authHeader);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
         // Fetch task lists from the task list service
         ResponseEntity<HashMap<Integer, TaskList>> taskListsResponse = restTemplate.exchange(
                 taskListApiUrl,
                 HttpMethod.GET,
-                null,
+                entity,
                 new ParameterizedTypeReference<HashMap<Integer, TaskList>>() {
                 });
 
@@ -120,7 +135,8 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Project> deleteProject(@PathVariable int id) {
+    public ResponseEntity<Project> deleteProject(@PathVariable int id,
+            @RequestHeader("Authorization") String authHeader) {
         // Check if project exists
         Optional<Project> projectOptional = projectService.getProjectById(id);
         if (projectOptional.isEmpty()) {
