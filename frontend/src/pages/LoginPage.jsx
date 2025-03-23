@@ -27,7 +27,7 @@ const LoginPage = () => {
         [name]: ''
       });
     }
-    
+
     if (errors.auth) {
       setErrors({
         ...errors,
@@ -55,7 +55,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (validateForm()) {
       try {
         const response = await fetch("http://localhost:8080/auth/login", {
@@ -66,23 +66,24 @@ const LoginPage = () => {
             password: formData.password
           })
         });
-  
+
         const data = await response.json();
-  
+
         if (response.ok) {
           setMessage("Login Successful! Redirecting...");
-  
+
+          console.log("JWT received:", data.token);
           localStorage.setItem("jwtToken", data.token);
-  
+
           setTimeout(() => {
-            window.location.href = "/dashboard";
+            window.location.href = "/project";
           }, 1500);
         } else {
           setErrors({
             ...errors,
             password: data.message || "Invalid email or password."
           });
-          setMessage(""); 
+          setMessage("");
         }
       } catch (error) {
         setErrors({
@@ -138,7 +139,7 @@ const LoginPage = () => {
                 </a>
               </div>
             </div>
-            
+
             {errors.auth && (
               <div className="form-group">
                 <p className="error-text">{errors.auth}</p>

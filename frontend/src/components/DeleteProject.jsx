@@ -4,9 +4,15 @@ import ConfirmDialog from "./ConfirmDialog";
 function DeleteProject({ projectID, onDelete }) {
     const [showConfirm, setShowConfirm] = React.useState(false);
 
+    const token = localStorage.getItem("jwtToken");
+
     const handleDelete = async () => {
         const response = await fetch(`http://localhost:8080/projects/${projectID}`, {
             method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`, // Attach the token
+                "Content-Type": "application/json"
+            }
         });
 
         if (response.ok) {

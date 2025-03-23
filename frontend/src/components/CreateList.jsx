@@ -5,12 +5,17 @@ function CreateList({ projectID, onListCreated }) {
     const [showInput, setShowInput] = useState(false);
     const [listName, setListName] = useState("");
 
+    const token = localStorage.getItem("jwtToken");
+
     const handleCreateList = async () => {
         if (!listName.trim()) return; // Prevent empty lists
 
         const response = await fetch(`http://localhost:8080/lists`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({ name: listName, projectID })
         });
 
