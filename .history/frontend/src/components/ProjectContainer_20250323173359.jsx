@@ -89,8 +89,8 @@ const ProjectContainer = ({ userID }) => {
                         <div className="empty-state">
                             <FolderPlus size={48} className="empty-icon" />
                             <p>No projects found</p>
-                            <CreateProject userID={userID} onProjectCreated={addProject} />
                             <p className="empty-subtitle">Create your first project to get started</p>
+                            <button className="btn-connect">Create Project</button>
                         </div>
                     ) : (
                         <div className="projects-grid">

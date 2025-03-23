@@ -7,7 +7,7 @@ export const addMemberToTeam = async (searchInput, currentUserId, projectId) => 
         headers: {
             "Authorization": `Bearer ${token}`, // Attach the token
             "Content-Type": "application/json"
-        },
+        }
         body: JSON.stringify({ searchInput, currentUserId, projectId }),
     });
 
