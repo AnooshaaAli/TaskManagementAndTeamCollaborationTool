@@ -76,7 +76,7 @@ const LoginPage = () => {
           localStorage.setItem("jwtToken", data.token);
 
           setTimeout(() => {
-            window.location.href = "/dashboard";
+            window.location.href = "/dashboardt";
           }, 1500);
         } else {
           setErrors({

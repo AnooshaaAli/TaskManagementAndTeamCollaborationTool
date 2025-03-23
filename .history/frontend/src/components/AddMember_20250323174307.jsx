@@ -5,8 +5,7 @@ export const addMemberToTeam = async (searchInput, currentUserId, projectId) => 
     const response = await fetch("http://localhost:8080/api/team/add-member", {
         method: "POST",
         headers: {
-            "Authorization": `Bearer ${token}`, // Attach the token
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
         body: JSON.stringify({ searchInput, currentUserId, projectId }),
     });
