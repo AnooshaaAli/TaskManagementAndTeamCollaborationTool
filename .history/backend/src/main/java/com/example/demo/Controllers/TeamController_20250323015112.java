@@ -1,0 +1,25 @@
+package com.example.demo.Controllers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.demo.Services.TeamService;
+
+@RestController
+@RequestMapping("/api/team")
+public class TeamController {
+
+    @Autowired
+    private TeamService teamService;
+
+    @PostMapping("/add-member")
+    public ResponseEntity<String> addMember(@RequestBody AddMemberRequest request) {
+        String searchInput = request.getSearchInput();
+        int currentUserId = request.getCurrentUserId();
+        Long projectId = request.getProjectId();
+        
+        String response = teamService.addMemberToProject(searchInput, currentUserId, projectId);
+        return ResponseEntity.ok(response);
+    }
+}
