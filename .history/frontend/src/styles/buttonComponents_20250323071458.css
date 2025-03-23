@@ -1,0 +1,31 @@
+
+
+.create-list-container {
+    min-height: 100px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px dashed var(--border-color, rgba(255, 255, 255, 0.1));
+    border-radius: 6px;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s;
+  }
+  
+  .create-list-container:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .create-list-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+  

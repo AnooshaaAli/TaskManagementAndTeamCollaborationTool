@@ -3,6 +3,8 @@ package com.example.demo.Controllers;
 import com.example.demo.Models.Project;
 import com.example.demo.Models.TaskList;
 import com.example.demo.Services.ProjectService;
+import com.example.demo.Services.TeamService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -27,9 +29,12 @@ public class ProjectController {
     @Autowired
     private RestTemplate restTemplate;
 
+    private final TeamService teamService;
+
     @Autowired
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, TeamService teamService) {
         this.projectService = projectService;
+        this.teamService = teamService;
     }
 
     // POST: Create a new project
@@ -107,11 +112,6 @@ public class ProjectController {
             HashMap<Integer, TaskList> taskLists = taskListsResponse.getBody();
             project.setLists(taskLists);
         }
-        for (TaskList list : project.getLists().values()) {
-            System.out.println("Here here");
-            System.out.println("List ID: " + list.getListID() + ", Number of tasks: "
-                    + (list.getTasks() != null ? list.getTasks().size() : "null"));
-        }
 
         return ResponseEntity.ok(project);
     }
@@ -144,6 +144,12 @@ public class ProjectController {
         }
 
         Project project = projectOptional.get();
+
+        teamService.deleteByProjectId(id);
+
+        // // Delete all associated task lists
+        // String deleteTaskListsUrl = "http://localhost:8080/lists/project/" + id;
+        // restTemplate.exchange(deleteTaskListsUrl, HttpMethod.DELETE, null, Void.class);
 
         projectService.deleteProject(id);
         return ResponseEntity.ok(project);

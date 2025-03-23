@@ -1,15 +1,36 @@
 import React, { useState, useEffect } from "react";
 import ProjectPreview from "./ProjectPreview.jsx";
-import Project from "./Project.jsx"; // Import full project view
+import Project from "./Project.jsx";
 import CreateProject from "./CreateProject.jsx";
+import { FolderPlus, ListFilter, ArrowLeft } from 'lucide-react';
 
 const ProjectContainer = ({ userID }) => {
     const [projects, setProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [filter, setFilter] = useState("all");
 
-    console.log(userID);
     useEffect(() => {
         if (!userID) return;
+    
+        setIsLoading(true);
+        const token = localStorage.getItem("jwtToken");
+
+        console.log(token);
+
+        fetch("http://localhost:8080/projects/teamlead/" + userID, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`, // Attach the token
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();  // Only parse if response is OK
+            })
 
         const token = localStorage.getItem("jwtToken");
 
@@ -31,35 +52,77 @@ const ProjectContainer = ({ userID }) => {
             .then(data => {
                 console.log("Fetched projects:", data);
                 setProjects(Object.values(data));
+                setIsLoading(false);
             })
-            .catch(error => console.error("Error fetching projects:", error));
-    }, [userID]);
+            .catch(error => {
+                console.error("Error fetching projects:", error);
+                setIsLoading(false);
+            });
+    }, [userID]);    
 
 
     const addProject = (newProject) => {
-        setProjects(prev => [...prev, newProject]); // Add the new project to state
+        setProjects(prev => [...prev, newProject]);
     };
 
+    const handleBackToProjects = () => {
+        setSelectedProject(null);
+    };
+
+    const filteredProjects = projects;
+
     return (
-        <div>
-            <h1>Project Dashboard</h1>
+        <div className="projects-container">
+            <div className="card-header">
+                <h3>Project Dashboard</h3>
+                {!selectedProject && (
+                    <div className="header-actions">
+                        <div className="filter-dropdown">
+                            <ListFilter size={16} />
+                            <span>Filter</span>
+                        </div>
+                    </div>
+                )}
+            </div>
+
             {selectedProject ? (
-                <Project id={selectedProject} />
+                <div>
+                    <button 
+                        className="back-button" 
+                        onClick={handleBackToProjects}
+                    >
+                        <ArrowLeft size={16} />
+                        <span>Back to Projects</span>
+                    </button>
+                    <Project id={selectedProject} />
+                </div>
             ) : (
                 <div>
-                    {projects.length === 0 ? (
-                        <p>Loading projects...</p>
+                    {isLoading ? (
+                        <div className="empty-state">
+                            <div className="loading-spinner"></div>
+                            <p>Loading projects...</p>
+                        </div>
+                    ) : projects.length === 0 ? (
+                        <div className="empty-state">
+                            <FolderPlus size={48} className="empty-icon" />
+                            <p>No projects found</p>
+                            <p className="empty-subtitle">Create your first project to get started</p>
+                            <button className="btn-connect">Create Project</button>
+                        </div>
                     ) : (
-                        projects.map((project) => (
-                            <ProjectPreview
-                                key={project.projectID}
-                                id={project.projectID}
-                                name={project.name}
-                                onSelect={setSelectedProject}
-                            />
-                        ))
+                        <div className="projects-grid">
+                            {filteredProjects.map((project) => (
+                                <ProjectPreview
+                                    key={project.projectID}
+                                    id={project.projectID}
+                                    name={project.name}
+                                    onSelect={setSelectedProject}
+                                />
+                            ))}
+                            <CreateProject userID={userID} onProjectCreated={addProject} />
+                        </div>
                     )}
-                    <CreateProject userID={userID} onProjectCreated={addProject} />
                 </div>
             )}
         </div>

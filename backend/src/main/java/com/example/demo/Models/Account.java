@@ -29,7 +29,11 @@ public class Account {
         this.email = email;
         this.password = password;
     }
-
+    
+    public int getId() {
+        return accountID;
+    }
+    
     public String getPassword() {
         return password;
     }
@@ -40,9 +44,5 @@ public class Account {
 
     public String getEmail() {
         return email;
-    }
-
-    public int getId() {
-        return this.accountID;
     }
 }

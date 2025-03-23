@@ -1,0 +1,92 @@
+/* Create List Component Styling */
+
+.create-list-toggle-btn {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.create-list-toggle-btn:hover {
+    background-color: #45a049;
+}
+
+.create-list-input {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    transition: opacity 0.3s ease;
+}
+
+.create-list-input-field {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    transition: border-color 0.3s ease;
+}
+
+.create-list-input-field:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+.create-list-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.create-list-save-btn,
+.create-list-cancel-btn {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.create-list-save-btn:hover {
+    background-color: #45a049;
+}
+
+.create-list-cancel-btn {
+    background-color: #f44336;
+}
+
+.create-list-cancel-btn:hover {
+    background-color: #e53935;
+}
+
+.create-list-save-btn,
+.create-list-cancel-btn {
+    font-size: 14px;
+}
+
+.create-list-toggle-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.create-list-toggle-btn svg {
+    margin-right: 5px;
+}
+
+.create-list-input,
+.create-list-toggle-btn {
+    transition: all 0.3s ease;
+}

@@ -1,0 +1,49 @@
+.delete-project-container {
+    margin-top: 1.25rem;
+    transition: all 0.2s ease;
+  }
+  
+  .delete-project-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    width: 100%;
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: rgba(239, 68, 68, 0.9);
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+  }
+  
+  .delete-project-button:hover {
+    background-color: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.35);
+    color: rgba(239, 68, 68, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .delete-project-button:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+  
+  .delete-project-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
+  }
+  
+  /* For mobile responsiveness */
+  @media (max-width: 640px) {
+    .delete-project-container {
+      margin-top: 0.75rem;
+    }
+    
+    .delete-project-button {
+      padding: 0.375rem 0.625rem;
+      font-size: 0.875rem;
+    }
+  }

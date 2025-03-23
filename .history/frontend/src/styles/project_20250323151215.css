@@ -1,0 +1,396 @@
+/* Project Container Styles */
+.project-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  
+  /* Project Header Styles */
+  .project-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Project Title Styles */
+  .project-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #ffffff;
+    transition: transform 0.2s ease;
+  }
+  
+  .project-title h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.2;
+  }
+  
+  .project-title svg {
+    color: #6366f1;
+  }
+  
+  /* Project Board (Lists Container) */
+  .project-board {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  /* List Card Styling */
+  .list-card {
+    height: 100%;
+    min-height: 200px;
+    background-color: rgba(30, 30, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+  }
+  
+  .list-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  
+  /* Create List Wrapper */
+  .create-list-wrapper {
+    min-height: 100px;
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background-color: rgba(30, 30, 30, 0.4);
+    transition: all 0.2s ease;
+  }
+  
+  .create-list-wrapper:hover {
+    background-color: rgba(30, 30, 30, 0.6);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+  
+  /* Loading and Error States */
+  .project-loading,
+  .project-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-height: 300px;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+  }
+  
+  .project-loading {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .project-error {
+    color: #ef4444;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .project-wrapper {
+      padding: 1rem;
+      gap: 1rem;
+    }
+    
+    .project-board {
+      grid-template-columns: 1fr;
+    }
+    
+    .project-title h2 {
+      font-size: 1.25rem;
+    }
+  }
+
+  /* Member Management Styles */
+.project-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .member-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: rgba(30, 30, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .member-button:hover {
+    background-color: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.5);
+  }
+  
+  .member-button svg {
+    color: #6366f1;
+  }
+  
+  
+  /* Project Info Section */
+  .project-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.75rem 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+  }
+  
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  /* Responsive adjustments for member buttons */
+  @media (max-width: 768px) {
+    .project-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .project-actions {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    
+    .member-button span {
+      display: none;
+    }
+    
+    .member-button {
+      padding: 0.5rem;
+    }
+  }
+
+  /* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background-color: #1e1e1e;
+    border-radius: 0.5rem;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .modal-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  
+  .close-button {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    transition: all 0.2s ease;
+  }
+  
+  .close-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+  
+  .modal-body {
+    padding: 1rem;
+  }
+  
+  /* Team Member Form Styles */
+  .modal-body h3 {
+    margin-top: 0;
+    color: white;
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+    display: none; /* Hide the duplicate heading */
+  }
+  
+  .modal-body form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .modal-body input[type="text"] {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: rgba(30, 30, 30, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.375rem;
+    color: white;
+    font-size: 1rem;
+  }
+  
+  .modal-body input[type="text"]:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  }
+  
+  .modal-body button[type="submit"] {
+    background-color: #6366f1;
+    color: white;
+    padding: 0.625rem 1rem;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    align-self: flex-start;
+  }
+  
+  .modal-body button[type="submit"]:hover {
+    background-color: #4f46e5;
+  }
+  
+  /* Message styling */
+  .modal-body p {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+  
+  .modal-body p:empty {
+    display: none;
+  }
+  
+  /* Project actions and member button styles */
+  .project-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  /* Project Info Section */
+  .project-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.75rem 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+  }
+  
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .project-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .project-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+  }
+  
+  .member-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .member-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background-color: transparent;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.2s ease;
+  }
+  
+  .member-button:hover {
+    background-color: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.5);
+  }
+  
+  .member-icon {
+    color: #6366f1;
+  }
+  
+  @media (max-width: 768px) {
+    @media (max-width: 768px) {
+        .member-button span {
+          display: none;
+        }
+        
+        .member-button {
+          padding: 0.5rem;
+        }
+      }
+    
+    .modal-content {
+      width: 95%;
+    }
+  }

@@ -2,17 +2,20 @@ import React, { useState, useEffect } from "react";
 import TaskItem from "./TaskItem.jsx";
 import DeleteList from "./DeleteList.jsx";
 import "../styles/list.css";
+import { ListTodo, Plus, Clock, Loader, AlertCircle } from 'lucide-react';
+import Button from '../components/Button';
 
 const List = ({ list, onUpdateList, onDelete }) => {
-    const [listState, setListState] = useState(list); // Store the entire list, not just tasks
-    const [newTaskTitle, setNewTaskTitle] = useState(""); // State for new task input
-    const [newTaskDeadline, setNewTaskDeadline] = useState(""); // State for task deadline
-
+    const [listState, setListState] = useState(list);
+    const [newTaskTitle, setNewTaskTitle] = useState("");
+    const [newTaskDeadline, setNewTaskDeadline] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [isCreating, setIsCreating] = useState(false);
     const token = localStorage.getItem("jwtToken");
-
-    // Fetch the latest list data when the component mounts or listID changes
     useEffect(() => {
         const fetchList = async () => {
+            setIsLoading(true);
             try {
                 const response = await fetch(`http://localhost:8080/lists/${list.listID}`, {
                     method: "GET",
@@ -20,23 +23,23 @@ const List = ({ list, onUpdateList, onDelete }) => {
                         "Authorization": `Bearer ${token}`, // Attach the token
                         "Content-Type": "application/json"
                     }
-                }); // Fetch updated list
+                }); 
                 if (!response.ok) {
                     throw new Error("Failed to fetch list");
                 }
                 const updatedList = await response.json();
-
-                // Update only the local list state, not the entire project
                 setListState(updatedList);
-
-                console.log("Updated List:", updatedList);
+                setError(null);
             } catch (error) {
                 console.error("Error fetching list:", error);
+                setError("Failed to load list data");
+            } finally {
+                setIsLoading(false);
             }
         };
 
         fetchList();
-    }, [list.listID]); // Runs when listID changes
+    }, [list.listID]);
 
     const handleTaskUpdate = (updatedList) => {
         setListState(updatedList);
@@ -47,14 +50,14 @@ const List = ({ list, onUpdateList, onDelete }) => {
         return <p>Loading...</p>; // Handle undefined list safely
     }
 
-    // Handle Create Task
     const handleCreateTask = async () => {
         if (!newTaskTitle.trim()) return;
 
+        setIsCreating(true);
         const newTask = {
             title: newTaskTitle,
             status: "To Do",
-            deadline: newTaskDeadline || "No deadline",
+            deadline: newTaskDeadline || null,
             listID: list.listID,
         };
 
@@ -88,6 +91,8 @@ const List = ({ list, onUpdateList, onDelete }) => {
             setNewTaskDeadline("");
         } catch (error) {
             console.error("Error creating task:", error);
+        } finally {
+            setIsCreating(false);
         }
     };
 
@@ -150,41 +155,93 @@ const List = ({ list, onUpdateList, onDelete }) => {
         }
     };
 
+    if (isLoading) {
+        return (
+            <div className="list-loading">
+                <Loader size={20} className="animate-spin" />
+                <p>Loading list...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="list-error">
+                <AlertCircle size={20} />
+                <p>{error}</p>
+            </div>
+        );
+    }
+
     // Render the component
     return (
-        <div className="list">
-            <h2>{list.name} (ID: {list.listID})</h2>
-
-            <div>
-                <input
-                    type="text"
-                    placeholder="Task Title"
-                    value={newTaskTitle}
-                    onChange={(e) => setNewTaskTitle(e.target.value)}
-                />
-                <input
-                    type="date"
-                    placeholder="Deadline"
-                    value={newTaskDeadline}
-                    onChange={(e) => setNewTaskDeadline(e.target.value)}
-                />
-                <button onClick={handleCreateTask}>Create Task</button>
+        <div className="list-container">
+            <div className="list-header">
+                <div className="list-title">
+                    <ListTodo size={18} />
+                    <h3>{list.name}</h3>
+                </div>
+                <span className="task-count">
+                    {listState.tasks ? Object.keys(listState.tasks).length : 0} tasks
+                </span>
             </div>
 
-            {listState.tasks && Object.keys(listState.tasks).length > 0 ? (
-                <div>
-                    {Object.values(listState.tasks).map((task) => (
-                        <TaskItem key={task.taskID} task={task} onEdit={handleEditTask} onDelete={handleDeleteTask} />
-                    ))}
+            <div className="task-list">
+                {listState.tasks && Object.keys(listState.tasks).length > 0 ? (
+                    <div className="tasks-container">
+                        {Object.values(listState.tasks).map((task) => (
+                            <TaskItem 
+                                key={task.taskID} 
+                                task={task} 
+                                onEdit={handleEditTask} 
+                                onDelete={handleDeleteTask} 
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="empty-list">
+                        <p>No tasks in this list.</p>
+                    </div>
+                )}
+            </div>
 
+            <div className="new-task-form">
+                <div className="form-inputs">
+                    <div className="input-group">
+                        <input
+                            type="text"
+                            placeholder="Add a new task..."
+                            value={newTaskTitle}
+                            onChange={(e) => setNewTaskTitle(e.target.value)}
+                            className="task-input"
+                        />
+                    </div>
+                    <div className="input-group">
+                        <Clock size={16} />
+                        <input
+                            type="date"
+                            value={newTaskDeadline}
+                            onChange={(e) => setNewTaskDeadline(e.target.value)}
+                            className="date-input"
+                        />
+                    </div>
                 </div>
-            ) : (
-                <p>No tasks in this list.</p>
-            )}
-            <DeleteList listID={list.listID} onDeleteSuccess={() => onDelete(list.listID)} />
+                <Button 
+                    variant="primary" 
+                    size="sm" 
+                    onClick={handleCreateTask} 
+                    disabled={isCreating || !newTaskTitle.trim()}
+                >
+                    {isCreating ? <Loader size={14} className="animate-spin" /> : <Plus size={14} />}
+                    Add
+                </Button>
+            </div>
+            
+            <div className="list-footer">
+                <DeleteList listID={list.listID} onDeleteSuccess={() => onDelete(list.listID)} />
+            </div>
         </div>
     );
-
 };
 
 export default List;
