@@ -145,18 +145,6 @@ public class ProjectController {
 
         Project project = projectOptional.get();
 
-        // Delete all associated task lists
-        String deleteTaskListsUrl = "http://localhost:8080/lists/project/" + id;
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", authHeader);
-
-        // Create HttpEntity with headers (no body needed for DELETE)
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-
-        // Send DELETE request with Authorization
-        restTemplate.exchange(deleteTaskListsUrl, HttpMethod.DELETE, requestEntity, Void.class);
-
         projectService.deleteProject(id);
         return ResponseEntity.ok(project);
     }
