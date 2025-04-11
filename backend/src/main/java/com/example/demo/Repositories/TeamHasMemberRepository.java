@@ -1,5 +1,6 @@
 package com.example.demo.Repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +12,9 @@ import com.example.demo.Models.User;
 
 public interface TeamHasMemberRepository extends JpaRepository<TeamHasMember, TeamHasMemberId> {
     boolean existsByTeamAndUser(Team team, User user);
+
     Optional<TeamHasMember> findByTeamAndUser(Team team, User user);
+
+    List<TeamHasMember> findByUser_userID(int userId);
+
 }

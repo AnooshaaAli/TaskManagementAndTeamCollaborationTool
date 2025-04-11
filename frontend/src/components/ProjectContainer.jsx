@@ -12,13 +12,13 @@ const ProjectContainer = ({ userID }) => {
 
     useEffect(() => {
         if (!userID) return;
-    
+
         setIsLoading(true);
         const token = localStorage.getItem("jwtToken");
 
         console.log(token);
 
-        fetch("http://localhost:8080/projects/teamlead/" + userID, {
+        fetch("http://localhost:8080/projects/user/" + userID, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`, // Attach the token
@@ -40,7 +40,7 @@ const ProjectContainer = ({ userID }) => {
                 console.error("Error fetching projects:", error);
                 setIsLoading(false);
             });
-    }, [userID]);    
+    }, [userID]);
 
 
     const addProject = (newProject) => {
@@ -69,8 +69,8 @@ const ProjectContainer = ({ userID }) => {
 
             {selectedProject ? (
                 <div>
-                    <button 
-                        className="back-button" 
+                    <button
+                        className="back-button"
                         onClick={handleBackToProjects}
                     >
                         <ArrowLeft size={16} />

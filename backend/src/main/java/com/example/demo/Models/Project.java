@@ -13,14 +13,15 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int projectID;
     private String name;
+    private String description;
 
-    @Column(name = "teamLeadID") 
+    @Column(name = "teamLeadID")
     private int teamLeadID;
 
     @OneToMany(mappedBy = "projectID", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TaskList> taskLists = new ArrayList<>();  // Use List for DB mapping
+    private List<TaskList> taskLists = new ArrayList<>(); // Use List for DB mapping
 
-    @Transient 
+    @Transient
     private HashMap<Integer, TaskList> lists = new HashMap<>();
     // private HashMap<Integer, File> files;
     // private HashMap<Integer, Comment> comments;
@@ -29,11 +30,12 @@ public class Project {
         this.taskLists = new ArrayList<>();
     }
 
-    public Project(int projectID, String name, int teamLeadID) {
+    public Project(int projectID, String name, int teamLeadID, String description) {
         this.projectID = projectID;
         this.name = name;
         this.teamLeadID = teamLeadID;
-        this.taskLists = new ArrayList<>(); 
+        this.taskLists = new ArrayList<>();
+        this.description = description;
         // this.files = new HashMap<>();
         // this.comments = new HashMap<>();
     }
@@ -82,6 +84,14 @@ public class Project {
 
     public void setTaskLists(List<TaskList> taskLists) {
         this.taskLists = taskLists;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     // public HashMap<Integer, File> getFiles() {

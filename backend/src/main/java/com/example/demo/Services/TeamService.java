@@ -2,7 +2,9 @@ package com.example.demo.Services;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,7 @@ public class TeamService {
     private UserRepository userRepository;
 
     @Autowired
-    private ProjectRepository ProjectRepository; 
+    private ProjectRepository ProjectRepository;
 
     @Transactional
     public String addMemberToProject(String searchInput, int currentUserId, int projectId) {
@@ -47,9 +49,9 @@ public class TeamService {
 
         Project project = ProjectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
-        
+
         Team team = teamRepository.findByProject(project);
-        
+
         if (team == null) {
             team = new Team();
             team.setProjectId(projectId);
@@ -69,30 +71,30 @@ public class TeamService {
     @Transactional
     public ResponseEntity<Map<String, String>> removeMemberFromProject(String searchInput, int projectId) {
         Map<String, String> response = new HashMap<>();
-    
+
         Optional<User> userOptional = userRepository.findByAccount_EmailOrAccount_Username(searchInput, searchInput);
         if (userOptional.isEmpty()) {
             response.put("message", "User not found.");
             return ResponseEntity.badRequest().body(response);
         }
-    
+
         User userToRemove = userOptional.get();
-    
+
         Project project = ProjectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
-    
+
         Team team = teamRepository.findByProject(project);
         if (team == null) {
             response.put("message", "Team not found.");
             return ResponseEntity.badRequest().body(response);
         }
-    
+
         Optional<TeamHasMember> teamMember = teamHasMemberRepository.findByTeamAndUser(team, userToRemove);
         if (teamMember.isEmpty()) {
             response.put("message", "User is not a member of this team.");
             return ResponseEntity.badRequest().body(response);
         }
-    
+
         teamHasMemberRepository.delete(teamMember.get());
         response.put("message", "User successfully removed from the team.");
         return ResponseEntity.ok(response);
@@ -101,6 +103,21 @@ public class TeamService {
     @Transactional
     public void deleteByProjectId(int projectId) {
         teamRepository.deleteByProjectId(projectId);
+    }
+
+    public List<Team> getTeamsByUserId(int userId) {
+        // Fetch all TeamHasMember entries for the user
+        List<TeamHasMember> teamHasMembers = teamHasMemberRepository.findByUser_userID(userId);
+
+        // Create a list to store the teams
+        List<Team> teams = new ArrayList<>();
+
+        // Iterate over TeamHasMember entries and add the associated teams to the list
+        for (TeamHasMember teamHasMember : teamHasMembers) {
+            teams.add(teamHasMember.getTeam());
+        }
+
+        return teams;
     }
 
 }

@@ -16,11 +16,12 @@ const DashboardPage = () => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
+        console.log(token);
         const response = await fetch("http://localhost:8080/auth/user", {
           headers: { Authorization: `Bearer ${token}` }
         });
         const userData = await response.json();
-        
+
         setTimeout(() => {
           setUserData(userData);
           setLoading(false);
@@ -49,7 +50,7 @@ const DashboardPage = () => {
         <div className="sidebar-header">
           <h2>TeamCollab</h2>
         </div>
-        
+
         <nav className="sidebar-nav">
           <ul>
             <li className="active">
@@ -78,7 +79,7 @@ const DashboardPage = () => {
             </li>
           </ul>
         </nav>
-        
+
         <div className="sidebar-footer">
           <div className="user-profile">
             <div className="avatar-container">
@@ -99,7 +100,7 @@ const DashboardPage = () => {
         <header className="dashboard-header">
           <div className="header-search">
             <input type="text" placeholder="Search..." />
-          </div>         
+          </div>
           <div className="header-actions">
             <div className="notification-bell">
               <Bell size={20} />
@@ -123,7 +124,7 @@ const DashboardPage = () => {
             <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
           </div>
         </div>
-        
+
         {/* Quick Stats Section */}
         <div className="quick-stats">
           <div className="stat-item">
@@ -167,26 +168,26 @@ const DashboardPage = () => {
         {/* Main Content Tabs */}
         <div className="content-tabs">
           <div className="tab-buttons">
-            <button 
+            <button
               className={activeTab === 'tasks' ? 'active' : ''}
               onClick={() => setActiveTab('tasks')}
             >
               My Tasks
             </button>
-            <button 
+            <button
               className={activeTab === 'projects' ? 'active' : ''}
               onClick={() => setActiveTab('projects')}
             >
               Projects
             </button>
-            <button 
+            <button
               className={activeTab === 'activity' ? 'active' : ''}
               onClick={() => setActiveTab('activity')}
             >
               Activity
             </button>
           </div>
-          
+
           <div className="tab-content">
             {activeTab === 'tasks' && (
               <Card className="tasks-card">
@@ -206,7 +207,7 @@ const DashboardPage = () => {
                 </div>
               </Card>
             )}
-            
+
             {activeTab === 'projects' && (
               <Card className="projects-card">
                 <div className="project-container-wrapper">
@@ -214,7 +215,7 @@ const DashboardPage = () => {
                 </div>
               </Card>
             )}
-            
+
             {activeTab === 'activity' && (
               <Card className="activity-card">
                 <div className="card-header">
