@@ -19,8 +19,8 @@ public class TaskController {
     private TaskService taskService;
 
     @Autowired
-    private TaskListRepository taskListRepository; 
-    
+    private TaskListRepository taskListRepository;
+
     // Get tasks by listID and return as HashMap
     @GetMapping("/list/{listID}")
     public ResponseEntity<HashMap<Integer, Task>> getTasksByListID(@PathVariable int listID) {

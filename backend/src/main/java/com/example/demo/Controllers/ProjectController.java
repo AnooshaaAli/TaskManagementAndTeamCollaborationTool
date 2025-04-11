@@ -2,6 +2,7 @@ package com.example.demo.Controllers;
 
 import com.example.demo.Models.Project;
 import com.example.demo.Models.TaskList;
+import com.example.demo.Models.Team;
 import com.example.demo.Services.ProjectService;
 import com.example.demo.Services.TeamService;
 
@@ -29,12 +30,9 @@ public class ProjectController {
     @Autowired
     private RestTemplate restTemplate;
 
-    private final TeamService teamService;
-
     @Autowired
     public ProjectController(ProjectService projectService, TeamService teamService) {
         this.projectService = projectService;
-        this.teamService = teamService;
     }
 
     // POST: Create a new project
@@ -116,21 +114,56 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
-    // GET: Get projects by team lead ID (does not return the lists inside)
-    @GetMapping("/teamlead/{teamLeadId}")
-    public ResponseEntity<HashMap<Integer, Project>> getProjectsByTeamLead(@PathVariable int teamLeadId) {
-        List<Project> projects = projectService.getProjectsByTeamLead(teamLeadId);
+    // GET: Get projects by user ID (includes both team lead and member roles)
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<HashMap<Integer, Project>> getProjectsByUserId(@PathVariable int userId,
+            @RequestHeader("Authorization") String authHeader) {
+        // Call the existing method to get the projects the user leads
+        List<Project> leadProjects = projectService.getProjectsByTeamLead(userId);
 
-        if (projects.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        // Convert List to HashMap
+        // Initialize a map to store all projects
         HashMap<Integer, Project> projectMap = new HashMap<>();
-        for (Project project : projects) {
+
+        // Add team lead projects to the map
+        for (Project project : leadProjects) {
             projectMap.put(project.getProjectID(), project);
         }
 
+        String teamUrl = "http://localhost:8080/api/team/user/" + userId;
+
+        // Set the Authorization header for the API call
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", authHeader);
+
+        // Make the GET request to the TeamController
+        ResponseEntity<List<Team>> teamsResponse = restTemplate.exchange(
+                teamUrl,
+                HttpMethod.GET,
+                new org.springframework.http.HttpEntity<>(headers),
+                new ParameterizedTypeReference<List<Team>>() {
+                });
+
+        if (teamsResponse.getStatusCode().is2xxSuccessful()) {
+            List<Team> teams = teamsResponse.getBody();
+
+            // Now, for each team, fetch the associated projects
+            for (Team team : teams) {
+                // Get project associated with the team
+                Project teamProject = team.getProject();
+                // Add the team project to the map if it exists
+                if (teamProject != null) {
+                    projectMap.put(teamProject.getProjectID(), teamProject);
+                }
+            }
+        }
+
+        // If the user has no projects (either as a lead or member), return 204 No
+        // Content
+        if (projectMap.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        // Return the projects the user is part of (both lead and member)
         return ResponseEntity.ok(projectMap);
     }
 
@@ -145,14 +178,46 @@ public class ProjectController {
 
         Project project = projectOptional.get();
 
-        teamService.deleteByProjectId(id);
+        // Delete team via API
+        String deleteTeamUrl = "http://localhost:8080/api/team/project/" + id;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", authHeader);
 
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+        restTemplate.exchange(deleteTeamUrl, HttpMethod.DELETE, requestEntity, Void.class);
         // // Delete all associated task lists
         // String deleteTaskListsUrl = "http://localhost:8080/lists/project/" + id;
-        // restTemplate.exchange(deleteTaskListsUrl, HttpMethod.DELETE, null, Void.class);
+        // restTemplate.exchange(deleteTaskListsUrl, HttpMethod.DELETE, null,
+        // Void.class);
 
         projectService.deleteProject(id);
         return ResponseEntity.ok(project);
     }
-
+    @GetMapping("/{projectId}/isTeamLead/{userId}")
+    public ResponseEntity<Map<String, Boolean>> checkIfUserIsTeamLead(
+            @PathVariable int projectId, 
+            @PathVariable int userId) {
+        
+        // Fetch the project by its ID
+        Optional<Project> projectOptional = projectService.getProjectById(projectId);
+        
+        if (projectOptional.isEmpty()) {
+            // If the project does not exist, return a NOT_FOUND response
+            return ResponseEntity.notFound().build();
+        }
+    
+        // Get the project object
+        Project project = projectOptional.get();
+        
+        // Check if the userId matches the teamLeadID of the project
+        boolean isTeamLead = project.getTeamLeadID() == userId;
+    
+        // Prepare the response map with the result
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isTeamLead", isTeamLead);
+    
+        // Return the response with HTTP OK status
+        return ResponseEntity.ok(response);
+    }
 }

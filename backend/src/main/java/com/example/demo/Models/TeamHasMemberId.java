@@ -7,7 +7,8 @@ public class TeamHasMemberId implements Serializable {
     private int team;
     private int user;
 
-    public TeamHasMemberId() {}
+    public TeamHasMemberId() {
+    }
 
     public TeamHasMemberId(int team, int user) {
         this.team = team;
@@ -16,8 +17,10 @@ public class TeamHasMemberId implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         TeamHasMemberId that = (TeamHasMemberId) o;
         return Objects.equals(team, that.team) && Objects.equals(user, that.user);
     }
@@ -26,5 +29,21 @@ public class TeamHasMemberId implements Serializable {
     public int hashCode() {
         return Objects.hash(team, user);
     }
-}
 
+    // Getters and Setters (optional, but good practice)
+    public int getTeam() {
+        return team;
+    }
+
+    public void setTeam(int team) {
+        this.team = team;
+    }
+
+    public int getUser() {
+        return user;
+    }
+
+    public void setUser(int user) {
+        this.user = user;
+    }
+}
