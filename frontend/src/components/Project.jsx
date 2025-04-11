@@ -15,6 +15,7 @@ function Project({ id }) {
     const [showAddMember, setShowAddMember] = useState(false);
     const [showRemoveMember, setShowRemoveMember] = useState(false);
     const [currentUserId, setCurrentUserId] = useState(null);
+    const [isTeamLead, setIsTeamLead] = useState(false);
 
     // project data
     useEffect(() => {
@@ -26,7 +27,7 @@ function Project({ id }) {
                 "Authorization": `Bearer ${token}`, // Attach the token
                 "Content-Type": "application/json"
             }
-         })
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch project');
@@ -52,31 +53,61 @@ function Project({ id }) {
                 if (!token) {
                     throw new Error("No token found. Please log in.");
                 }
-        
+
                 const response = await fetch("http://localhost:8080/auth/user", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-        
+
                 if (!response.ok) {
                     throw new Error("Failed to fetch user data.");
                 }
-        
+
                 const userData = await response.json();
                 console.log("✅ User Data Fetched:", userData);
-        
+
                 // Pass userData.userId immediately instead of relying on currentUserId
                 setCurrentUserId(userData.userID);
-        
+
             } catch (error) {
                 console.error("Error fetching user data:", error);
                 setError(error.message);
             } finally {
                 setLoading(false);
             }
-        };        
-    
+        };
+
         fetchUserData();
-    }, []);    
+    }, []);
+
+    //check if this user is teamlead or not
+    useEffect(() => {
+        if (currentUserId == null) return; // Avoid making the call before userID is set
+
+        const token = localStorage.getItem("jwtToken");
+
+        fetch(`http://localhost:8080/projects/${id}/isTeamLead/${currentUserId}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response for isTeamLead was not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("isTeamLead:", data); // Expected: { isTeamLead: true/false }
+                setIsTeamLead(data.isTeamLead); // You should use state here!
+            })
+            .catch(error => {
+                console.error("Error while checking team lead:", error);
+            });
+
+    }, [currentUserId, id]);
+
 
     const addListToProject = (newList) => {
         setProject(prev => ({
@@ -99,7 +130,7 @@ function Project({ id }) {
             ...prev,
             lists: {
                 ...prev.lists,
-                [updatedList.listID]: updatedList 
+                [updatedList.listID]: updatedList
             }
         }));
     };
@@ -136,37 +167,37 @@ function Project({ id }) {
                     <h2>{project.name}</h2>
                 </div>
                 <div className="member-actions">
-                <Button 
-                variant="outline" 
-                className="member-button"
-                onClick={() => {
-                    if (!currentUserId) {
-                    console.warn("⚠️ Cannot add member, currentUserId is still null!");
-                    return;
-                    }
-                    setShowAddMember(true);
-                }}
-                >            
-                <UserPlus size={16} className="member-icon" />
-                <span>Add Member</span>
-                </Button>
-                <Button 
-                variant="outline" 
-                className="member-button"
-                onClick={() => setShowRemoveMember(true)}
-                >
-                <UserMinus size={16} className="member-icon" />
-                <span>Remove Member</span>
-                </Button>
+                    <Button
+                        variant="outline"
+                        className="member-button"
+                        onClick={() => {
+                            if (!currentUserId) {
+                                console.warn("⚠️ Cannot add member, currentUserId is still null!");
+                                return;
+                            }
+                            setShowAddMember(true);
+                        }}
+                    >
+                        <UserPlus size={16} className="member-icon" />
+                        <span>Add Member</span>
+                    </Button>
+                    <Button
+                        variant="outline"
+                        className="member-button"
+                        onClick={() => setShowRemoveMember(true)}
+                    >
+                        <UserMinus size={16} className="member-icon" />
+                        <span>Remove Member</span>
+                    </Button>
                 </div>
                 <div className="project-actions">
-                    <DeleteProject 
-                        projectID={id} 
-                        onDelete={() => console.log("Project deleted!")} 
+                    <DeleteProject
+                        projectID={id}
+                        onDelete={() => console.log("Project deleted!")}
                     />
                 </div>
             </div>
-            
+
             <div className="project-info">
                 <div className="info-item">
                     <Users size={16} />
@@ -176,22 +207,22 @@ function Project({ id }) {
 
             <div className="project-board">
                 {project.lists && Object.values(project.lists).map(list => (
-                    <List 
-                        key={list.listID} 
-                        list={list} 
-                        onDelete={deleteListFromProject} 
-                        onUpdate={updateListInProject} 
+                    <List
+                        key={list.listID}
+                        list={list}
+                        onDelete={deleteListFromProject}
+                        onUpdate={updateListInProject}
                     />
                 ))}
 
-                <CreateList 
-                    projectID={id} 
-                    onListCreated={addListToProject} 
+                <CreateList
+                    projectID={id}
+                    onListCreated={addListToProject}
                 />
             </div>
 
             {showAddMember && (
-                <AddMember 
+                <AddMember
                     projectId={id}
                     currentUserId={currentUserId}
                     onClose={() => setShowAddMember(false)}
@@ -199,7 +230,7 @@ function Project({ id }) {
             )}
 
             {showRemoveMember && (
-                <RemoveMember 
+                <RemoveMember
                     projectId={id}
                     onClose={() => setShowRemoveMember(false)}
                 />
