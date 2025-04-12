@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Trash2 } from 'lucide-react';
 import ConfirmDialog from "./ConfirmDialog.jsx";
 
 const DeleteTask = ({ taskID, onTaskDeleted }) => {
@@ -20,7 +19,7 @@ const DeleteTask = ({ taskID, onTaskDeleted }) => {
                 throw new Error("Failed to delete task");
             }
 
-            onTaskDeleted(taskID); // Notify parent component
+            onTaskDeleted(taskID); // Notify parent component (List.jsx)
         } catch (error) {
             console.error("Error deleting task:", error);
         }
@@ -30,9 +29,7 @@ const DeleteTask = ({ taskID, onTaskDeleted }) => {
 
     return (
         <>
-            <button className="task-action-btn delete" onClick={() => setShowConfirm(true)}>
-                <Trash2 size={14} />
-            </button>
+            <button onClick={() => setShowConfirm(true)}>Delete Task</button>
             {showConfirm && (
                 <ConfirmDialog
                     message="Are you sure you want to delete this task?"

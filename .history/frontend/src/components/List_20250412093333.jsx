@@ -49,6 +49,7 @@ const List = ({ list, onUpdateList, onDelete }) => {
     }
 
     const handleTaskCreated = (createdTask) => {
+        const currentTasks = listState.tasks || {};
         const updatedList = {
             ...listState,
             tasks: {
