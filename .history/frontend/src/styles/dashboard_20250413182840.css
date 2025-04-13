@@ -446,6 +446,7 @@
   color: #9e9e9e;
 }
 
+/* Add these to your dashboard.css file */
 .logout-button {
   display: flex;
   align-items: center;

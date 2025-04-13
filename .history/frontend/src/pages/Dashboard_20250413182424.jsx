@@ -120,8 +120,8 @@ const DashboardPage = () => {
               <span>{userData?.username || "User"}</span>
             </div>
             <button className="header-logout-button" onClick={handleLogout}>
-              <LogOut size={18} />
-            </button>
+            <LogOut size={18} />
+          </button>
           </div>
         </header>
 

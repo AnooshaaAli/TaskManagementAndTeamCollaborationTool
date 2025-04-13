@@ -446,6 +446,9 @@
   color: #9e9e9e;
 }
 
+/* Add these to your dashboard.css file */
+
+/* Sidebar logout button */
 .logout-button {
   display: flex;
   align-items: center;
@@ -471,6 +474,7 @@
   opacity: 0.8;
 }
 
+/* Header logout button */
 .header-logout-button {
   background: transparent;
   border: none;
@@ -489,6 +493,7 @@
   background-color: rgba(239, 68, 68, 0.1);
 }
 
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .logout-button span {
     display: none;

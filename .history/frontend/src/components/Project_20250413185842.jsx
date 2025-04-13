@@ -175,39 +175,36 @@ function Project({ id }) {
                     <h2>{project.name}</h2>
                 </div>
                 {isTeamLead && (
-                    <div className="member-actions">
-                        <Button
-                            variant="outline"
-                            className="member-button"
-                            onClick={() => {
-                                if (!currentUserId) {
-                                    console.warn("⚠️ Cannot add member, currentUserId is still null!");
-                                    return;
-                                }
-                                setShowAddMember(true);
-                            }}
-                        >
-                            <UserPlus size={16} className="member-icon" />
-                            <span>Add Member</span>
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="member-button"
-                            onClick={() => setShowRemoveMember(true)}
-                        >
-                            <UserMinus size={16} className="member-icon" />
-                            <span>Remove Member</span>
-                        </Button>
-                    </div>
-                )}
-                {isTeamLead && (
-                    <div className="project-actions">
-                        <DeleteProject
-                            projectID={id}
-                            onDelete={() => {setProject(null);}}
-                        />
-                    </div>
-                )}
+                <div className="member-actions">
+                    <Button
+                        variant="outline"
+                        className="member-button"
+                        onClick={() => {
+                            if (!currentUserId) {
+                                console.warn("⚠️ Cannot add member, currentUserId is still null!");
+                                return;
+                            }
+                            setShowAddMember(true);
+                        }}
+                    >
+                        <UserPlus size={16} className="member-icon" />
+                        <span>Add Member</span>
+                    </Button>
+                    <Button
+                        variant="outline"
+                        className="member-button"
+                        onClick={() => setShowRemoveMember(true)}
+                    >
+                        <UserMinus size={16} className="member-icon" />
+                        <span>Remove Member</span>
+                    </Button>
+                </div>
+                <div className="project-actions">
+                    <DeleteProject
+                        projectID={id}
+                        onDelete={() => {setProject(null);}}
+                    />
+                </div>
             </div>
 
             <div className="project-info">

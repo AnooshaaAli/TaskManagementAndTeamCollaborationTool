@@ -199,8 +199,6 @@ function Project({ id }) {
                             <span>Remove Member</span>
                         </Button>
                     </div>
-                )}
-                {isTeamLead && (
                     <div className="project-actions">
                         <DeleteProject
                             projectID={id}

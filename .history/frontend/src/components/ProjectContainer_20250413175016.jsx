@@ -12,28 +12,26 @@ const ProjectContainer = ({ userID }) => {
 
     useEffect(() => {
         if (!userID) return;
-        fetchProjects();
-    }, [userID]);
-    
-    const fetchProjects = () => {
+
         setIsLoading(true);
         const token = localStorage.getItem("jwtToken");
-    
+
+        console.log(token);
+
         fetch("http://localhost:8080/projects/user/" + userID, {
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${token}`,
+                "Authorization": `Bearer ${token}`, // Attach the token
                 "Content-Type": "application/json"
             }
         })
-            .then(async response => {
+            .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-    
-                const text = await response.text(); // get raw response
-                const data = text ? JSON.parse(text) : {}; // only parse if there's content
-    
+                return response.json();  // Only parse if response is OK
+            })
+            .then(data => {
                 console.log("Fetched projects:", data);
                 setProjects(Object.values(data));
                 setIsLoading(false);
@@ -42,7 +40,8 @@ const ProjectContainer = ({ userID }) => {
                 console.error("Error fetching projects:", error);
                 setIsLoading(false);
             });
-    };    
+    }, [userID]);
+
 
     const addProject = (newProject) => {
         setProjects(prev => [...prev, newProject]);
@@ -50,8 +49,8 @@ const ProjectContainer = ({ userID }) => {
 
     const handleBackToProjects = () => {
         setSelectedProject(null);
-        fetchProjects(); 
-    };    
+        fetchProjects();
+    };
 
     const filteredProjects = projects;
 
@@ -89,7 +88,10 @@ const ProjectContainer = ({ userID }) => {
                         </div>
                     ) : projects.length === 0 ? (
                         <div className="empty-state">
+                            <FolderPlus size={48} className="empty-icon" />
+                            <p>No projects found</p>
                             <CreateProject userID={userID} onProjectCreated={addProject} />
+                            <p className="empty-subtitle">Create your first project to get started</p>
                         </div>
                     ) : (
                         <div className="projects-grid">

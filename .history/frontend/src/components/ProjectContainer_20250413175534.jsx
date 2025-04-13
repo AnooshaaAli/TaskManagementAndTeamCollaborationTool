@@ -26,14 +26,13 @@ const ProjectContainer = ({ userID }) => {
                 "Content-Type": "application/json"
             }
         })
-            .then(async response => {
+            .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-    
-                const text = await response.text(); // get raw response
-                const data = text ? JSON.parse(text) : {}; // only parse if there's content
-    
+                return response.json();
+            })
+            .then(data => {
                 console.log("Fetched projects:", data);
                 setProjects(Object.values(data));
                 setIsLoading(false);
@@ -42,7 +41,7 @@ const ProjectContainer = ({ userID }) => {
                 console.error("Error fetching projects:", error);
                 setIsLoading(false);
             });
-    };    
+    };
 
     const addProject = (newProject) => {
         setProjects(prev => [...prev, newProject]);
@@ -89,7 +88,10 @@ const ProjectContainer = ({ userID }) => {
                         </div>
                     ) : projects.length === 0 ? (
                         <div className="empty-state">
+                            <FolderPlus size={48} className="empty-icon" />
+                            <p>No projects found</p>
                             <CreateProject userID={userID} onProjectCreated={addProject} />
+                            <p className="empty-subtitle">Create your first project to get started</p>
                         </div>
                     ) : (
                         <div className="projects-grid">

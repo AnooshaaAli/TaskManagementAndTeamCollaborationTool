@@ -82,11 +82,6 @@ public class TeamService {
 
         Project project = ProjectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
-        
-        if (project.getTeamLeadID()== userToRemove.getUserID()) {
-            response.put("message", "Team lead cannot remove themselves from the team.");
-            return ResponseEntity.badRequest().body(response);
-        }
 
         Team team = teamRepository.findByProject(project);
         if (team == null) {

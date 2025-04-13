@@ -119,9 +119,6 @@ const DashboardPage = () => {
               <img src={userData?.avatar || "/default-avatar.png"} alt="Profile" className="avatar-small" />
               <span>{userData?.username || "User"}</span>
             </div>
-            <button className="header-logout-button" onClick={handleLogout}>
-              <LogOut size={18} />
-            </button>
           </div>
         </header>
 

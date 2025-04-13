@@ -69,7 +69,7 @@ public class TeamService {
     }
 
     @Transactional
-    public ResponseEntity<Map<String, String>> removeMemberFromProject(String searchInput, int projectId) {
+    public ResponseEntity<Map<String, String>> removeMemberFromProject(String searchInput, int projectId, int currentUserId) {
         Map<String, String> response = new HashMap<>();
 
         Optional<User> userOptional = userRepository.findByAccount_EmailOrAccount_Username(searchInput, searchInput);
@@ -82,17 +82,18 @@ public class TeamService {
 
         Project project = ProjectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
-        
-        if (project.getTeamLeadID()== userToRemove.getUserID()) {
-            response.put("message", "Team lead cannot remove themselves from the team.");
-            return ResponseEntity.badRequest().body(response);
-        }
 
         Team team = teamRepository.findByProject(project);
         if (team == null) {
             response.put("message", "Team not found.");
             return ResponseEntity.badRequest().body(response);
         }
+
+    // 🛡️ Check if userToRemove is the team lead
+    if (team.getTeamLead() != null && team.getTeamLead().getUserID() == userToRemove.getUserID()) {
+        response.put("message", "Team lead cannot remove themselves from the team.");
+        return ResponseEntity.badRequest().body(response);
+    }
 
         Optional<TeamHasMember> teamMember = teamHasMemberRepository.findByTeamAndUser(team, userToRemove);
         if (teamMember.isEmpty()) {

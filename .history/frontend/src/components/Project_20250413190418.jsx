@@ -200,7 +200,7 @@ function Project({ id }) {
                         </Button>
                     </div>
                 )}
-                {isTeamLead && (
+                {isTeamLead && ()
                     <div className="project-actions">
                         <DeleteProject
                             projectID={id}

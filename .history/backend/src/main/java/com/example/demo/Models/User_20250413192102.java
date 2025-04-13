@@ -42,7 +42,7 @@ public class User {
         return account != null ? account.getPassword() : null;
     }
     
-    public int getUserID() {
+    private int getUserID() {
         return userID;
     }
 }

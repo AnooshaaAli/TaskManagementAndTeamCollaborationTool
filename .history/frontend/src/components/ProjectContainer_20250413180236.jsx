@@ -90,6 +90,7 @@ const ProjectContainer = ({ userID }) => {
                     ) : projects.length === 0 ? (
                         <div className="empty-state">
                             <CreateProject userID={userID} onProjectCreated={addProject} />
+                            <p className="empty-subtitle">Create your first project to get started</p>
                         </div>
                     ) : (
                         <div className="projects-grid">

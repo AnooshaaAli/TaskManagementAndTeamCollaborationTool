@@ -37,6 +37,8 @@ const DashboardPage = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
+    
+    // Redirect to login page
     window.location.href = "/login";
   };
 
@@ -96,10 +98,6 @@ const DashboardPage = () => {
               <p className="user-role">{userData?.role || "Team Member"}</p>
             </div>
           </div>
-          <button className="logout-button" onClick={handleLogout}>
-            <LogOut size={18} className="logout-icon" />
-            <span>Logout</span>
-          </button>
         </div>
       </div>
 
@@ -119,9 +117,6 @@ const DashboardPage = () => {
               <img src={userData?.avatar || "/default-avatar.png"} alt="Profile" className="avatar-small" />
               <span>{userData?.username || "User"}</span>
             </div>
-            <button className="header-logout-button" onClick={handleLogout}>
-              <LogOut size={18} />
-            </button>
           </div>
         </header>
 

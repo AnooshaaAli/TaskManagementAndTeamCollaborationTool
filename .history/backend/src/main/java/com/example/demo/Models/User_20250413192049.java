@@ -42,7 +42,5 @@ public class User {
         return account != null ? account.getPassword() : null;
     }
     
-    public int getUserID() {
-        return userID;
-    }
+    private int getUserID
 }

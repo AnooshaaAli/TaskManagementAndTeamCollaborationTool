@@ -199,14 +199,12 @@ function Project({ id }) {
                             <span>Remove Member</span>
                         </Button>
                     </div>
-                )}
-                {isTeamLead && (
-                    <div className="project-actions">
-                        <DeleteProject
-                            projectID={id}
-                            onDelete={() => {setProject(null);}}
-                        />
-                    </div>
+                <div className="project-actions">
+                    <DeleteProject
+                        projectID={id}
+                        onDelete={() => {setProject(null);}}
+                    />
+                </div>
                 )}
             </div>
 
