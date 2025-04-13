@@ -8,6 +8,7 @@ import "../styles/project.css";
 import { Folder, Loader, Plus, Trash2, UserPlus, UserMinus, Users } from 'lucide-react';
 import Button from '../components/Button';
 import CreateComment from './CreateComment.jsx';
+import Comment from './Comment.jsx';
 
 function Project({ id }) {
     const [project, setProject] = useState(null);
@@ -129,9 +130,13 @@ function Project({ id }) {
     const addCommentToProject = (newComment) => {
         setProject(prev => ({
             ...prev,
-            comments: [...(prev.comments || []), newComment] // Add the new comment to the list
+            comments: {
+                ...prev.comments,
+                [newComment.commentID]: newComment // Add new comment keyed by its ID
+            }
         }));
     };
+    
 
     const updateListInProject = (updatedList) => {
         setProject(prev => ({
@@ -229,10 +234,8 @@ function Project({ id }) {
                 />
 
                 <h3>Comments</h3>
-                {project.comments && project.comments.map(comment => (
-                    <div key={comment.commentID}>
-                        <p><strong>User {comment.userID}:</strong> {comment.value}</p>
-                    </div>
+                {project.comments && Object.values(project.comments).map(comment => (
+                    <Comment key={comment.commentID} comment={comment} />
                 ))}
 
                 <CreateComment userID={currentUserId} projectID={id} onCommentCreated={addCommentToProject} />

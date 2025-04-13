@@ -114,6 +114,7 @@ public class TeamService {
 
         // Iterate over TeamHasMember entries and add the associated teams to the list
         for (TeamHasMember teamHasMember : teamHasMembers) {
+            System.out.println("Team ID: " + teamHasMember.getTeam().getTeamID() + " for user: " + userId);
             teams.add(teamHasMember.getTeam());
         }
 

@@ -27,7 +27,6 @@ public class CommentController {
     }
 
     // Get all comments or filter by projectId or userId
-
     @GetMapping("/{projectID}")
     public ResponseEntity<List<Comment>> getComments(@PathVariable int projectID) {
 
