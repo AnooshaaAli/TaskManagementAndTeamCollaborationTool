@@ -17,20 +17,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @RestController
 @RequestMapping("/projects")
 public class ProjectController {
     private final ProjectService projectService;
-    private static final Logger log = LoggerFactory.getLogger(ProjectController.class);
 
     @Autowired
     private RestTemplate restTemplate;
@@ -150,10 +145,7 @@ public class ProjectController {
 
         if (teamsResponse.getStatusCode().is2xxSuccessful()) {
             List<Team> teams = teamsResponse.getBody();
-            if (teams == null) {
-                log.warn("No teams found for userId " + userId);
-                teams = Collections.emptyList();
-            }
+            if tea
 
             // Now, for each team, fetch the associated projects
             for (Team team : teams) {
