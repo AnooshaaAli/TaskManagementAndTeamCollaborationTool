@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 import com.example.demo.Models.Project;
 import com.example.demo.Models.TaskList;
 import com.example.demo.Models.Team;
+import com.example.demo.Repositories.UserRepository;
 import com.example.demo.Services.ProjectService;
 import com.example.demo.Services.TeamService;
 
@@ -17,20 +18,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @RestController
 @RequestMapping("/projects")
 public class ProjectController {
     private final ProjectService projectService;
-    private static final Logger log = LoggerFactory.getLogger(ProjectController.class);
 
     @Autowired
     private RestTemplate restTemplate;
@@ -121,8 +117,21 @@ public class ProjectController {
 
     // GET: Get projects by user ID (includes both team lead and member roles)
     @GetMapping("/user/{userId}")
-    public ResponseEntity<HashMap<Integer, Project>> getProjectsByUserId(@PathVariable int userId,
-            @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<HashMap<Integer, Project>> getProjectsByUserId(
+        @PathVariable int userId,
+        @RequestHeader("Authorization") String authHeader,
+        Authentication authentication) {
+
+        // Extract email from JWT
+        String email = authentication.getName();
+
+        // Find the user from DB using email
+        User user = UserRepository.findByAccount_Email(email);
+
+        // Check if the authenticated user is requesting their own data
+        if (user == null || user.getId() != userId) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         // Call the existing method to get the projects the user leads
         List<Project> leadProjects = projectService.getProjectsByTeamLead(userId);
 
@@ -150,10 +159,6 @@ public class ProjectController {
 
         if (teamsResponse.getStatusCode().is2xxSuccessful()) {
             List<Team> teams = teamsResponse.getBody();
-            if (teams == null) {
-                log.warn("No teams found for userId " + userId);
-                teams = Collections.emptyList();
-            }
 
             // Now, for each team, fetch the associated projects
             for (Team team : teams) {

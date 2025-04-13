@@ -44,6 +44,10 @@ public class TeamController {
     public ResponseEntity<List<Team>> getTeamsByUserId(@PathVariable int userId) {
         // Call service to get all teams the user is a part of
         List<Team> teams = teamService.getTeamsByUserId(userId);
+
+        return ResponseEntity.ok(teams); // Always return 200 with an empty list
+
+
         return ResponseEntity.ok(teams);
     }
 }

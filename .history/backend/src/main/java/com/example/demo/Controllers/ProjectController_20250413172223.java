@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 @RequestMapping("/projects")
 public class ProjectController {
     private final ProjectService projectService;
-    private static final Logger log = LoggerFactory.getLogger(ProjectController.class);
+    private static final Logger log = LoggerFactory.getLogger(Project.class);
 
     @Autowired
     private RestTemplate restTemplate;
