@@ -7,6 +7,7 @@ import RemoveMember from './RemoveMemberModal.jsx';
 import "../styles/project.css";
 import { Folder, Loader, Plus, Trash2, UserPlus, UserMinus, Users } from 'lucide-react';
 import Button from '../components/Button';
+import CreateComment from './CreateComment.jsx';
 
 function Project({ id }) {
     const [project, setProject] = useState(null);
@@ -125,6 +126,13 @@ function Project({ id }) {
         }));
     };
 
+    const addCommentToProject = (newComment) => {
+        setProject(prev => ({
+            ...prev,
+            comments: [...(prev.comments || []), newComment] // Add the new comment to the list
+        }));
+    };
+
     const updateListInProject = (updatedList) => {
         setProject(prev => ({
             ...prev,
@@ -219,6 +227,15 @@ function Project({ id }) {
                     projectID={id}
                     onListCreated={addListToProject}
                 />
+
+                <h3>Comments</h3>
+                {project.comments && project.comments.map(comment => (
+                    <div key={comment.commentID}>
+                        <p><strong>User {comment.userID}:</strong> {comment.value}</p>
+                    </div>
+                ))}
+
+                <CreateComment userID={currentUserId} projectID={id} onCommentCreated={addCommentToProject} />
             </div>
 
             {showAddMember && (

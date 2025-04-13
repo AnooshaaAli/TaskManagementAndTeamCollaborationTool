@@ -23,7 +23,8 @@ public class Project {
 
     @Transient
     private HashMap<Integer, TaskList> lists = new HashMap<>();
-    // private HashMap<Integer, File> files;
+    // // private HashMap<Integer, File> files;
+    // @Transient
     // private HashMap<Integer, Comment> comments;
 
     public Project() {
@@ -36,7 +37,7 @@ public class Project {
         this.teamLeadID = teamLeadID;
         this.taskLists = new ArrayList<>();
         this.description = description;
-        // this.files = new HashMap<>();
+        // // this.files = new HashMap<>();
         // this.comments = new HashMap<>();
     }
 
@@ -103,10 +104,10 @@ public class Project {
     // }
 
     // public HashMap<Integer, Comment> getComments() {
-    // return comments;
+    //     return comments;
     // }
 
     // public void setComments(HashMap<Integer, Comment> comments) {
-    // this.comments = comments;
+    //     this.comments = comments;
     // }
 }
