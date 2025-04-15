@@ -16,4 +16,10 @@ public interface TeamRepository extends JpaRepository<Team, Integer> {
     @Transactional
     @Query("DELETE FROM Team t WHERE t.project.id = :projectId")
     void deleteByProjectId(@Param("projectId") int projectId);
+
+    @Query("SELECT COUNT(thm) > 0 FROM TeamHasMember thm " +
+       "JOIN thm.team t " +
+       "WHERE thm.user.id = :memberID AND t.project.id = :projectID")
+    boolean isUserInTeamForProject(@Param("memberID") int memberID, @Param("projectID") int projectID);
+
 }

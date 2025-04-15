@@ -9,6 +9,9 @@ import com.example.demo.Models.Team;
 import com.example.demo.Models.TeamHasMember;
 import com.example.demo.Models.TeamHasMemberId;
 import com.example.demo.Models.User;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 
 public interface TeamHasMemberRepository extends JpaRepository<TeamHasMember, TeamHasMemberId> {
     boolean existsByTeamAndUser(Team team, User user);

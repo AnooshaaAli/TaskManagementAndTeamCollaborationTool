@@ -3,6 +3,7 @@ import { Clock, Check, X, Edit2, Trash2 } from 'lucide-react';
 import "../styles/task-item.css";
 import EditTask from "./EditTask";
 import DeleteTask from "./DeleteTask";
+import AssignTask from "./AssignTask";
 
 const TaskItem = ({ task, onEdit, onDelete }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -61,6 +62,7 @@ const TaskItem = ({ task, onEdit, onDelete }) => {
                         </button>
                         <DeleteTask taskID={task.taskID} onTaskDeleted={handleTaskDeleted} />
                     </div>
+                    <AssignTask taskID={task.taskID} />
                 </>
             )}
         </div>

@@ -120,4 +120,8 @@ public class TeamService {
         return teams;
     }
 
+    public boolean isUserInTeamForProject(int memberID, int projectID) {
+        return teamRepository.isUserInTeamForProject(memberID, projectID);
+    }
+
 }

@@ -34,5 +34,10 @@ public class UserService implements UserDetailsService{
                 user.getAccount().getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
         );    
-    }    
+    }
+
+    // Method to get user by username
+    public User findUserByAccountUsername(String username) {
+        return userRepository.findUserByAccountUsername(username);
+    }
 }
