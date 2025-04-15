@@ -31,7 +31,7 @@ const ProjectContainer = ({ userID }) => {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
     
-                const text = await response.text(); 
+                const text = await response.text(); // get raw response
                 const data = text ? JSON.parse(text) : {};
     
                 console.log("Fetched projects:", data);

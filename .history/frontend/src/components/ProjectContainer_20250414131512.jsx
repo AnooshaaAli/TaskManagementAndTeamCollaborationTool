@@ -31,8 +31,8 @@ const ProjectContainer = ({ userID }) => {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
     
-                const text = await response.text(); 
-                const data = text ? JSON.parse(text) : {};
+                const text = await response.text(); // get raw response
+                const data = text ? JSON.parse(text) : {}; // only parse if there's content
     
                 console.log("Fetched projects:", data);
                 setProjects(Object.values(data));
@@ -99,7 +99,7 @@ const ProjectContainer = ({ userID }) => {
                                     id={project.projectID}
                                     name={project.name}
                                     onSelect={setSelectedProject}
-                                    description={project.description}
+                                    description
                                 />
                             ))}
                             <CreateProject userID={userID} onProjectCreated={addProject} />
