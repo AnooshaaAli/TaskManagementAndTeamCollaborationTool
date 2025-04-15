@@ -94,17 +94,33 @@ const List = ({ list, onUpdateList, onDelete }) => {
         }
     };
 
-    const handleDeleteTaskSuccess = (taskID) => {
-        const updatedTasks = { ...listState.tasks };
-        delete updatedTasks[taskID];
+    const handleDeleteTask = async (taskID) => {
+        try {
+            const response = await fetch(`http://localhost:8080/tasks/${taskID}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+            });
 
-        const updatedList = {
-            ...listState,
-            tasks: updatedTasks,
-        };
+            if (!response.ok) {
+                throw new Error("Failed to delete task");
+            }
 
-        setListState(updatedList);
-        onUpdateList(updatedList);
+            const updatedTasks = { ...listState.tasks };
+            delete updatedTasks[taskID];
+
+            const updatedList = {
+                ...listState,
+                tasks: updatedTasks,
+            };
+
+            setListState(updatedList);
+            onUpdateList(updatedList);
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        }
     };
 
     if (isLoading) {
