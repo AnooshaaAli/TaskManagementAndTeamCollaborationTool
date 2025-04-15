@@ -9,6 +9,7 @@ const List = ({ list, onUpdateList, onDelete }) => {
     const [listState, setListState] = useState(list);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+
     const token = localStorage.getItem("jwtToken");
     
     useEffect(() => {
@@ -18,13 +19,14 @@ const List = ({ list, onUpdateList, onDelete }) => {
                 const response = await fetch(`http://localhost:8080/lists/${list.listID}`, {
                     method: "GET",
                     headers: {
-                        "Authorization": `Bearer ${token}`, // Attach the token
+                        "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"
                     }
                 }); 
                 if (!response.ok) {
                     throw new Error("Failed to fetch list");
                 }
+
                 const updatedList = await response.json();
                 setListState(updatedList);
                 setError(null);
@@ -38,6 +40,7 @@ const List = ({ list, onUpdateList, onDelete }) => {
 
         fetchList();
     }, [list.listID]);
+
 
     const handleTaskUpdate = (updatedList) => {
         setListState(updatedList);
@@ -91,33 +94,17 @@ const List = ({ list, onUpdateList, onDelete }) => {
         }
     };
 
-    const handleDeleteTask = async (taskID) => {
-        try {
-            const response = await fetch(`http://localhost:8080/tasks/${taskID}`, {
-                method: "DELETE",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-            });
+    const handleDeleteTaskSuccess = (taskID) => {
+        const updatedTasks = { ...listState.tasks };
+        delete updatedTasks[taskID];
 
-            if (!response.ok) {
-                throw new Error("Failed to delete task");
-            }
+        const updatedList = {
+            ...listState,
+            tasks: updatedTasks,
+        };
 
-            const updatedTasks = { ...listState.tasks };
-            delete updatedTasks[taskID];
-
-            const updatedList = {
-                ...listState,
-                tasks: updatedTasks,
-            };
-
-            setListState(updatedList);
-            onUpdateList(updatedList);
-        } catch (error) {
-            console.error("Error deleting task:", error);
-        }
+        setListState(updatedList);
+        onUpdateList(updatedList);
     };
 
     if (isLoading) {
@@ -177,6 +164,7 @@ const List = ({ list, onUpdateList, onDelete }) => {
             <div className="list-footer">
                 <DeleteList listID={list.listID} onDeleteSuccess={() => onDelete(list.listID)} />
             </div>
+
         </div>
     );
 };

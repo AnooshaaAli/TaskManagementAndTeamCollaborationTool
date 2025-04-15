@@ -43,5 +43,4 @@ const DeleteTask = ({ taskID, onTaskDeleted }) => {
         </>
     );
 };
-
 export default DeleteTask;
