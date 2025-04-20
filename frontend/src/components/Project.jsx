@@ -9,6 +9,7 @@ import { Folder, Loader, Plus, Trash2, UserPlus, UserMinus, Users } from 'lucide
 import Button from '../components/Button';
 import CreateComment from './CreateComment.jsx';
 import Comment from './Comment.jsx';
+import UploadFile from './UploadFile.jsx'
 
 function Project({ id }) {
     const [project, setProject] = useState(null);
@@ -136,7 +137,7 @@ function Project({ id }) {
             }
         }));
     };
-    
+
 
     const updateListInProject = (updatedList) => {
         setProject(prev => ({
@@ -239,6 +240,8 @@ function Project({ id }) {
                 ))}
 
                 <CreateComment userID={currentUserId} projectID={id} onCommentCreated={addCommentToProject} />
+
+                <UploadFile projectID={id} />
             </div>
 
             {showAddMember && (
