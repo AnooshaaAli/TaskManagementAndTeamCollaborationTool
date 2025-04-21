@@ -89,6 +89,8 @@ function Project({ id }) {
         if (currentUserId == null) return; // Avoid making the call before userID is set
 
         const token = localStorage.getItem("jwtToken");
+        console.log("current user id" + currentUserId);
+        console.log("project id " + id);
 
         fetch(`http://localhost:8080/projects/${id}/isTeamLead/${currentUserId}`, {
             method: "GET",
@@ -198,9 +200,9 @@ function Project({ id }) {
                     <Folder size={24} />
                     <h2>{project.name}</h2>
                 </div>
-                
+
                 <div className="tabs-container">
-                    <button 
+                    <button
                         className={`tab ${activeTab === 'comments' ? 'active' : ''}`}
                         onClick={() => toggleTab('comments')}
                     >
@@ -210,18 +212,18 @@ function Project({ id }) {
                             <span className="tab-badge">{commentCount}</span>
                         )}
                     </button>
-                    
-                    <button 
+
+                    <button
                         className={`tab ${activeTab === 'files' ? 'active' : ''}`}
                         onClick={() => toggleTab('files')}
                     >
                         <FileText size={16} />
                         <span>Files</span>
                     </button>
-                    
+
                     {isTeamLead && (
                         <>
-                            <button 
+                            <button
                                 className="tab"
                                 onClick={() => {
                                     if (!currentUserId) {
@@ -234,8 +236,8 @@ function Project({ id }) {
                                 <UserPlus size={16} />
                                 <span>Add Member</span>
                             </button>
-                            
-                            <button 
+
+                            <button
                                 className="tab"
                                 onClick={() => setShowRemoveMember(true)}
                             >
@@ -252,12 +254,12 @@ function Project({ id }) {
                     <Users size={16} />
                     <span>{project.teamSize || project.members?.length || 0} members</span>
                 </div>
-                
+
                 <div className="project-actions">
                     {isTeamLead && (
                         <DeleteProject
                             projectID={id}
-                            onDelete={() => {setProject(null);}}
+                            onDelete={() => { setProject(null); }}
                         />
                     )}
                 </div>
@@ -284,15 +286,15 @@ function Project({ id }) {
                     <div className="sidebar">
                         <div className="sidebar-header">
                             <h3>Comments</h3>
-                            <Button 
-                                variant="ghost" 
+                            <Button
+                                variant="ghost"
                                 className="close-sidebar"
                                 onClick={() => setActiveTab(null)}
                             >
                                 <X size={12} />
                             </Button>
                         </div>
-                        
+
                         <div className="comment-list">
                             {commentCount > 0 ? (
                                 Object.values(project.comments).map(comment => (
@@ -304,12 +306,12 @@ function Project({ id }) {
                                 </div>
                             )}
                         </div>
-                        
+
                         <div className="sidebar-footer">
-                            <CreateComment 
-                                userID={currentUserId} 
-                                projectID={id} 
-                                onCommentCreated={addCommentToProject} 
+                            <CreateComment
+                                userID={currentUserId}
+                                projectID={id}
+                                onCommentCreated={addCommentToProject}
                             />
                         </div>
                     </div>
@@ -319,27 +321,27 @@ function Project({ id }) {
                     <div className="sidebar">
                         <div className="sidebar-header">
                             <h3>Files</h3>
-                            <Button 
-                                variant="ghost" 
+                            <Button
+                                variant="ghost"
                                 className="close-sidebar"
                                 onClick={() => setActiveTab(null)}
                             >
                                 <X size={12} />
                             </Button>
-                        </div>    
-                        
+                        </div>
+
                         <div className="file-list">
-                              {project.files && Object.values(project.files).map(file => (
-                              <FileItem key={file.fileID} file={file} />
-                          ))}
+                            {project.files && Object.values(project.files).map(file => (
+                                <FileItem key={file.fileID} file={file} />
+                            ))}
                             {/* Files list will go here */}
                             <div className="no-content">
                                 No files uploaded yet.
                             </div>
                         </div>
-                        
+
                         <div className="sidebar-footer">
-                          <UploadFile projectID={id} onFileUploaded={addFileToProject} />
+                            <UploadFile projectID={id} onFileUploaded={addFileToProject} />
                         </div>
                     </div>
                 )}

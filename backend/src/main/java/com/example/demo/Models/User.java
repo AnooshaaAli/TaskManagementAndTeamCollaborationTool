@@ -49,8 +49,4 @@ public class User {
     public String getPassword() {
         return account != null ? account.getPassword() : null;
     }
-    
-    public int getUserID() {
-        return userID;
-    }
 }
