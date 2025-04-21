@@ -83,4 +83,20 @@ public class TaskController {
         boolean isDeleted = taskService.deleteTask(taskID);
         return isDeleted ? "Task deleted successfully" : "Task not found";
     }
+
+    // Get projectID of a task by taskID we don't need this anymore
+    @GetMapping("/{taskID}/project")
+    public ResponseEntity<Integer> getProjectIDByTaskID(@PathVariable int taskID) {
+        Task task = taskService.getTaskById(taskID);
+        if (task == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        TaskList taskList = taskListRepository.findById(task.getListID()).orElse(null);
+        if (taskList == null) {
+            return ResponseEntity.status(500).body(null); // Shouldn't happen, but safe fallback
+        }
+
+        return ResponseEntity.ok(taskList.getProjectID());
+    }
 }

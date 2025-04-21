@@ -22,6 +22,14 @@ public class User {
         this.account = account;
     }
 
+    public int getUserID() {
+        return this.userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
     public static Object builder() {
         return null;
     }

@@ -3,6 +3,7 @@ import Card from '../components/Card';
 import "../styles/styles.css";
 import "../styles/dashboard.css";
 import "../styles/projects_container.css";
+import NotificationList from '../components/NotificationList';
 import { PieChart, ListTodo, Users, Folder, Calendar, Star, Bell, Activity, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,6 +12,46 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('activity');
   const navigate = useNavigate();
+
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const token = localStorage.getItem("jwtToken");
+      const userID = userData?.userID;
+  
+      console.log("Fetching notifications for user:", userID);
+      console.log("Using token:", token);
+  
+      if (!userID || !token) return;
+  
+      try {
+        const response = await fetch(`http://localhost:8080/api/notifications/${userID}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+  
+        if (!response.ok) {
+          console.error("Failed to fetch notifications:", response.status);
+          return;
+        }
+  
+        const data = await response.json();
+        setNotifications(data);
+      } catch (err) {
+        console.error("Failed to load notifications", err);
+      }
+    };
+  
+    if (userData?.userID) {
+      fetchNotifications();
+    }
+  }, [userData]);
+  
+  
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -21,6 +62,7 @@ const DashboardPage = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         const userData = await response.json();
+
 
         setTimeout(() => {
           setUserData(userData);
@@ -33,6 +75,8 @@ const DashboardPage = () => {
     };
 
     fetchUserData();
+    console.log("Fetched userData:", userData);
+
   }, []);
 
   const handleLogout = () => {
@@ -115,10 +159,17 @@ const DashboardPage = () => {
             <input type="text" placeholder="Search..." />
           </div>
           <div className="header-actions">
-            <div className="notification-bell">
-              <Bell size={20} />
-              <span className="notification-count">0</span>
-            </div>
+          <div className="notification-bell" onClick={() => setShowNotifications(!showNotifications)}>
+            <Bell size={20} />
+            {notifications.length > 0 && (
+              <span className="notification-count">{notifications.length}</span>
+            )}
+            {showNotifications && (
+              <div className="notification-dropdown">
+                <NotificationList notifications={notifications} />
+              </div>
+            )}
+          </div>
             <div className="user-dropdown">
               <img src={userData?.avatar || "/default-avatar.png"} alt="Profile" className="avatar-small" />
               <span>{userData?.username || "User"}</span>
