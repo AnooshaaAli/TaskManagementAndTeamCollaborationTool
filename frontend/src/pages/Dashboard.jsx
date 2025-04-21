@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../components/Card';
-import Logo from '../components/Logo';
-import ProjectContainer from '../components/ProjectContainer';
 import "../styles/styles.css";
 import "../styles/dashboard.css";
 import "../styles/projects_container.css";
 import NotificationList from '../components/NotificationList';
-
-import { PieChart, ListTodo, Users, Folder, Calendar, Star, Bell, Activity } from 'lucide-react';
+import { PieChart, ListTodo, Users, Folder, Calendar, Star, Bell, Activity, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const DashboardPage = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('activity');
+  const navigate = useNavigate();
 
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -80,6 +79,15 @@ const DashboardPage = () => {
 
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("jwtToken");
+    window.location.href = "/login";
+  };
+
+  const navigateToProjects = () => {
+    navigate('/projects');
+  };
+
   if (loading) {
     return (
       <div className="dashboard-loading">
@@ -110,7 +118,7 @@ const DashboardPage = () => {
               <Users size={20} className="nav-icon" />
               <span>Team</span>
             </li>
-            <li>
+            <li onClick={navigateToProjects} style={{ cursor: 'pointer' }}>
               <Folder size={20} className="nav-icon" />
               <span>Projects</span>
             </li>
@@ -136,6 +144,10 @@ const DashboardPage = () => {
               <p className="user-role">{userData?.role || "Team Member"}</p>
             </div>
           </div>
+          <button className="logout-button" onClick={handleLogout}>
+            <LogOut size={18} className="logout-icon" />
+            <span>Logout</span>
+          </button>
         </div>
       </div>
 
@@ -162,6 +174,9 @@ const DashboardPage = () => {
               <img src={userData?.avatar || "/default-avatar.png"} alt="Profile" className="avatar-small" />
               <span>{userData?.username || "User"}</span>
             </div>
+            <button className="header-logout-button" onClick={handleLogout}>
+              <LogOut size={18} />
+            </button>
           </div>
         </header>
 
@@ -227,12 +242,6 @@ const DashboardPage = () => {
               My Tasks
             </button>
             <button
-              className={activeTab === 'projects' ? 'active' : ''}
-              onClick={() => setActiveTab('projects')}
-            >
-              Projects
-            </button>
-            <button
               className={activeTab === 'activity' ? 'active' : ''}
               onClick={() => setActiveTab('activity')}
             >
@@ -245,10 +254,6 @@ const DashboardPage = () => {
               <Card className="tasks-card">
                 <div className="card-header">
                   <h3>My Tasks</h3>
-                  <button className="add-button">
-                    <span className="material-icons">add</span>
-                    New Task
-                  </button>
                 </div>
                 <div className="tasks-list empty-state">
                   <div className="empty-icon">
@@ -256,14 +261,6 @@ const DashboardPage = () => {
                   </div>
                   <p>No tasks assigned yet</p>
                   <button className="btn-connect">Connect Task Manager</button>
-                </div>
-              </Card>
-            )}
-
-            {activeTab === 'projects' && (
-              <Card className="projects-card">
-                <div className="project-container-wrapper">
-                  <ProjectContainer userID={userData?.userID} />
                 </div>
               </Card>
             )}

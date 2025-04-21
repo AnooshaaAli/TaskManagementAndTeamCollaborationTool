@@ -1,10 +1,13 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.Models.Project;
+import com.example.demo.Models.Files;
 import com.example.demo.Models.TaskList;
+import com.example.demo.Models.Comment;
 import com.example.demo.Models.Team;
 import com.example.demo.Services.ProjectService;
 import com.example.demo.Services.TeamService;
+import com.example.demo.dto.FileInfoDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -115,6 +118,49 @@ public class ProjectController {
             HashMap<Integer, TaskList> taskLists = taskListsResponse.getBody();
             project.setLists(taskLists);
         }
+        String commentApiUrl = "http://localhost:8080/comments/" + id;
+
+        ResponseEntity<List<Comment>> commentsResponse = restTemplate.exchange(
+                commentApiUrl,
+                HttpMethod.GET,
+                entity,
+                new ParameterizedTypeReference<List<Comment>>() {
+                });
+
+        if (commentsResponse.getBody() != null) {
+            List<Comment> commentList = commentsResponse.getBody();
+            HashMap<Integer, Comment> commentMap = new HashMap<>();
+
+            for (Comment comment : commentList) {
+                commentMap.put(comment.getCommentID(), comment);
+            }
+
+            project.setComments(commentMap);
+        }
+
+        String fileApiUrl = "http://localhost:8080/files/project/" + id;
+
+        ResponseEntity<HashMap<Integer, FileInfoDTO>> filesResponse = restTemplate.exchange(
+                fileApiUrl,
+                HttpMethod.GET,
+                entity,
+                new ParameterizedTypeReference<HashMap<Integer, FileInfoDTO>>() {
+                });
+
+        if (filesResponse.getBody() != null) {
+            HashMap<Integer, FileInfoDTO> dtoMap = filesResponse.getBody();
+            HashMap<Integer, Files> fileMap = new HashMap<>();
+
+            for (Map.Entry<Integer, FileInfoDTO> entry : dtoMap.entrySet()) {
+                FileInfoDTO dto = entry.getValue();
+                Files file = new Files();
+                file.setFileID(dto.getFileID());
+                file.setFileName(dto.getFileName());
+                fileMap.put(entry.getKey(), file);
+            }
+
+            project.setFiles(fileMap);
+        }
 
         return ResponseEntity.ok(project);
     }
@@ -155,8 +201,12 @@ public class ProjectController {
                 teams = Collections.emptyList();
             }
 
+            System.out.println("----------------------" + userId);
+            System.out.println("Number of teams: " + teams.size());
+
             // Now, for each team, fetch the associated projects
             for (Team team : teams) {
+                System.out.println("Team id: " + team.getTeamID());
                 // Get project associated with the team
                 Project teamProject = team.getProject();
                 // Add the team project to the map if it exists
@@ -203,31 +253,32 @@ public class ProjectController {
         projectService.deleteProject(id);
         return ResponseEntity.ok(project);
     }
+
     @GetMapping("/{projectId}/isTeamLead/{userId}")
     public ResponseEntity<Map<String, Boolean>> checkIfUserIsTeamLead(
-            @PathVariable int projectId, 
+            @PathVariable int projectId,
             @PathVariable int userId) {
-        
+
         // Fetch the project by its ID
         Optional<Project> projectOptional = projectService.getProjectById(projectId);
-        
+
         if (projectOptional.isEmpty()) {
             // If the project does not exist, return a NOT_FOUND response
             return ResponseEntity.notFound().build();
         }
-    
+
         // Get the project object
         Project project = projectOptional.get();
-        
+
         // Check if the userId matches the teamLeadID of the project
         boolean isTeamLead = project.getTeamLeadID() == userId;
-    
+
         // Prepare the response map with the result
         Map<String, Boolean> response = new HashMap<>();
         response.put("isTeamLead", isTeamLead);
-    
+
         // Return the response with HTTP OK status
         return ResponseEntity.ok(response);
     }
-    
+
 }

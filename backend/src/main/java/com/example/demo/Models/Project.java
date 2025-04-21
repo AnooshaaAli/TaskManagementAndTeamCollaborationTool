@@ -23,9 +23,10 @@ public class Project {
 
     @Transient
     private HashMap<Integer, TaskList> lists = new HashMap<>();
-    // // private HashMap<Integer, File> files;
-    // @Transient
-    // private HashMap<Integer, Comment> comments;
+    @Transient
+    private HashMap<Integer, Files> files;
+    @Transient
+    private HashMap<Integer, Comment> comments;
 
     public Project() {
         this.taskLists = new ArrayList<>();
@@ -37,8 +38,8 @@ public class Project {
         this.teamLeadID = teamLeadID;
         this.taskLists = new ArrayList<>();
         this.description = description;
-        // // this.files = new HashMap<>();
-        // this.comments = new HashMap<>();
+        this.files = new HashMap<>();
+        this.comments = new HashMap<>();
     }
 
     public int getProjectID() {
@@ -76,7 +77,7 @@ public class Project {
 
     public void setLists(HashMap<Integer, TaskList> lists) {
         this.lists = lists;
-        this.taskLists = new ArrayList<>(lists.values()); // Sync List with HashMap
+        this.taskLists = new ArrayList<>(lists.values());
     }
 
     public List<TaskList> getTaskLists() {
@@ -95,19 +96,19 @@ public class Project {
         this.description = description;
     }
 
-    // public HashMap<Integer, File> getFiles() {
-    // return files;
-    // }
+    public HashMap<Integer, Files> getFiles() {
+        return files;
+    }
 
-    // public void setFiles(HashMap<Integer, File> files) {
-    // this.files = files;
-    // }
+    public void setFiles(HashMap<Integer, Files> files) {
+        this.files = files;
+    }
 
-    // public HashMap<Integer, Comment> getComments() {
-    //     return comments;
-    // }
+    public HashMap<Integer, Comment> getComments() {
+        return comments;
+    }
 
-    // public void setComments(HashMap<Integer, Comment> comments) {
-    //     this.comments = comments;
-    // }
+    public void setComments(HashMap<Integer, Comment> comments) {
+        this.comments = comments;
+    }
 }

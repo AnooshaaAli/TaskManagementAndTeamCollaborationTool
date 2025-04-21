@@ -5,6 +5,7 @@ import com.example.demo.Models.User;
 import com.example.demo.Repositories.UserRepository;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,5 +40,9 @@ public class UserService implements UserDetailsService{
     // Method to get user by username
     public User findUserByAccountUsername(String username) {
         return userRepository.findUserByAccountUsername(username);
+    } 
+    
+    public Optional<User> getUserById(Integer userId) {
+        return userRepository.findById(userId);
     }
 }

@@ -92,6 +92,11 @@ public class TeamService {
 
         Project project = ProjectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
+        
+        if (project.getTeamLeadID()== userToRemove.getUserID()) {
+            response.put("message", "Team lead cannot remove themselves from the team.");
+            return ResponseEntity.badRequest().body(response);
+        }
 
         Team team = teamRepository.findByProject(project);
         if (team == null) {
@@ -124,6 +129,7 @@ public class TeamService {
 
         // Iterate over TeamHasMember entries and add the associated teams to the list
         for (TeamHasMember teamHasMember : teamHasMembers) {
+            System.out.println("Team ID: " + teamHasMember.getTeam().getTeamID() + " for user: " + userId);
             teams.add(teamHasMember.getTeam());
         }
 

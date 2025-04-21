@@ -1,0 +1,29 @@
+.projects-page-content {
+    padding: 1.5rem;
+  }
+  
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .projects-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .sidebar-nav li {
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .sidebar-nav li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }

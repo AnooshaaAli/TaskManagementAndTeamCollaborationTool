@@ -1,0 +1,251 @@
+/* Sidebar Styles */
+.sidebar {
+    width: 240px;
+    background-color: #0d0d12;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .sidebar-header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .logo {
+    height: 30px;
+    width: auto;
+  }
+  
+  .sidebar-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+  }
+  
+  .sidebar-nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  
+  .main-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .main-nav li {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    gap: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+  }
+  
+  .main-nav li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+  
+  .main-nav li.active {
+    color: #fff;
+    background-color: rgba(138, 43, 226, 0.2);
+    border-left: 3px solid #8a2be2;
+    padding-left: 17px; /* Adjusted for the border */
+  }
+  
+  .nav-icon {
+    opacity: 0.8;
+  }
+  
+  /* Tab Navigation - This is the new style inspired by the screenshot */
+  .tab-navigation {
+    margin-top: 20px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .tab-header {
+    padding: 0 20px;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  
+  .tab-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .tab-list li {
+    padding: 10px 20px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+  
+  .tab-list li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+  
+  .tab-list li.active {
+    color: #8a2be2;
+    font-weight: 500;
+  }
+  
+  /* User Profile and Logout */
+  .sidebar-footer {
+    padding: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .user-profile {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .avatar-container {
+    position: relative;
+  }
+  
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .status-indicator {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    bottom: 0;
+    right: 0;
+    border: 2px solid #0d0d12;
+  }
+  
+  .status-indicator.online {
+    background-color: #22c55e;
+  }
+  
+  .user-info {
+    overflow: hidden;
+  }
+  
+  .user-name {
+    margin: 0;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #fff;
+  }
+  
+  .user-role {
+    margin: 0;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .logout-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 20px;
+    padding: 8px 12px;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    width: calc(100% - 40px);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+  
+  .logout-button:hover {
+    background-color: rgba(255, 0, 0, 0.2);
+    color: #ff5e5e;
+    border-color: rgba(255, 0, 0, 0.3);
+  }
+  
+  .logout-icon {
+    opacity: 0.8;
+  }
+  
+  /* Adjust main content area to account for sidebar */
+  .dashboard-main {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+    padding: 20px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 60px;
+      overflow: hidden;
+    }
+    
+    .sidebar-header h2,
+    .main-nav li span,
+    .tab-header,
+    .tab-list li,
+    .user-info,
+    .logout-button span {
+      display: none;
+    }
+    
+    .main-nav li, 
+    .tab-list li {
+      justify-content: center;
+      padding: 12px 0;
+    }
+    
+    .main-nav li.active {
+      padding-left: 0;
+      border-left: none;
+      border-left: 3px solid transparent;
+    }
+    
+    .user-profile {
+      justify-content: center;
+      padding: 10px 0;
+    }
+    
+    .logout-button {
+      margin: 10px auto;
+      padding: 8px;
+      width: 40px;
+      justify-content: center;
+    }
+    
+    .dashboard-main {
+      margin-left: 60px;
+      width: calc(100% - 60px);
+    }
+  }
