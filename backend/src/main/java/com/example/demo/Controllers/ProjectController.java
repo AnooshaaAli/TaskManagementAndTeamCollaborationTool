@@ -1,11 +1,13 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.Models.Project;
+import com.example.demo.Models.Files;
 import com.example.demo.Models.TaskList;
 import com.example.demo.Models.Comment;
 import com.example.demo.Models.Team;
 import com.example.demo.Services.ProjectService;
 import com.example.demo.Services.TeamService;
+import com.example.demo.dto.FileInfoDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -134,6 +136,30 @@ public class ProjectController {
             }
 
             project.setComments(commentMap);
+        }
+
+        String fileApiUrl = "http://localhost:8080/files/project/" + id;
+
+        ResponseEntity<HashMap<Integer, FileInfoDTO>> filesResponse = restTemplate.exchange(
+                fileApiUrl,
+                HttpMethod.GET,
+                entity,
+                new ParameterizedTypeReference<HashMap<Integer, FileInfoDTO>>() {
+                });
+
+        if (filesResponse.getBody() != null) {
+            HashMap<Integer, FileInfoDTO> dtoMap = filesResponse.getBody();
+            HashMap<Integer, Files> fileMap = new HashMap<>();
+
+            for (Map.Entry<Integer, FileInfoDTO> entry : dtoMap.entrySet()) {
+                FileInfoDTO dto = entry.getValue();
+                Files file = new Files();
+                file.setFileID(dto.getFileID());
+                file.setFileName(dto.getFileName());
+                fileMap.put(entry.getKey(), file);
+            }
+
+            project.setFiles(fileMap);
         }
 
         return ResponseEntity.ok(project);

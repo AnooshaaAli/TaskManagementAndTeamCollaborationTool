@@ -11,6 +11,7 @@ import Button from '../components/Button';
 import CreateComment from './CreateComment.jsx';
 import Comment from './Comment.jsx';
 import UploadFile from './UploadFile.jsx'
+import FileItem from './FileItem.jsx';
 
 function Project({ id }) {
     const [project, setProject] = useState(null);
@@ -152,6 +153,17 @@ function Project({ id }) {
     const toggleTab = (tabName) => {
         setActiveTab(currentTab => currentTab === tabName ? null : tabName);
     };
+
+    const addFileToProject = (newFile) => {
+        setProject(prev => ({
+            ...prev,
+            files: {
+                ...prev.files,
+                [newFile.fileID]: newFile
+            }
+        }));
+    };
+
 
     if (loading) {
         return (
@@ -317,6 +329,9 @@ function Project({ id }) {
                         </div>    
                         
                         <div className="file-list">
+                              {project.files && Object.values(project.files).map(file => (
+                              <FileItem key={file.fileID} file={file} />
+                          ))}
                             {/* Files list will go here */}
                             <div className="no-content">
                                 No files uploaded yet.
@@ -324,7 +339,7 @@ function Project({ id }) {
                         </div>
                         
                         <div className="sidebar-footer">
-                            <UploadFile projectID={id} />
+                          <UploadFile projectID={id} onFileUploaded={addFileToProject} />
                         </div>
                     </div>
                 )}

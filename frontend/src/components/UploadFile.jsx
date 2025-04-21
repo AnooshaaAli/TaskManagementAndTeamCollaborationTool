@@ -1,11 +1,13 @@
-import React, { useState, useRef } from "react";
 import "../styles/file.css";
 import { Upload, X, Check, AlertCircle } from "lucide-react";
+import React, { useState, useEffect, useRef } from 'react';
 
-function UploadFile({ projectID }) {
+function UploadFile({ projectID, onFileUploaded }) {
     const [file, setFile] = useState(null);
     const [message, setMessage] = useState("");
     const [status, setStatus] = useState("idle"); // idle, loading, success, error
+    const fileInputRef = useRef(null);
+
     const fileInputRef = useRef(null);
 
     const handleFileChange = (e) => {
@@ -46,7 +48,7 @@ function UploadFile({ projectID }) {
             });
 
             if (response.ok) {
-                const data = await response.json();
+                const newFile = await response.json(); // Assume server returns the uploaded file info
                 setFile(null);
                 setStatus("success");
                 setMessage(`File uploaded successfully!`);
@@ -59,6 +61,8 @@ function UploadFile({ projectID }) {
                     setMessage("");
                     setStatus("idle");
                 }, 3000);
+              
+                onFileUploaded?.(newFile);
             } else {
                 const errorText = await response.text();
                 setStatus("error");
@@ -141,6 +145,6 @@ function UploadFile({ projectID }) {
             )}
         </div>
     );
-};
+}
 
 export default UploadFile;
