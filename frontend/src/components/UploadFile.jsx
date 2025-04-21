@@ -8,8 +8,6 @@ function UploadFile({ projectID, onFileUploaded }) {
     const [status, setStatus] = useState("idle"); // idle, loading, success, error
     const fileInputRef = useRef(null);
 
-    const fileInputRef = useRef(null);
-
     const handleFileChange = (e) => {
         if (e.target.files[0]) {
             setFile(e.target.files[0]);
