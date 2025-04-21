@@ -5,7 +5,8 @@ import DeleteProject from './DeleteProject.jsx';
 import AddMember from './AddMemberModal.jsx';
 import RemoveMember from './RemoveMemberModal.jsx';
 import "../styles/project.css";
-import { Folder, Loader, Plus, Trash2, UserPlus, UserMinus, Users } from 'lucide-react';
+import "../styles/comments.css";
+import { Folder, Loader, UserPlus, UserMinus, Users, MessageSquare, X, FileText } from 'lucide-react';
 import Button from '../components/Button';
 import CreateComment from './CreateComment.jsx';
 import Comment from './Comment.jsx';
@@ -20,6 +21,7 @@ function Project({ id }) {
     const [showRemoveMember, setShowRemoveMember] = useState(false);
     const [currentUserId, setCurrentUserId] = useState(null);
     const [isTeamLead, setIsTeamLead] = useState(false);
+    const [activeTab, setActiveTab] = useState(null); // null means no sidebar is open
 
     // project data
     useEffect(() => {
@@ -28,7 +30,7 @@ function Project({ id }) {
         fetch(`http://localhost:8080/projects/${id}`, {
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${token}`, // Attach the token
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
             }
         })
@@ -69,7 +71,6 @@ function Project({ id }) {
                 const userData = await response.json();
                 console.log("✅ User Data Fetched:", userData);
 
-                // Pass userData.userId immediately instead of relying on currentUserId
                 setCurrentUserId(userData.userID);
 
             } catch (error) {
@@ -103,8 +104,8 @@ function Project({ id }) {
                 return response.json();
             })
             .then(data => {
-                console.log("isTeamLead:", data); // Expected: { isTeamLead: true/false }
-                setIsTeamLead(data.isTeamLead); // You should use state here!
+                console.log("isTeamLead:", data);
+                setIsTeamLead(data.isTeamLead);
             })
             .catch(error => {
                 console.error("Error while checking team lead:", error);
@@ -139,7 +140,6 @@ function Project({ id }) {
         }));
     };
 
-
     const updateListInProject = (updatedList) => {
         setProject(prev => ({
             ...prev,
@@ -148,6 +148,10 @@ function Project({ id }) {
                 [updatedList.listID]: updatedList
             }
         }));
+    };
+
+    const toggleTab = (tabName) => {
+        setActiveTab(currentTab => currentTab === tabName ? null : tabName);
     };
 
     const addFileToProject = (newFile) => {
@@ -185,6 +189,8 @@ function Project({ id }) {
         return <div>No project found</div>;
     }
 
+    const commentCount = project.comments ? Object.values(project.comments).length : 0;
+
     return (
         <div className="project-wrapper">
             <div className="project-header">
@@ -192,40 +198,53 @@ function Project({ id }) {
                     <Folder size={24} />
                     <h2>{project.name}</h2>
                 </div>
-                {isTeamLead && (
-                    <div className="member-actions">
-                        <Button
-                            variant="outline"
-                            className="member-button"
-                            onClick={() => {
-                                if (!currentUserId) {
-                                    console.warn("⚠️ Cannot add member, currentUserId is still null!");
-                                    return;
-                                }
-                                setShowAddMember(true);
-                            }}
-                        >
-                            <UserPlus size={16} className="member-icon" />
-                            <span>Add Member</span>
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="member-button"
-                            onClick={() => setShowRemoveMember(true)}
-                        >
-                            <UserMinus size={16} className="member-icon" />
-                            <span>Remove Member</span>
-                        </Button>
-                    </div>
-                )}
-                {isTeamLead && (
-                    <div className="project-actions">
-                        <DeleteProject
-                            projectID={id}
-                            onDelete={() => { setProject(null); }}
-                        />
-                    </div>
-                )}
+                
+                <div className="tabs-container">
+                    <button 
+                        className={`tab ${activeTab === 'comments' ? 'active' : ''}`}
+                        onClick={() => toggleTab('comments')}
+                    >
+                        <MessageSquare size={16} />
+                        <span>Comments</span>
+                        {commentCount > 0 && (
+                            <span className="tab-badge">{commentCount}</span>
+                        )}
+                    </button>
+                    
+                    <button 
+                        className={`tab ${activeTab === 'files' ? 'active' : ''}`}
+                        onClick={() => toggleTab('files')}
+                    >
+                        <FileText size={16} />
+                        <span>Files</span>
+                    </button>
+                    
+                    {isTeamLead && (
+                        <>
+                            <button 
+                                className="tab"
+                                onClick={() => {
+                                    if (!currentUserId) {
+                                        console.warn("⚠️ Cannot add member, currentUserId is still null!");
+                                        return;
+                                    }
+                                    setShowAddMember(true);
+                                }}
+                            >
+                                <UserPlus size={16} />
+                                <span>Add Member</span>
+                            </button>
+                            
+                            <button 
+                                className="tab"
+                                onClick={() => setShowRemoveMember(true)}
+                            >
+                                <UserMinus size={16} />
+                                <span>Remove Member</span>
+                            </button>
+                        </>
+                    )}
+                </div>
             </div>
 
             <div className="project-info">
@@ -233,39 +252,97 @@ function Project({ id }) {
                     <Users size={16} />
                     <span>{project.teamSize || project.members?.length || 0} members</span>
                 </div>
+                
+                <div className="project-actions">
+                    {isTeamLead && (
+                        <DeleteProject
+                            projectID={id}
+                            onDelete={() => {setProject(null);}}
+                        />
+                    )}
+                </div>
             </div>
 
-            <div className="project-board">
-                {project.lists && Object.values(project.lists).map(list => (
-                    <List
-                        key={list.listID}
-                        list={list}
-                        onDelete={deleteListFromProject}
-                        onUpdate={updateListInProject}
-                    />
-                ))}
-
-                <CreateList
-                    projectID={id}
-                    onListCreated={addListToProject}
-                />
-
-                <h3>Comments</h3>
-                {project.comments && Object.values(project.comments).map(comment => (
-                    <Comment key={comment.commentID} comment={comment} />
-                ))}
-
-                <CreateComment userID={currentUserId} projectID={id} onCommentCreated={addCommentToProject} />
-
-                <div>
-                    <h3>Files</h3>
-                    {project.files && Object.values(project.files).map(file => (
-                        <FileItem key={file.fileID} file={file} />
+            <div className="project-content-wrapper">
+                <div className={`project-board ${activeTab ? 'with-sidebar' : ''}`}>
+                    {project.lists && Object.values(project.lists).map(list => (
+                        <List
+                            key={list.listID}
+                            list={list}
+                            onDelete={deleteListFromProject}
+                            onUpdate={updateListInProject}
+                        />
                     ))}
-                    <UploadFile projectID={id} onFileUploaded={addFileToProject} />
+
+                    <CreateList
+                        projectID={id}
+                        onListCreated={addListToProject}
+                    />
                 </div>
 
+                {activeTab === 'comments' && (
+                    <div className="sidebar">
+                        <div className="sidebar-header">
+                            <h3>Comments</h3>
+                            <Button 
+                                variant="ghost" 
+                                className="close-sidebar"
+                                onClick={() => setActiveTab(null)}
+                            >
+                                <X size={12} />
+                            </Button>
+                        </div>
+                        
+                        <div className="comment-list">
+                            {commentCount > 0 ? (
+                                Object.values(project.comments).map(comment => (
+                                    <Comment key={comment.commentID} comment={comment} />
+                                ))
+                            ) : (
+                                <div className="no-content">
+                                    No comments yet. Be the first to add one!
+                                </div>
+                            )}
+                        </div>
+                        
+                        <div className="sidebar-footer">
+                            <CreateComment 
+                                userID={currentUserId} 
+                                projectID={id} 
+                                onCommentCreated={addCommentToProject} 
+                            />
+                        </div>
+                    </div>
+                )}
 
+                {activeTab === 'files' && (
+                    <div className="sidebar">
+                        <div className="sidebar-header">
+                            <h3>Files</h3>
+                            <Button 
+                                variant="ghost" 
+                                className="close-sidebar"
+                                onClick={() => setActiveTab(null)}
+                            >
+                                <X size={12} />
+                            </Button>
+                        </div>    
+                        
+                        <div className="file-list">
+                              {project.files && Object.values(project.files).map(file => (
+                              <FileItem key={file.fileID} file={file} />
+                          ))}
+                            {/* Files list will go here */}
+                            <div className="no-content">
+                                No files uploaded yet.
+                            </div>
+                        </div>
+                        
+                        <div className="sidebar-footer">
+                          <UploadFile projectID={id} onFileUploaded={addFileToProject} />
+                        </div>
+                    </div>
+                )}
             </div>
 
             {showAddMember && (
