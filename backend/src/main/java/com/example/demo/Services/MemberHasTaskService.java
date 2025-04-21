@@ -24,9 +24,10 @@ public class MemberHasTaskService {
     private TeamRepository teamHasMemberRepository;
 
     public boolean assignTaskToMember(int taskID, int memberID) {
-        if (memberHasTaskRepository.existsByTask_TaskIDAndMember_UserID(taskID, memberID)) {
-            return false; // Already assigned
+        if (memberHasTaskRepository.existsByTask_TaskID(taskID)) {
+            return false; // Task is already assigned to someone
         }
+
 
         User member = userRepository.findById(memberID).orElse(null);
         Task task = taskRepository.findById(taskID).orElse(null);

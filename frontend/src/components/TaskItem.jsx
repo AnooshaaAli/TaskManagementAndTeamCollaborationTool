@@ -5,7 +5,7 @@ import EditTask from "./EditTask";
 import DeleteTask from "./DeleteTask";
 import AssignTask from "./AssignTask";
 
-const TaskItem = ({ task, onEdit, onDeleteSuccess }) => {
+const TaskItem = ({ task, onEdit, onDelete }) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const getStatusClass = (status) => {
