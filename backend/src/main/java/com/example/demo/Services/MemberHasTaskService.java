@@ -8,6 +8,10 @@ import com.example.demo.Repositories.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.Repositories.TaskListRepository;
+import com.example.demo.Repositories.ProjectRepository;
+import com.example.demo.Repositories.NotificationRepository;
+
 @Service
 public class MemberHasTaskService {
 
@@ -23,6 +27,16 @@ public class MemberHasTaskService {
     @Autowired
     private TeamRepository teamHasMemberRepository;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
+    private TaskListRepository taskListRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+
+
     public boolean assignTaskToMember(int taskID, int memberID) {
         if (memberHasTaskRepository.existsByTask_TaskID(taskID)) {
             return false; // Task is already assigned to someone
@@ -36,6 +50,20 @@ public class MemberHasTaskService {
 
         MemberHasTask assignment = new MemberHasTask(member, task);
         memberHasTaskRepository.save(assignment);
+
+        // Send Notification
+        int listID = task.getListID();
+        Integer projectID = taskListRepository.findById(listID)
+                                .map(list -> list.getProjectID())
+                                .orElse(null);
+
+        if (projectID != null) {
+            Project project = projectRepository.findById(projectID).orElse(null);
+            String content = "You have been assigned a new task: \"" + task.getTitle() + "\" in project \"" + project.getName() + "\".";
+            Notification notification = new Notification(content, project, member);
+            notificationRepository.save(notification);
+        }
+
         return true;
     }
     

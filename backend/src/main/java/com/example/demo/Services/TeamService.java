@@ -19,6 +19,8 @@ import com.example.demo.Repositories.ProjectRepository;
 import com.example.demo.Repositories.TeamHasMemberRepository;
 import com.example.demo.Repositories.TeamRepository;
 import com.example.demo.Repositories.UserRepository;
+import com.example.demo.Repositories.NotificationRepository;
+import com.example.demo.Models.Notification;
 
 @Service
 public class TeamService {
@@ -34,6 +36,9 @@ public class TeamService {
 
     @Autowired
     private ProjectRepository ProjectRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Transactional
     public String addMemberToProject(String searchInput, int currentUserId, int projectId) {
@@ -65,6 +70,11 @@ public class TeamService {
         }
 
         teamHasMemberRepository.save(new TeamHasMember(team, newMember));
+        // Send notification
+        String content = "You have been added to the project \"" + project.getName() + "\" as a team member.";
+        Notification notification = new Notification(content, project, newMember);
+        notificationRepository.save(notification);
+
         return "User successfully added to the team.";
     }
 
