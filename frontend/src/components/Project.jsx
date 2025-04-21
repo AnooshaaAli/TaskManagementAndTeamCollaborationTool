@@ -10,6 +10,7 @@ import Button from '../components/Button';
 import CreateComment from './CreateComment.jsx';
 import Comment from './Comment.jsx';
 import UploadFile from './UploadFile.jsx'
+import FileItem from './FileItem.jsx';
 
 function Project({ id }) {
     const [project, setProject] = useState(null);
@@ -149,6 +150,17 @@ function Project({ id }) {
         }));
     };
 
+    const addFileToProject = (newFile) => {
+        setProject(prev => ({
+            ...prev,
+            files: {
+                ...prev.files,
+                [newFile.fileID]: newFile
+            }
+        }));
+    };
+
+
     if (loading) {
         return (
             <div className="project-loading">
@@ -210,7 +222,7 @@ function Project({ id }) {
                     <div className="project-actions">
                         <DeleteProject
                             projectID={id}
-                            onDelete={() => {setProject(null);}}
+                            onDelete={() => { setProject(null); }}
                         />
                     </div>
                 )}
@@ -245,7 +257,15 @@ function Project({ id }) {
 
                 <CreateComment userID={currentUserId} projectID={id} onCommentCreated={addCommentToProject} />
 
-                <UploadFile projectID={id} />
+                <div>
+                    <h3>Files</h3>
+                    {project.files && Object.values(project.files).map(file => (
+                        <FileItem key={file.fileID} file={file} />
+                    ))}
+                    <UploadFile projectID={id} onFileUploaded={addFileToProject} />
+                </div>
+
+
             </div>
 
             {showAddMember && (
