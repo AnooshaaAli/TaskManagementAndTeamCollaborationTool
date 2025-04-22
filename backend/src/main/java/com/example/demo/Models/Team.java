@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class Team {
     @Id
@@ -17,15 +19,24 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private Set<TeamHasMember> members = new HashSet<>();
 
-    public Team() {}
+    public Team() {
+    }
 
     public Team(Project project) {
         this.project = project;
     }
 
-    public int getTeamID() { return teamID; }
-    public Project getProject() { return project; }
-    public Set<TeamHasMember> getMembers() { return members; }
+    public int getTeamID() {
+        return teamID;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public Set<TeamHasMember> getMembers() {
+        return members;
+    }
 
     public void setProjectId(int projectId) {
         if (this.project == null) {
@@ -34,5 +45,5 @@ public class Team {
         }
         System.out.println("Setting Project ID: " + projectId);
         this.project.setProjectID(projectId);
-    }    
+    }
 }
