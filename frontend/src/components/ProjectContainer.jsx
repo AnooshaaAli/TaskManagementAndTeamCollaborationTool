@@ -14,11 +14,12 @@ const ProjectContainer = ({ userID }) => {
         if (!userID) return;
         fetchProjects();
     }, [userID]);
-    
+
     const fetchProjects = () => {
         setIsLoading(true);
         const token = localStorage.getItem("jwtToken");
-    
+        console.log("user id: " + userID)
+
         fetch("http://localhost:8080/projects/user/" + userID, {
             method: "GET",
             headers: {
@@ -30,10 +31,10 @@ const ProjectContainer = ({ userID }) => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-    
-                const text = await response.text(); 
+
+                const text = await response.text();
                 const data = text ? JSON.parse(text) : {};
-    
+
                 console.log("Fetched projects:", data);
                 setProjects(Object.values(data));
                 setIsLoading(false);
@@ -42,7 +43,7 @@ const ProjectContainer = ({ userID }) => {
                 console.error("Error fetching projects:", error);
                 setIsLoading(false);
             });
-    };    
+    };
 
     const addProject = (newProject) => {
         setProjects(prev => [...prev, newProject]);
@@ -50,8 +51,8 @@ const ProjectContainer = ({ userID }) => {
 
     const handleBackToProjects = () => {
         setSelectedProject(null);
-        fetchProjects(); 
-    };    
+        fetchProjects();
+    };
 
     const filteredProjects = projects;
 

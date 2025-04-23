@@ -8,6 +8,8 @@ import com.example.demo.Models.Team;
 import com.example.demo.Services.ProjectService;
 import com.example.demo.Services.TeamService;
 import com.example.demo.dto.FileInfoDTO;
+import com.example.demo.dto.TeamProjectDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -186,16 +188,16 @@ public class ProjectController {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", authHeader);
 
-        // Make the GET request to the TeamController
-        ResponseEntity<List<Team>> teamsResponse = restTemplate.exchange(
+        // Make the GET request to the TeamController for DTOs
+        ResponseEntity<List<TeamProjectDTO>> teamsResponse = restTemplate.exchange(
                 teamUrl,
                 HttpMethod.GET,
                 new org.springframework.http.HttpEntity<>(headers),
-                new ParameterizedTypeReference<List<Team>>() {
+                new ParameterizedTypeReference<List<TeamProjectDTO>>() {
                 });
 
         if (teamsResponse.getStatusCode().is2xxSuccessful()) {
-            List<Team> teams = teamsResponse.getBody();
+            List<TeamProjectDTO> teams = teamsResponse.getBody();
             if (teams == null) {
                 log.warn("No teams found for userId " + userId);
                 teams = Collections.emptyList();
@@ -204,15 +206,16 @@ public class ProjectController {
             System.out.println("----------------------" + userId);
             System.out.println("Number of teams: " + teams.size());
 
-            // Now, for each team, fetch the associated projects
-            for (Team team : teams) {
+            for (TeamProjectDTO team : teams) {
                 System.out.println("Team id: " + team.getTeamID());
-                // Get project associated with the team
-                Project teamProject = team.getProject();
-                // Add the team project to the map if it exists
-                if (teamProject != null) {
-                    projectMap.put(teamProject.getProjectID(), teamProject);
-                }
+                System.out.println("Project id: " + team.getProjectID());
+                Optional<Project> projectOptional = projectService.getProjectById(team.getProjectID());
+
+                // If project exists, add it to the projectMap
+                projectOptional.ifPresent(project -> {
+                    System.out.println("Adding project with ID: " + project.getProjectID() + " to project map.");
+                    projectMap.put(project.getProjectID(), project);
+                });
             }
         }
 
