@@ -60,14 +60,6 @@ const ProjectContainer = ({ userID }) => {
         <div className="projects-container">
             <div className="card-header">
                 <h3>Project Dashboard</h3>
-                {!selectedProject && (
-                    <div className="header-actions">
-                        <div className="filter-dropdown">
-                            <ListFilter size={16} />
-                            <span>Filter</span>
-                        </div>
-                    </div>
-                )}
             </div>
 
             {selectedProject ? (
