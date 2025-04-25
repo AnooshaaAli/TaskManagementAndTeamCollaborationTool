@@ -41,8 +41,9 @@ public class ProjectController {
     private RestTemplate restTemplate;
 
     @Autowired
-    public ProjectController(ProjectService projectService, TeamService teamService) {
+    public ProjectController(ProjectService projectService, TeamService teamService, RestTemplate restTemplate) {
         this.projectService = projectService;
+        this.restTemplate = restTemplate;
     }
 
     // POST: Create a new project
@@ -228,6 +229,7 @@ public class ProjectController {
         // Return the projects the user is part of (both lead and member)
         return ResponseEntity.ok(projectMap);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Project> deleteProject(@PathVariable int id,

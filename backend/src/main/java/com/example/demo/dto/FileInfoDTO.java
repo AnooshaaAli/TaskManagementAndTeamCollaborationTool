@@ -4,6 +4,10 @@ public class FileInfoDTO {
     private Integer fileID;
     private String fileName;
 
+    public FileInfoDTO() {
+
+    }
+
     public FileInfoDTO(Integer fileID, String fileName) {
         this.fileID = fileID;
         this.fileName = fileName;
