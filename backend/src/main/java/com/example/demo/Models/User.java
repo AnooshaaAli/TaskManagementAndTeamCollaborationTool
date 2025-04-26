@@ -50,11 +50,16 @@ public class User {
         return account != null ? account.getPassword() : null;
     }
 
-    public void setUsername(String username) {
-        this.account.setUsername(username);
-    }
 
     public void setEmail(String email) {
-        this.account.setEmail(email);
+        if (account != null) {
+            account.setEmail(email);
+        }
+    }
+
+    public void setUsername(String username) {
+        if (account != null) {
+            account.setUsername(username);
+        }
     }
 }

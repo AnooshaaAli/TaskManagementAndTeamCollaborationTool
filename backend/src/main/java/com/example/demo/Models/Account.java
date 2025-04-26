@@ -46,8 +46,12 @@ public class Account {
         return email;
     }
 
-    public void setId(int i) {
-        this.accountID = i;
+    public void setId(int id) {
+        this.accountID = id;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setUsername(String username) {
@@ -56,9 +60,5 @@ public class Account {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setPassword(String pswrd) {
-        this.password = pswrd;
     }
 }

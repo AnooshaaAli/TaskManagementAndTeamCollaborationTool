@@ -111,6 +111,11 @@ public class TeamService {
         }
 
         teamHasMemberRepository.delete(teamMember.get());
+        // Send notification
+        String content = "You have been remove from the project \"" + project.getName() + "\" as a team member.";
+        Notification notification = new Notification(content, project, userToRemove);
+        notificationRepository.save(notification);
+
         response.put("message", "User successfully removed from the team.");
         return ResponseEntity.ok(response);
     }
