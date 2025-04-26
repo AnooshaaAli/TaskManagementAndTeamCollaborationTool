@@ -6,6 +6,7 @@ import com.example.demo.Models.Comment;
 import com.example.demo.Models.Files;
 import com.example.demo.Services.ProjectService;
 import com.example.demo.dto.FileInfoDTO;
+import com.example.demo.dto.TeamProjectDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -207,6 +208,64 @@ public class ProjectControllerTest {
                 verify(restTemplate, times(1)).exchange(eq(deleteTeamUrl), eq(HttpMethod.DELETE), any(HttpEntity.class),
                                 eq(Void.class));
                 verify(projectService, times(1)).deleteProject(projectId);
+        }
+
+        @Test
+        void testGetProjectsByUserId_success() {
+                // Arrange
+                int userId = 123;
+
+                // Mock projects where the user is the team lead
+                Project leadProject = new Project();
+                leadProject.setProjectID(1);
+                leadProject.setName("Lead Project");
+
+                when(projectService.getProjectsByTeamLead(userId)).thenReturn(List.of(leadProject));
+
+                // Mock team projects the user is a member of
+                TeamProjectDTO teamDto = new TeamProjectDTO(10,2);
+
+                List<TeamProjectDTO> teamDtoList = List.of(teamDto);
+
+                ResponseEntity<List<TeamProjectDTO>> teamsResponse = new ResponseEntity<>(teamDtoList, HttpStatus.OK);
+                when(restTemplate.exchange(
+                                eq("http://localhost:8080/api/team/user/" + userId),
+                                eq(HttpMethod.GET),
+                                any(HttpEntity.class),
+                                ArgumentMatchers.<ParameterizedTypeReference<List<TeamProjectDTO>>>any()))
+                                .thenReturn(teamsResponse);
+
+                // Mock the project returned from team membership
+                Project memberProject = new Project();
+                memberProject.setProjectID(2);
+                memberProject.setName("Member Project");
+
+                when(projectService.getProjectById(2)).thenReturn(Optional.of(memberProject));
+
+                // Act
+                ResponseEntity<HashMap<Integer, Project>> response = projectController.getProjectsByUserId(userId,
+                                AUTH_HEADER);
+
+                // Assert
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertNotNull(response.getBody());
+                HashMap<Integer, Project> projectMap = response.getBody();
+                assertEquals(2, projectMap.size());
+
+                assertTrue(projectMap.containsKey(1));
+                assertTrue(projectMap.containsKey(2));
+
+                assertEquals("Lead Project", projectMap.get(1).getName());
+                assertEquals("Member Project", projectMap.get(2).getName());
+
+                // Verify calls
+                verify(projectService, times(1)).getProjectsByTeamLead(userId);
+                verify(restTemplate, times(1)).exchange(
+                                eq("http://localhost:8080/api/team/user/" + userId),
+                                eq(HttpMethod.GET),
+                                any(HttpEntity.class),
+                                ArgumentMatchers.<ParameterizedTypeReference<List<TeamProjectDTO>>>any());
+                verify(projectService, times(1)).getProjectById(2);
         }
 
 }

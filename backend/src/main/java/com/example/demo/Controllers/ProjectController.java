@@ -81,15 +81,6 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
     }
 
-    // GET: Get all projects
-    @GetMapping
-    public HashMap<Integer, Project> getAllProjects() {
-        List<Project> projects = projectService.getAllProjects();
-
-        // Convert List to HashMap
-        return new HashMap<>(projects.stream()
-                .collect(Collectors.toMap(Project::getProjectID, project -> project)));
-    }
 
     // GET: Get a project by ID
     @GetMapping("/{id}")
