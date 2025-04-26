@@ -49,4 +49,16 @@ public class User {
     public String getPassword() {
         return account != null ? account.getPassword() : null;
     }
+
+    public void setEmail(String email) {
+        if (account != null) {
+            account.setEmail(email);
+        }
+    }
+
+    public void setUsername(String username) {
+        if (account != null) {
+            account.setUsername(username);
+        }
+    }
 }
