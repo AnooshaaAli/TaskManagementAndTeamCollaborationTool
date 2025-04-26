@@ -46,4 +46,12 @@ public class Team {
         System.out.println("Setting Project ID: " + projectId);
         this.project.setProjectID(projectId);
     }
+
+    public void setTeamID(int i) {
+        this.teamID = i;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
 }

@@ -31,4 +31,12 @@ public class TeamHasMember {
     public User getUser() {
         return user;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 }

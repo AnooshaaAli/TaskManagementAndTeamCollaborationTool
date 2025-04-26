@@ -49,4 +49,12 @@ public class User {
     public String getPassword() {
         return account != null ? account.getPassword() : null;
     }
+
+    public void setUsername(String username) {
+        this.account.setUsername(username);
+    }
+
+    public void setEmail(String email) {
+        this.account.setEmail(email);
+    }
 }
