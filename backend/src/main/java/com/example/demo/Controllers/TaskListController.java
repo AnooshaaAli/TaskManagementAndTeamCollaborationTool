@@ -64,10 +64,6 @@ public class TaskListController {
         return ResponseEntity.ok(taskList);
     }
 
-    @GetMapping
-    public ResponseEntity<List<TaskList>> getAllTaskLists() {
-        return ResponseEntity.ok(taskListService.getAllTaskLists());
-    }
 
     @GetMapping("/project/{projectID}")
     public ResponseEntity<HashMap<Integer, TaskList>> getTaskListsByProject(@PathVariable int projectID,
@@ -103,13 +99,6 @@ public class TaskListController {
         }
 
         return ResponseEntity.ok(taskLists);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<TaskList> updateTaskList(@PathVariable int id, @RequestBody TaskList updatedTaskList) {
-        return taskListService.updateTaskList(id, updatedTaskList)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

@@ -47,8 +47,5 @@
       "!src/reportWebVitals.js",
       "!src/setupTests.js"
     ]
-  },
-  "devDependencies": {
-    "jest": "^29.7.0"
   }
 }
