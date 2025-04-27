@@ -66,5 +66,16 @@ public class MemberHasTaskService {
 
         return true;
     }
+
+    // Remove the task from the assigned member when it's completed
+    public void removeTaskFromAssignedMember(int taskID) {
+        // Find the assignment of the task to the member (there should only be one assignment)
+        MemberHasTask assignment = memberHasTaskRepository.findByTask_TaskID(taskID);
+
+        // If an assignment exists, delete it
+        if (assignment != null) {
+            memberHasTaskRepository.delete(assignment);
+        }
+    }
     
 }

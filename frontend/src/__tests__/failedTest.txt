@@ -1,0 +1,38 @@
+Edit task
+test("calls onTaskUpdated after successful save", async () => {
+        global.fetch = jest.fn(() =>
+          Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({}),
+          })
+        );
+      
+        render(<EditTask task={sampleTask} onTaskUpdated={mockOnTaskUpdated} />);
+      
+        // Use getByRole for the save button instead of container.querySelector
+        const saveButton = screen.getByRole("button", { name: /save/i });
+        fireEvent.click(saveButton);
+      
+        await waitFor(() => {
+          expect(mockOnTaskUpdated).toHaveBeenCalled();
+        });
+      });
+
+test("does not call onTaskUpdated if title is empty", async () => {
+        global.fetch = jest.fn();
+      
+        render(<EditTask task={sampleTask} onTaskUpdated={mockOnTaskUpdated} />);
+      
+        const titleInput = screen.getByDisplayValue("Sample Task");
+        fireEvent.change(titleInput, { target: { value: " " } }); // empty after trim
+      
+        // Use getByRole for the save button instead of container.querySelector
+        const saveButton = screen.getByRole("button", { name: /save/i });
+        fireEvent.click(saveButton);
+      
+        await waitFor(() => {
+          expect(global.fetch).not.toHaveBeenCalled();
+          expect(mockOnTaskUpdated).not.toHaveBeenCalled();
+        });
+      });
+
