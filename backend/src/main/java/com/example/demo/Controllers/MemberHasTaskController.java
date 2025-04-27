@@ -1,6 +1,7 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.Services.MemberHasTaskService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.Services.TaskService;
@@ -14,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 import java.util.HashMap;
-
+import java.util.List;
 
 @RestController
 @RequestMapping("/assign")
@@ -50,7 +51,6 @@ public class MemberHasTaskController {
         return ResponseEntity.ok(response);
     }
 
-
     @PostMapping
     public String assignTask(@RequestParam int taskID, @RequestParam int memberID) {
         Task task = taskService.getTaskById(taskID);
@@ -75,6 +75,27 @@ public class MemberHasTaskController {
 
         boolean success = memberHasTaskService.assignTaskToMember(taskID, memberID);
         return success ? "Task assigned successfully." : "Task already assigned or invalid IDs.";
+    }
+
+    @GetMapping("/assignedTasks")
+    public ResponseEntity<?> getTasksByMemberID(@RequestParam int memberID) {
+        System.out.println("--------------------------entered assignedtasks");
+        List<Integer> taskIDs = memberHasTaskService.getTaskIdsByMemberId(memberID);
+
+        if (taskIDs.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tasks found for this member.");
+        }
+
+        HashMap<Integer, Task> tasksMap = new HashMap<>();
+
+        for (Integer taskID : taskIDs) {
+            Task task = taskService.getTaskById(taskID);
+            if (task != null) {
+                tasksMap.put(taskID, task);
+            }
+        }
+
+        return ResponseEntity.ok(tasksMap);
     }
 
 }
