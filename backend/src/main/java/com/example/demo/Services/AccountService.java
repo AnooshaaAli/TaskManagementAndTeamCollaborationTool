@@ -25,4 +25,13 @@ public class AccountService {
     public Optional<Account> getAccountByEmail(String email) {
         return accountRepository.findByEmail(email);
     }
+
+    public Optional<Account> getAccountById(Integer accountID) {
+        return accountRepository.findById(accountID);
+    }
+
+    // Method to update an existing account
+    public Account updateAccount(Account account) {
+        return accountRepository.save(account); // Save the updated account back to the repository
+    }
 }

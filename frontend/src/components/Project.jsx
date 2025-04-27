@@ -12,6 +12,7 @@ import CreateComment from './CreateComment.jsx';
 import Comment from './Comment.jsx';
 import UploadFile from './UploadFile.jsx'
 import FileItem from './FileItem.jsx';
+import ViewTeam from './ViewTeam.jsx';
 
 function Project({ id }) {
     const [project, setProject] = useState(null);
@@ -180,9 +181,9 @@ function Project({ id }) {
                     "Content-Type": "application/json"
                 }
             });
-    
+
             if (!response.ok) throw new Error("Failed to delete project");
-    
+
             setProject(null); // or whatever your delete handler is
         } catch (error) {
             console.error("Error deleting project:", error);
@@ -230,10 +231,10 @@ function Project({ id }) {
                         className={`tab ${activeTab === 'comments' ? 'active' : ''}`}
                         onClick={() => toggleTab('comments')}
                     >
-                    <div className="comment-svg">
-                        <MessageSquare size={16} />
-                    </div>    
-                            <span className="tab-text">Comments</span>
+                        <div className="comment-svg">
+                            <MessageSquare size={16} />
+                        </div>
+                        <span className="tab-text">Comments</span>
                         {commentCount > 0 && (
                             <span className="tab-badge">{commentCount}</span>
                         )}
@@ -243,9 +244,9 @@ function Project({ id }) {
                         className={`tab ${activeTab === 'files' ? 'active' : ''}`}
                         onClick={() => toggleTab('files')}
                     >
-                    <div className="file-svg">
-                        <FileText size={16} />
-                    </div>    
+                        <div className="file-svg">
+                            <FileText size={16} />
+                        </div>
                         <span className="tab-text">Files</span>
                     </button>
 
@@ -261,9 +262,9 @@ function Project({ id }) {
                                     setShowAddMember(true);
                                 }}
                             >
-                            <div className="user-add-svg">
-                                <UserPlus size={16} />
-                            </div>    
+                                <div className="user-add-svg">
+                                    <UserPlus size={16} />
+                                </div>
                                 <span className="tab-text">Add Member</span>
                             </button>
 
@@ -273,19 +274,19 @@ function Project({ id }) {
                             >
                                 <div className="user-minus-svg">
                                     <UserMinus size={16} />
-                                </div>    
+                                </div>
                                 <span className="tab-text">Remove Member</span>
                             </button>
-                            
+
                             <button
                                 className="tab"
                                 onClick={() => setShowDeleteProject(true)}
                             >
                                 <div className="user-minus-svg">
                                     <Trash2 size={16} />
-                                </div>    
+                                </div>
                                 <span className="tab-text">Delete Project</span>
-                            </button>             
+                            </button>
                         </>
                     )}
                 </div>
@@ -410,7 +411,7 @@ function Project({ id }) {
                     isLoading={isDeleting}
                 />
             )}
-
+            <ViewTeam projectId={id} />
         </div>
     );
 }
