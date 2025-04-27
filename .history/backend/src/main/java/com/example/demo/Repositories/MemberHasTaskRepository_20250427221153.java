@@ -11,6 +11,7 @@ public interface MemberHasTaskRepository extends JpaRepository<MemberHasTask, Me
     boolean existsByTask_TaskIDAndMember_UserID(int taskID, int memberID);
     boolean existsByTask_TaskID(int taskID);
     MemberHasTask findByTask_TaskID(int taskID);
+     boolean existsByTask_TaskID(int taskID);
      
     List<MemberHasTask> findByMember_UserID(int memberID);
 }
