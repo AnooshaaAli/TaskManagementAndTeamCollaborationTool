@@ -8,6 +8,7 @@ public class TeamProjectDTO {
         this.teamID = teamID;
         this.projectID = projectID;
     }
+    
 
     // Getters
     public int getTeamID() {

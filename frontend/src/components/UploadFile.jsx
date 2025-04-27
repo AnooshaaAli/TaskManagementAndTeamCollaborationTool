@@ -94,6 +94,7 @@ function UploadFile({ projectID, onFileUploaded }) {
                     onChange={handleFileChange} 
                     ref={fileInputRef}
                     className="file-input"
+                    aria-label="file input" 
                 />
                 
                 <div className="file-upload-dropzone" onClick={triggerFileInput}>

@@ -50,6 +50,7 @@ public class User {
         return account != null ? account.getPassword() : null;
     }
 
+
     public void setEmail(String email) {
         if (account != null) {
             account.setEmail(email);

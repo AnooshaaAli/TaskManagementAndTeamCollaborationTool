@@ -4,6 +4,7 @@ import "../styles/styles.css";
 import "../styles/dashboard.css";
 import "../styles/projects_container.css";
 import NotificationList from '../components/NotificationList';
+import TaskItem from '../components/TaskItem';
 import { PieChart, ListTodo, Users, Folder, Calendar, Star, Bell, Activity, LogOut, Moon, Sun } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,6 +17,8 @@ const DashboardPage = () => {
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [theme, setTheme] = useState('dark'); // Add theme state
+  const [tasks, setTasks] = useState([]);
+
 
   // Initialize theme from localStorage or default to dark
   useEffect(() => {
@@ -36,12 +39,12 @@ const DashboardPage = () => {
     const fetchNotifications = async () => {
       const token = localStorage.getItem("jwtToken");
       const userID = userData?.userID;
-  
+
       console.log("Fetching notifications for user:", userID);
       console.log("Using token:", token);
-  
+
       if (!userID || !token) return;
-  
+
       try {
         const response = await fetch(`http://localhost:8080/api/notifications/${userID}`, {
           headers: {
@@ -49,24 +52,24 @@ const DashboardPage = () => {
             "Content-Type": "application/json"
           }
         });
-  
+
         if (!response.ok) {
           console.error("Failed to fetch notifications:", response.status);
           return;
         }
-  
+
         const data = await response.json();
         setNotifications(data);
       } catch (err) {
         console.error("Failed to load notifications", err);
       }
     };
-  
+
     if (userData?.userID) {
       fetchNotifications();
     }
   }, [userData]);
-  
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -92,6 +95,42 @@ const DashboardPage = () => {
 
   }, []);
 
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const token = localStorage.getItem("jwtToken");
+      const userID = userData?.userID;
+
+      console.log("Fetching tasks for user:", userID);
+      console.log("Using token:", token);
+
+      if (!userID || !token) return;
+
+      try {
+        const response = await fetch(`http://localhost:8080/assign/assignedTasks?memberID=${userID}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.error("Failed to fetch tasks:", response.status);
+          return;
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setTasks(data); // store tasks in state
+      } catch (err) {
+        console.error("Failed to load tasks", err);
+      }
+    };
+
+    if (userData?.userID) {
+      fetchTasks();
+    }
+  }, [userData]);
+
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
     window.location.href = "/login";
@@ -100,6 +139,25 @@ const DashboardPage = () => {
   const navigateToProjects = () => {
     navigate('/projects');
   };
+
+  const handleEditTask = (updatedTask) => {
+    setTasks((prevTasks) => {
+      // Create a new object with the updated task
+      const updatedTasks = { ...prevTasks };
+      updatedTasks[updatedTask.taskID] = updatedTask;
+      return updatedTasks;
+    });
+  };
+
+  const handleDeleteTask = (taskID) => {
+    setTasks((prevTasks) => {
+      // Create a new object without the deleted task
+      const updatedTasks = { ...prevTasks };
+      delete updatedTasks[taskID]; // Delete the task with the given taskID
+      return updatedTasks;
+    });
+  };
+
 
   if (loading) {
     return (
@@ -271,6 +329,17 @@ const DashboardPage = () => {
               <Card className="tasks-card">
                 <div className="card-header">
                   <h3>My Tasks</h3>
+                </div>
+                <div className="task-list">
+                  {Object.values(tasks).map((task) => (
+                    <TaskItem
+                      key={task.taskID}
+                      task={task}
+                      onEdit={handleEditTask}
+                      onDelete={handleDeleteTask}
+                      isTeamLead={false}
+                    />
+                  ))}
                 </div>
                 <div className="tasks-list empty-state">
                   <div className="empty-icon">

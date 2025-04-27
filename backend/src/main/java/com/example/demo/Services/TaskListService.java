@@ -22,9 +22,6 @@ public class TaskListService {
         return taskListRepository.findById(id);
     }
 
-    public List<TaskList> getAllTaskLists() {
-        return taskListRepository.findAll();
-    }
 
     public HashMap<Integer, TaskList> getTaskListsByProjectID(int projectID) {
         List<TaskList> taskLists = taskListRepository.findByProjectID(projectID);
@@ -35,12 +32,6 @@ public class TaskListService {
         return taskListMap;
     }
 
-    public Optional<TaskList> updateTaskList(int id, TaskList updatedTaskList) {
-        return taskListRepository.findById(id).map(existingTaskList -> {
-            existingTaskList.setName(updatedTaskList.getName());
-            return taskListRepository.save(existingTaskList);
-        });
-    }
 
     public boolean deleteTaskList(int id) {
         if (taskListRepository.existsById(id)) {

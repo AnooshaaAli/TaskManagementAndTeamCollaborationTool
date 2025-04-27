@@ -21,5 +21,6 @@ public interface TeamRepository extends JpaRepository<Team, Integer> {
        "JOIN thm.team t " +
        "WHERE thm.user.id = :memberID AND t.project.id = :projectID")
     boolean isUserInTeamForProject(@Param("memberID") int memberID, @Param("projectID") int projectID);
-
+    
+    Team findByProject_ProjectID(int projectId);
 }

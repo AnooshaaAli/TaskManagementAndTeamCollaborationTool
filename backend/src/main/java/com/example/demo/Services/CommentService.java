@@ -26,10 +26,6 @@ public class CommentService {
         commentRepository.deleteById(id);
     }
 
-    public List<Comment> getAllComments() {
-        return commentRepository.findAll();
-    }
-
     public Optional<Comment> getCommentById(int id) {
         return commentRepository.findById(id);
     }
@@ -38,7 +34,4 @@ public class CommentService {
         return commentRepository.findByProjectID(projectId);
     }
 
-    public List<Comment> getCommentsByUserId(int userId) {
-        return commentRepository.findByUserID(userId);
-    }
 }
