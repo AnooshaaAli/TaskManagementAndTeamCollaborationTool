@@ -22,7 +22,7 @@ public class NotificationController {
 
     @GetMapping("/{userID}")
     public ResponseEntity<List<Notification>> getNotifications(@PathVariable int userID) {
-        System.out.println("🟢 Controller hit with userID: " + userID);
+        System.out.println("Controller hit with userID: " + userID);
         List<Notification> notifications = notificationService.getNotificationsForUser(userID);
         return ResponseEntity.ok(notifications);
     }

@@ -11,7 +11,7 @@ const EditTask = ({ task, onTaskUpdated }) => {
 
     const handleSave = async () => {
         if (!editedTask.title.trim()) return;
-
+    
         try {
             const response = await fetch(`http://localhost:8080/tasks/${task.taskID}`, {
                 method: "PUT",
@@ -19,18 +19,19 @@ const EditTask = ({ task, onTaskUpdated }) => {
                     "Authorization": "Bearer " + token,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(editedTask),
+                body: JSON.stringify(editedTask), // Ensure that the editedTask includes the updated status
             });
-
+    
             if (!response.ok) {
                 throw new Error("Failed to update task");
             }
-
-            onTaskUpdated(editedTask);
+    
+            onTaskUpdated(editedTask);  // Notify parent component of the update
         } catch (error) {
             console.error("Error updating task:", error);
         }
     };
+    
 
     const getStatusClass = (status) => {
         switch (status) {

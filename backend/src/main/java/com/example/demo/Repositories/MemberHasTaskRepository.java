@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberHasTaskRepository extends JpaRepository<MemberHasTask, MemberHasTaskId> {
     boolean existsByTask_TaskIDAndMember_UserID(int taskID, int memberID);
+    boolean existsByTask_TaskID(int taskID);
+    MemberHasTask findByTask_TaskID(int taskID);
      boolean existsByTask_TaskID(int taskID);
      
     List<MemberHasTask> findByMember_UserID(int memberID);

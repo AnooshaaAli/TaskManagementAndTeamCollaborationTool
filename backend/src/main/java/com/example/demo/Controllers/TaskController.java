@@ -1,6 +1,7 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.Models.Task;
+import com.example.demo.Services.MemberHasTaskService;
 import com.example.demo.Repositories.TaskListRepository;
 import com.example.demo.Services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class TaskController {
 
     @Autowired
     private TaskListRepository taskListRepository;
+
+    @Autowired
+    private MemberHasTaskService memberHasTaskService;
 
     // Get tasks by listID and return as HashMap
     @GetMapping("/list/{listID}")
@@ -74,7 +78,17 @@ public class TaskController {
     // Update a task
     @PutMapping("/{taskID}")
     public Task updateTask(@PathVariable int taskID, @RequestBody Task updatedTask) {
-        return taskService.updateTask(taskID, updatedTask);
+        // Update the task
+        Task updatedTaskFromDB = taskService.updateTask(taskID, updatedTask);
+
+        // Check if task status is "Completed" and if it is assigned to a member
+        if ("Completed".equals(updatedTaskFromDB.getStatus())) {
+            // If completed, remove task assignment from the member
+            memberHasTaskService.removeTaskFromAssignedMember(taskID);
+        }
+
+        return updatedTaskFromDB;
+
     }
 
     // Delete a task
