@@ -5,6 +5,7 @@ import "../styles/dashboard.css";
 import "../styles/projects_container.css";
 import NotificationList from '../components/NotificationList';
 import TaskItem from '../components/TaskItem';
+import UploadDp from '../components/UploadDp';
 import { PieChart, ListTodo, Users, Folder, Calendar, Star, Bell, Activity, LogOut, Moon, Sun } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,6 +19,9 @@ const DashboardPage = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [theme, setTheme] = useState('dark'); // Add theme state
   const [tasks, setTasks] = useState([]);
+
+  const [profilePic, setProfilePic] = useState(null); // State to store the profile picture URL
+  const [error, setError] = useState(null);
 
 
   // Initialize theme from localStorage or default to dark
@@ -131,6 +135,42 @@ const DashboardPage = () => {
     }
   }, [userData]);
 
+  const fetchProfilePic = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      const userID = userData?.userID;
+
+      const response = await fetch(`http://localhost:8080/files/user-dp/${userID}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Profile picture not found or error occurred.");
+      }
+
+      // Get the image as a Blob
+      const imageBlob = await response.blob();
+
+      // Create a temporary URL for the image Blob
+      const imageUrl = URL.createObjectURL(imageBlob);
+
+      console.log(imageUrl);
+      // Set the image URL in state
+      setProfilePic(imageUrl);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfilePic();
+  }, [userData]);
+
+  const updateProfilePic = async () => {
+    await fetchProfilePic();  // Wait for the async function to finish
+  };
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
     window.location.href = "/login";
@@ -207,8 +247,13 @@ const DashboardPage = () => {
         <div className="sidebar-footer">
           <div className="user-profile">
             <div className="avatar-container">
-              <img src={userData?.avatar || "/default-avatar.png"} alt="Profile" className="avatar" />
+              {profilePic ? (
+                <img src={profilePic} alt="Profile" className="avatar" />
+              ) : (
+                <img src="/default-avatar.png" alt="Profile" className="avatar" />
+              )}
               <div className="status-indicator online"></div>
+              <UploadDp userID={userData?.userID} onUpload={updateProfilePic} />
             </div>
             <div className="user-info">
               <p className="user-name">{userData?.username || "User"}</p>
