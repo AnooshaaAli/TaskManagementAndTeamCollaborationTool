@@ -12,12 +12,13 @@ import com.example.demo.Models.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-
 public interface TeamHasMemberRepository extends JpaRepository<TeamHasMember, TeamHasMemberId> {
     boolean existsByTeamAndUser(Team team, User user);
 
     Optional<TeamHasMember> findByTeamAndUser(Team team, User user);
 
     List<TeamHasMember> findByUser_userID(int userId);
+
+    List<TeamHasMember> findByTeam(Team team);
 
 }

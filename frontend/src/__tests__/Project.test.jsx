@@ -1,153 +1,133 @@
-// import '@testing-library/jest-dom';
-// import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-// import Project from '../components/Project';
+import React from 'react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import Project from '../components/Project'; // adjust path
+import '@testing-library/jest-dom';
 
-// // Mock child components
-// jest.mock('../components/List', () => () => <div data-testid="mock-list" />);
-// jest.mock('../components/CreateList', () => () => <div data-testid="mock-create-list" />);
-// jest.mock('../components/CreateComment', () => () => <div data-testid="mock-create-comment" />);
-// jest.mock('../components/Comment', () => ({ comment }) => <div data-testid="mock-comment">{comment?.content}</div>);
-// jest.mock('../components/UploadFile', () => () => <div data-testid="mock-upload-file" />);
-// jest.mock('../components/FileItem', () => ({ file }) => <div data-testid="mock-file-item">{file?.filename}</div>);
-// jest.mock('../components/ConfirmDialog', () => () => <div data-testid="mock-confirm-dialog" />);
-// jest.mock('../components/AddMemberModal', () => () => <div data-testid="mock-add-member" />);
-// jest.mock('../components/RemoveMemberModal', () => () => <div data-testid="mock-remove-member" />);
+// Mock child components you don't want to test here
+jest.mock('../components/List', () => () => <div>Mock List</div>);
+jest.mock('../components/CreateList', () => () => <div>Mock CreateList</div>);
+jest.mock('../components/ConfirmDialog', () => () => <div>Mock ConfirmDialog</div>);
+jest.mock('../components/AddMemberModal', () => () => <div>Mock AddMemberModal</div>);
+jest.mock('../components/RemoveMemberModal', () => () => <div>Mock RemoveMemberModal</div>);
+jest.mock('../components/CreateComment', () => () => <div>Mock CreateComment</div>);
+jest.mock('../components/Comment', () => () => <div>Mock Comment</div>);
+jest.mock('../components/UploadFile', () => () => <div>Mock UploadFile</div>);
+jest.mock('../components/FileItem', () => () => <div>Mock FileItem</div>);
 
-// // Mock localStorage
-// beforeEach(() => {
-//     Storage.prototype.getItem = jest.fn(() => 'mocked-token');
-// });
+// Mock fetch globally
+beforeEach(() => {
+    global.fetch = jest.fn();
+    localStorage.setItem("jwtToken", "fake-token"); // mock token
+});
 
-// afterEach(() => {
-//     jest.clearAllMocks();
-// });
+afterEach(() => {
+    jest.resetAllMocks();
+});
 
-// // Mock fetch
-// global.fetch = jest.fn();
+describe('Project Component', () => {
 
-// describe('Project Component', () => {
-//     const mockProjectData = {
-//         name: 'Test Project',
-//         teamSize: 3,
-//         lists: {
-//             1: { listID: 1, title: 'List 1' },
-//         },
-//         comments: {
-//             1: { commentID: 1, content: 'Comment 1' },
-//         },
-//         files: {
-//             1: { fileID: 1, filename: 'file1.txt' }
-//         }
-//     };
+    it('shows error if project fetch fails', async () => {
+        fetch.mockImplementationOnce(() =>
+            Promise.reject(new Error('Network error'))
+        );
 
-//     const mockUserData = {
-//         userID: 123,
-//     };
+        render(<Project id="1" />);
 
-//     const mockIsTeamLead = {
-//         isTeamLead: true
-//     };
+        await waitFor(() => expect(screen.getByText(/error/i)).toBeInTheDocument());
+    });
 
-//     function mockFetchResponses() {
-//         fetch
-//         .mockResolvedValueOnce({
-//             ok: true,
-//             json: async () => mockProjectData,  // First fetch for the project
-//         })
-//         .mockResolvedValueOnce({
-//             ok: true,
-//             json: async () => mockUserData,    // Second fetch for user data
-//         })
-//         .mockResolvedValueOnce({
-//             ok: true,
-//             json: async () => mockIsTeamLead,   // Third fetch for isTeamLead data
-//         });
-//     }
+    it('renders project when data is fetched', async () => {
+        // Mock project fetch
+        fetch.mockImplementationOnce(() =>
+            Promise.resolve({
+                ok: true,
+                json: () => Promise.resolve({ name: 'Test Project', lists: {}, comments: {}, files: {} }),
+            })
+        );
 
-//     it('displays error if fetch fails', async () => {
-//         fetch
-//           .mockRejectedValueOnce(new Error('Fetch failed')) // Mock first fetch to fail (project data fetch fails)
-//           .mockResolvedValueOnce({                         // Mock second fetch to succeed (user fetch mock)
-//             ok: true,
-//             json: async () => ({ userID: '123' })
-//           });
+        // Mock user fetch
+        fetch.mockImplementationOnce(() =>
+            Promise.resolve({
+                ok: true,
+                json: () => Promise.resolve({ userID: 1 }),
+            })
+        );
 
-//         render(<Project id="1" />);
+        // Mock isTeamLead fetch
+        fetch.mockImplementationOnce(() =>
+            Promise.resolve({
+                ok: true,
+                json: () => Promise.resolve({ isTeamLead: true }),
+            })
+        );
 
-//         await waitFor(() => {
-//             // Expect error message and retry button to be in the document
-//             expect(screen.getByText(/Error:/)).toBeInTheDocument();
-//             expect(screen.getByText('Retry')).toBeInTheDocument();
-//         });
-//     });
-    
+        render(<Project id="1" />);
 
-//     // it('renders project data after successful fetch', async () => {
-//     //     mockFetchResponses();
-//     //     render(<Project id="1" />);
+        expect(await screen.findByText('Test Project')).toBeInTheDocument();
+        expect(screen.getByText('Mock CreateList')).toBeInTheDocument();
+    });
 
-//     //     await waitFor(() => {
-//     //         expect(screen.getByText('Test Project')).toBeInTheDocument();
-//     //         expect(screen.getByText('3 members')).toBeInTheDocument();
-//     //     });
+    it('allows toggling comments and files tabs', async () => {
+        fetch
+            .mockImplementationOnce(() =>
+                Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve({ name: 'Project With Tabs', lists: {}, comments: {}, files: {} }),
+                })
+            )
+            .mockImplementationOnce(() =>
+                Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve({ userID: 1 }),
+                })
+            )
+            .mockImplementationOnce(() =>
+                Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve({ isTeamLead: true }),
+                })
+            );
 
-//     //     expect(screen.getByTestId('mock-list')).toBeInTheDocument();
-//     //     expect(screen.getByTestId('mock-create-list')).toBeInTheDocument();
-//     // });
+        render(<Project id="1" />);
 
-//     // it('opens Comments tab and displays comments', async () => {
-//     //     mockFetchResponses();
-//     //     render(<Project id="1" />);
+        // Wait for project to load
+        await screen.findByText('Project With Tabs');
 
-//     //     await waitFor(() => screen.getByText('Test Project'));
+        // Click on Comments Tab
+        fireEvent.click(screen.getByText(/Comments/i));
+        expect(await screen.findByText('Mock CreateComment')).toBeInTheDocument();
 
-//     //     fireEvent.click(screen.getByText('Comments'));
+        // Click on Files Tab
+        fireEvent.click(screen.getByText(/Files/i));
+        expect(await screen.findByText('Mock UploadFile')).toBeInTheDocument();
+    });
 
-//     //     await waitFor(() => {
-//     //         expect(screen.getByText('Comments')).toBeInTheDocument();
-//     //         expect(screen.getByTestId('mock-comment')).toBeInTheDocument();
-//     //         expect(screen.getByTestId('mock-create-comment')).toBeInTheDocument();
-//     //     });
-//     // });
+    it('shows Add/Remove Member buttons if user is team lead', async () => {
+        fetch
+            .mockImplementationOnce(() =>
+                Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve({ name: 'Project', lists: {}, comments: {}, files: {} }),
+                })
+            )
+            .mockImplementationOnce(() =>
+                Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve({ userID: 1 }),
+                })
+            )
+            .mockImplementationOnce(() =>
+                Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve({ isTeamLead: true }),
+                })
+            );
 
-//     // it('opens Files tab and displays files', async () => {
-//     //     mockFetchResponses();
-//     //     render(<Project id="1" />);
+        render(<Project id="1" />);
 
-//     //     await waitFor(() => screen.getByText('Test Project'));
+        expect(await screen.findByText('Add Member')).toBeInTheDocument();
+        expect(await screen.findByText('Remove Member')).toBeInTheDocument();
+        expect(await screen.findByText('Delete Project')).toBeInTheDocument();
+    });
 
-//     //     fireEvent.click(screen.getByText('Files'));
-
-//     //     await waitFor(() => {
-//     //         expect(screen.getByText('Files')).toBeInTheDocument();
-//     //         expect(screen.getByTestId('mock-file-item')).toBeInTheDocument();
-//     //         expect(screen.getByTestId('mock-upload-file')).toBeInTheDocument();
-//     //     });
-//     // });
-
-//     // it('shows Add Member modal when Add Member button is clicked (for team lead)', async () => {
-//     //     mockFetchResponses();
-//     //     render(<Project id="1" />);
-
-//     //     await waitFor(() => screen.getByText('Test Project'));
-
-//     //     fireEvent.click(screen.getByText('Add Member'));
-
-//     //     await waitFor(() => {
-//     //         expect(screen.getByTestId('mock-add-member')).toBeInTheDocument();
-//     //     });
-//     // });
-
-//     // it('shows Confirm Dialog when Delete Project is clicked', async () => {
-//     //     mockFetchResponses();
-//     //     render(<Project id="1" />);
-
-//     //     await waitFor(() => screen.getByText('Test Project'));
-
-//     //     fireEvent.click(screen.getByText('Delete Project'));
-
-//     //     await waitFor(() => {
-//     //         expect(screen.getByTestId('mock-confirm-dialog')).toBeInTheDocument();
-//     //     });
-//     // });
-// });
+});

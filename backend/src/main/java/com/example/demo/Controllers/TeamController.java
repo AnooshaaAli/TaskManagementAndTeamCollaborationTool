@@ -1,13 +1,21 @@
 package com.example.demo.Controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import com.example.demo.Models.Team;
+import com.example.demo.Repositories.TeamHasMemberRepository;
 import com.example.demo.Services.TeamService;
 import com.example.demo.dto.AddMemberRequest;
 import com.example.demo.dto.RemoveMemberRequest;
@@ -19,6 +27,9 @@ public class TeamController {
 
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @PostMapping("/add-member")
     public ResponseEntity<String> addMember(@RequestBody AddMemberRequest request) {
@@ -52,4 +63,46 @@ public class TeamController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/get-team/{projectId}")
+    public ResponseEntity<List<Map<String, Object>>> getMemberDetailsByProjectId(
+            @PathVariable int projectId,
+            @RequestHeader("Authorization") String token) {
+
+        List<Integer> memberIds = teamService.getTeamMemberIdsByProjectId(projectId);
+
+        if (memberIds == null || memberIds.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<Map<String, Object>> memberDetailsList = new ArrayList<>();
+
+        for (Integer memberId : memberIds) {
+            try {
+                // Make a call to /users/{userId}
+                String url = "http://localhost:8080/auth/users/" + memberId;
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("Authorization", token);
+
+                HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+                ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                        url,
+                        HttpMethod.GET,
+                        entity,
+                        new ParameterizedTypeReference<Map<String, Object>>() {
+                        });
+
+                if (response.getStatusCode() == HttpStatus.OK) {
+                    memberDetailsList.add(response.getBody());
+                }
+
+            } catch (Exception e) {
+                // If one user fails, skip and continue
+                e.printStackTrace();
+            }
+        }
+
+        return ResponseEntity.ok(memberDetailsList);
+    }
 }

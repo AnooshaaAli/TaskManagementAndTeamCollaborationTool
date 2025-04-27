@@ -147,4 +147,24 @@ public class TeamService {
         return teamRepository.isUserInTeamForProject(memberID, projectID);
     }
 
+    public List<Integer> getTeamMemberIdsByProjectId(int projectId) {
+        // Find the team by project ID
+        Team team = teamRepository.findByProject_ProjectID(projectId);
+
+        if (team == null) {
+            return null; // No team found
+        }
+
+        // Find all TeamHasMember entries for this team
+        List<TeamHasMember> teamHasMembers = teamHasMemberRepository.findByTeam(team);
+
+        // Extract the user IDs
+        List<Integer> userIds = new ArrayList<>();
+        for (TeamHasMember thm : teamHasMembers) {
+            userIds.add(thm.getUser().getUserID());
+        }
+
+        return userIds;
+    }
+
 }
