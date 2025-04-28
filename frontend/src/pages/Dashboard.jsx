@@ -3,8 +3,10 @@ import Card from '../components/Card';
 import "../styles/styles.css";
 import "../styles/dashboard.css";
 import "../styles/projects_container.css";
+import CalendarComponent from '../components/Calendar';
 import NotificationList from '../components/NotificationList';
 import TaskItem from '../components/TaskItem';
+import UploadDp from '../components/UploadDp';
 import { PieChart, ListTodo, Users, Folder, Calendar, Star, Bell, Activity, LogOut, Moon, Sun } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,13 +14,18 @@ const DashboardPage = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('activity');
+  const [activeSidebarItem, setActiveSidebarItem] = useState('dashboard'); // For tracking active sidebar item
   const navigate = useNavigate();
 
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [theme, setTheme] = useState('dark'); // Add theme state
+  const [theme, setTheme] = useState('dark'); 
   const [tasks, setTasks] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
+  const [profilePic, setProfilePic] = useState(null); // State to store the profile picture URL
+  const [error, setError] = useState(null);
 
   // Initialize theme from localStorage or default to dark
   useEffect(() => {
@@ -27,7 +34,6 @@ const DashboardPage = () => {
     document.body.className = savedTheme + '-theme';
   }, []);
 
-  // Function to toggle theme
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
@@ -120,7 +126,7 @@ const DashboardPage = () => {
 
         const data = await response.json();
         console.log(data);
-        setTasks(data); // store tasks in state
+        setTasks(data); 
       } catch (err) {
         console.error("Failed to load tasks", err);
       }
@@ -131,18 +137,108 @@ const DashboardPage = () => {
     }
   }, [userData]);
 
+  const fetchProjects = async () => {
+    if (!userData?.userID) return;
+    
+    const token = localStorage.getItem("jwtToken");
+    console.log("user id: " + userData.userID);
+    
+    try {
+      const response = await fetch("http://localhost:8080/projects/user/" + userData.userID, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
+      
+      console.log("Fetched projects:", data);
+      setProjects(Object.values(data));
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
+  };
+  const fetchProfilePic = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      const userID = userData?.userID;
+
+      const response = await fetch(`http://localhost:8080/files/user-dp/${userID}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Profile picture not found or error occurred.");
+      }
+
+      // Get the image as a Blob
+      const imageBlob = await response.blob();
+
+      // Create a temporary URL for the image Blob
+      const imageUrl = URL.createObjectURL(imageBlob);
+
+      console.log(imageUrl);
+      // Set the image URL in state
+      setProfilePic(imageUrl);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  useEffect(() => {
+    if (userData?.userID) {
+      fetchProjects();
+    }
+  }, [userData]);
+
+  const getTeamMemberCount = () => {
+    if (!projects || projects.length === 0) {
+      return 0;
+    }
+    
+    const uniqueTeamMembers = new Set();
+    
+    projects.forEach(project => {
+      if(project.teamLeadID != userData.userID) {
+        uniqueTeamMembers.add(project);
+      }
+    });
+    
+    return uniqueTeamMembers.size;
+  };
+useEffect(() => {
+    fetchProfilePic();
+  }, [userData]);
+
+  const updateProfilePic = async () => {
+    await fetchProfilePic();  // Wait for the async function to finish
+  };
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
     window.location.href = "/login";
   };
 
   const navigateToProjects = () => {
+    setActiveSidebarItem('projects');
     navigate('/projects');
+  };
+
+  // New function to handle calendar navigation
+  const navigateToCalendar = () => {
+    setActiveSidebarItem('calendar');
   };
 
   const handleEditTask = (updatedTask) => {
     setTasks((prevTasks) => {
-      // Create a new object with the updated task
       const updatedTasks = { ...prevTasks };
       updatedTasks[updatedTask.taskID] = updatedTask;
       return updatedTasks;
@@ -151,13 +247,11 @@ const DashboardPage = () => {
 
   const handleDeleteTask = (taskID) => {
     setTasks((prevTasks) => {
-      // Create a new object without the deleted task
       const updatedTasks = { ...prevTasks };
-      delete updatedTasks[taskID]; // Delete the task with the given taskID
+      delete updatedTasks[taskID]; 
       return updatedTasks;
     });
   };
-
 
   if (loading) {
     return (
@@ -172,34 +266,34 @@ const DashboardPage = () => {
     <div className={`dashboard-container ${theme}-theme`}>
       <div className="dashboard-sidebar">
         <div className="sidebar-header">
-          <h2>TeamCollab</h2>
+          <h2 className='app-name'>Projectory</h2>
         </div>
 
         <nav className="sidebar-nav">
           <ul>
-            <li className="active">
+            <li 
+              className={activeSidebarItem === 'dashboard' ? 'active' : ''}
+              onClick={() => setActiveSidebarItem('dashboard')}
+              style={{ cursor: 'pointer' }}
+            >
               <PieChart size={20} className="nav-icon" />
               <span>Dashboard</span>
             </li>
-            <li>
-              <ListTodo size={20} className="nav-icon" />
-              <span>My Tasks</span>
-            </li>
-            <li>
-              <Users size={20} className="nav-icon" />
-              <span>Team</span>
-            </li>
-            <li onClick={navigateToProjects} style={{ cursor: 'pointer' }}>
+            <li 
+              className={activeSidebarItem === 'projects' ? 'active' : ''}
+              onClick={navigateToProjects}
+              style={{ cursor: 'pointer' }}
+            >
               <Folder size={20} className="nav-icon" />
               <span>Projects</span>
             </li>
-            <li>
+            <li 
+              className={activeSidebarItem === 'calendar' ? 'active' : ''}
+              onClick={navigateToCalendar}
+              style={{ cursor: 'pointer' }}
+            >
               <Calendar size={20} className="nav-icon" />
               <span>Calendar</span>
-            </li>
-            <li>
-              <Star size={20} className="nav-icon" />
-              <span>Reports</span>
             </li>
           </ul>
         </nav>
@@ -207,8 +301,13 @@ const DashboardPage = () => {
         <div className="sidebar-footer">
           <div className="user-profile">
             <div className="avatar-container">
-              <img src={userData?.avatar || "/default-avatar.png"} alt="Profile" className="avatar" />
+              {profilePic ? (
+                <img src={profilePic} alt="Profile" className="avatar" />
+              ) : (
+                <img src="/default-avatar.png" alt="Profile" className="avatar" />
+              )}
               <div className="status-indicator online"></div>
+              <UploadDp userID={userData?.userID} onUpload={updateProfilePic} />
             </div>
             <div className="user-info">
               <p className="user-name">{userData?.username || "User"}</p>
@@ -274,7 +373,7 @@ const DashboardPage = () => {
               <Folder size={20} />
             </div>
             <div className="stat-info">
-              <span className="stat-value">3</span>
+              <span className="stat-value">{projects.length}</span>
               <span className="stat-label">Projects</span>
             </div>
           </div>
@@ -283,7 +382,9 @@ const DashboardPage = () => {
               <ListTodo size={20} />
             </div>
             <div className="stat-info">
-              <span className="stat-value">8</span>
+            <span className="stat-value">
+              {Array.isArray(tasks) ? tasks.length : Object.keys(tasks).length}
+            </span>
               <span className="stat-label">Tasks</span>
             </div>
           </div>
@@ -292,8 +393,8 @@ const DashboardPage = () => {
               <Users size={20} />
             </div>
             <div className="stat-info">
-              <span className="stat-value">5</span>
-              <span className="stat-label">Team Members</span>
+              <span className="stat-value">{getTeamMemberCount()}</span>
+              <span className="stat-label">Teams</span>
             </div>
           </div>
           <div className="stat-item">
@@ -301,66 +402,83 @@ const DashboardPage = () => {
               <Activity size={20} />
             </div>
             <div className="stat-info">
-              <span className="stat-value">12</span>
+              <span className="stat-value">{notifications.length}</span>
               <span className="stat-label">Updates</span>
             </div>
           </div>
         </div>
 
-        {/* Main Content Tabs */}
-        <div className="content-tabs">
-          <div className="tab-buttons">
-            <button
-              className={activeTab === 'tasks' ? 'active' : ''}
-              onClick={() => setActiveTab('tasks')}
-            >
-              My Tasks
-            </button>
-            <button
-              className={activeTab === 'activity' ? 'active' : ''}
-              onClick={() => setActiveTab('activity')}
-            >
-              Activity
-            </button>
-          </div>
+        {/* Display different content based on active sidebar item */}
+        {activeSidebarItem === 'calendar' ? (
+          // Calendar View
+          <Card className="calendar-card">
+            <div className="card-header">
+              <h3>Calendar</h3>
+            </div>
+            <CalendarComponent />
+          </Card>
+        ) : (
+          // Regular Dashboard Content
+          <div className="content-tabs">
+            <div className="tab-buttons">
+              <button
+                className={activeTab === 'tasks' ? 'active' : ''}
+                onClick={() => setActiveTab('tasks')}
+              >
+                My Tasks
+              </button>
+              <button
+                className={activeTab === 'activity' ? 'active' : ''}
+                onClick={() => setActiveTab('activity')}
+              >
+                Activity
+              </button>
+            </div>
 
-          <div className="tab-content">
-            {activeTab === 'tasks' && (
-              <Card className="tasks-card">
-                <div className="card-header">
-                  <h3>My Tasks</h3>
-                </div>
-                <div className="task-list">
-                  {Object.values(tasks).map((task) => (
-                    <TaskItem
-                      key={task.taskID}
-                      task={task}
-                      onEdit={handleEditTask}
-                      onDelete={handleDeleteTask}
-                      isTeamLead={false}
-                    />
-                  ))}
-                </div>
-                <div className="tasks-list empty-state">
-                  <div className="empty-icon">
-                    <ListTodo size={40} />
+            <div className="tab-content">
+              {activeTab === 'tasks' && (
+                <Card className="tasks-card">
+                  <div className="card-header">
+                    <h3>My Tasks</h3>
                   </div>
-                  <p>No tasks assigned yet</p>
-                  <button className="btn-connect">Connect Task Manager</button>
-                </div>
-              </Card>
-            )}
+                  <div className="task-list">
+                    {Object.values(tasks).map((task) => (
+                      <TaskItem
+                        key={task.taskID}
+                        task={task}
+                        onEdit={handleEditTask}
+                        onDelete={handleDeleteTask}
+                        isTeamLead={false}
+                      />
+                    ))}
+                  </div>
+                  <div className="tasks-list empty-state">
+                    <div className="empty-icon">
+                      <ListTodo size={40} />
+                    </div>
+                    <p>No tasks assigned yet</p>
+                    <button className="btn-connect">Connect Task Manager</button>
+                  </div>
+                </Card>
+              )}
 
-            {activeTab === 'activity' && (
-              <Card className="activity-card">
-                <div className="card-header">
-                  <h3>Recent Activity</h3>
-                </div>
-                <NotificationList notifications={notifications} />
-              </Card>
-            )}
+              {activeTab === 'activity' && (
+                <Card className="activity-card">
+                  <div className="card-header">
+                    <h3>Recent Activity</h3>
+                  </div>
+                  <div className="activity-list empty-state">
+                    <div className="empty-icon">
+                      <Activity size={40} />
+                    </div>
+                    <p>No recent activity</p>
+                    <p className="empty-subtitle">Activity from your projects and teams will appear here</p>
+                  </div>
+                </Card>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

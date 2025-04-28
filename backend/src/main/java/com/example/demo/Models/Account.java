@@ -20,6 +20,9 @@ public class Account {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    @Column(name = "profilePicFileID", nullable = true) // Make sure it is nullable in the entity as well
+    private Integer profilePicFileID; // Change to Integer so it can be null
+
     public Account() {
     }
 
@@ -29,11 +32,11 @@ public class Account {
         this.email = email;
         this.password = password;
     }
-    
+
     public int getId() {
         return accountID;
     }
-    
+
     public String getPassword() {
         return password;
     }
@@ -60,5 +63,13 @@ public class Account {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Integer getProfilePicFileID() {
+        return profilePicFileID;
+    }
+
+    public void setProfilePicFileID(Integer profilePicFileID) {
+        this.profilePicFileID = profilePicFileID;
     }
 }
