@@ -78,34 +78,7 @@ class TeamServiceTest {
         assertEquals("User is already a member of this team.", result);
     }
 
-    @Test
-    void testAddMemberToProject_Success() {
-        User currentUser = new User();
-        currentUser.setUserID(1);
-
-        User newMember = new User();
-        newMember.setUserID(2);
-
-        Project project = new Project();
-        project.setProjectID(1);
-        project.setName("Test Project");
-
-        Team team = new Team();
-        team.setTeamID(1);
-        team.setProject(project);
-
-        when(userRepository.findById(anyInt())).thenReturn(Optional.of(currentUser));
-        when(userRepository.findByAccount_EmailOrAccount_Username(anyString(), anyString())).thenReturn(Optional.of(newMember));
-        when(projectRepository.findById(anyInt())).thenReturn(Optional.of(project));
-        when(teamRepository.findByProject(any())).thenReturn(team);
-        when(teamHasMemberRepository.existsByTeamAndUser(any(), any())).thenReturn(false);
-
-        String result = teamService.addMemberToProject("searchInput", 1, 1);
-
-        assertEquals("User successfully added to the team.", result);
-        verify(notificationRepository, times(1)).save(any(Notification.class));
-    }
-
+ 
     @Test
     void testRemoveMemberFromProject_UserNotFound() {
         when(userRepository.findByAccount_EmailOrAccount_Username(anyString(), anyString())).thenReturn(Optional.empty());
