@@ -5,6 +5,7 @@ import com.example.demo.Repositories.MemberHasTaskRepository;
 import com.example.demo.Repositories.TaskRepository;
 import com.example.demo.Repositories.UserRepository;
 import com.example.demo.Repositories.TeamRepository;
+import com.example.demo.Services.EmailService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +16,10 @@ import org.springframework.stereotype.Service;
 import com.example.demo.Repositories.TaskListRepository;
 import com.example.demo.Repositories.ProjectRepository;
 import com.example.demo.Repositories.NotificationRepository;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+
 
 @Service
 public class MemberHasTaskService {
@@ -40,6 +45,9 @@ public class MemberHasTaskService {
     @Autowired
     private ProjectRepository projectRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     public boolean assignTaskToMember(int taskID, int memberID) {
         if (memberHasTaskRepository.existsByTask_TaskID(taskID)) {
             return false; // Task is already assigned to someone
@@ -59,13 +67,23 @@ public class MemberHasTaskService {
         Integer projectID = taskListRepository.findById(listID)
                 .map(list -> list.getProjectID())
                 .orElse(null);
+        Project project = projectRepository.findById(projectID).orElse(null);
 
-        if (projectID != null) {
-            Project project = projectRepository.findById(projectID).orElse(null);
+        if (project != null && member != null) {
+            // Construct email content
             String content = "You have been assigned a new task: \"" + task.getTitle() + "\" in project \""
                     + project.getName() + "\".";
-            Notification notification = new Notification(content, project, member);
-            notificationRepository.save(notification);
+
+            // Send email to the member
+            try {
+                emailService.sendEmail(member.getEmail(), "Projectory - Task Assignment Notification", content);
+                System.out.println("Email sent to: " + member.getEmail());
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                System.out.println("Error sending email to: " + member.getEmail());
+            }
+        } else {
+            System.out.println("Project or Member not found!");
         }
 
         return true;

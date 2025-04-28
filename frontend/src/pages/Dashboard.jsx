@@ -356,13 +356,7 @@ const DashboardPage = () => {
                 <div className="card-header">
                   <h3>Recent Activity</h3>
                 </div>
-                <div className="activity-list empty-state">
-                  <div className="empty-icon">
-                    <Activity size={40} />
-                  </div>
-                  <p>No recent activity</p>
-                  <p className="empty-subtitle">Activity from your projects and teams will appear here</p>
-                </div>
+                <NotificationList notifications={notifications} />
               </Card>
             )}
           </div>
