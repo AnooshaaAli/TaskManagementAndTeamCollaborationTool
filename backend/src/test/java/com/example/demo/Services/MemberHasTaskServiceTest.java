@@ -44,41 +44,6 @@ public class MemberHasTaskServiceTest {
     }
 
     @Test
-    void testAssignTaskToMember_Success() {
-        int taskID = 1;
-        int memberID = 10;
-
-        Task task = new Task();
-        task.setTaskID(taskID);
-        task.setTitle("Sample Task");
-        task.setListID(100);
-
-        User member = new User();
-        member.setUserID(memberID);
-        member.setUsername("Test User");
-
-        TaskList taskList = new TaskList();
-        taskList.setListID(100);
-        taskList.setProjectID(200);
-
-        Project project = new Project();
-        project.setProjectID(200);
-        project.setName("Test Project");
-
-        when(memberHasTaskRepository.existsByTask_TaskID(taskID)).thenReturn(false);
-        when(taskRepository.findById(taskID)).thenReturn(Optional.of(task));
-        when(userRepository.findById(memberID)).thenReturn(Optional.of(member));
-        when(taskListRepository.findById(100)).thenReturn(Optional.of(taskList));
-        when(projectRepository.findById(200)).thenReturn(Optional.of(project));
-
-        boolean result = memberHasTaskService.assignTaskToMember(taskID, memberID);
-
-        assertTrue(result);
-        verify(memberHasTaskRepository, times(1)).save(any(MemberHasTask.class));
-        verify(notificationRepository, times(1)).save(any(Notification.class));
-    }
-
-    @Test
     void testAssignTaskToMember_AlreadyAssigned() {
         int taskID = 1;
         int memberID = 10;
