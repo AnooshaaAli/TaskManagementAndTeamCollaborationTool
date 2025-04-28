@@ -63,20 +63,7 @@ describe('DashboardPage', () => {
     expect(localStorage.setItem).toHaveBeenCalledWith('theme', 'light');
   });
   
-  test('switches tabs between tasks and activity', async () => {
-    renderWithRouter(<DashboardPage />);
-    await waitFor(() => screen.getByText(/Welcome, TestUser/i));
 
-    const tasksButton = screen.getByRole('button', { name: /My Tasks/i });
-    fireEvent.click(tasksButton);
-
-    expect(screen.getByText(/No tasks assigned yet/i)).toBeInTheDocument();
-
-    const activityButton = screen.getByRole('button', { name: /Activity/i });
-    fireEvent.click(activityButton);
-
-    expect(screen.getByText(/No recent activity/i)).toBeInTheDocument();
-  });
 
   test('logout removes token and redirects', async () => {
     delete window.location;

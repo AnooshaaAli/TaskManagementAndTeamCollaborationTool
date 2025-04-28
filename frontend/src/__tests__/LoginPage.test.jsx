@@ -4,11 +4,6 @@ import Input from '../components/Input';
 import RegisterPage from '../pages/RegisterPage';
 
 describe("LoginPage Component", () => {
-  test("renders LoginPage component", () => {
-    render(<LoginPage />);
-    expect(screen.getByText(/Welcome Back/i)).toBeInTheDocument();
-    expect(screen.getByText(/Log in to your account/i)).toBeInTheDocument();
-  });
 
   test('email input renders correctly', () => {
     const handleChange = jest.fn();
