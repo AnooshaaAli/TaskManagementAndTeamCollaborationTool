@@ -21,6 +21,10 @@ import com.example.demo.Repositories.TeamRepository;
 import com.example.demo.Repositories.UserRepository;
 import com.example.demo.Repositories.NotificationRepository;
 import com.example.demo.Models.Notification;
+import com.example.demo.Services.EmailService;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class TeamService {
@@ -39,6 +43,9 @@ public class TeamService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Transactional
     public String addMemberToProject(String searchInput, int currentUserId, int projectId) {
@@ -74,6 +81,14 @@ public class TeamService {
         String content = "You have been added to the project \"" + project.getName() + "\" as a team member.";
         Notification notification = new Notification(content, project, newMember);
         notificationRepository.save(notification);
+
+        try {
+            emailService.sendEmail(newMember.getEmail(), "Projectory - Member Adding Notification", content);
+            System.out.println("Email sent to: " + newMember.getEmail());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            System.out.println("Error sending email to: " + newMember.getEmail());
+        }
 
         return "User successfully added to the team.";
     }
@@ -115,6 +130,14 @@ public class TeamService {
         String content = "You have been remove from the project \"" + project.getName() + "\" as a team member.";
         Notification notification = new Notification(content, project, userToRemove);
         notificationRepository.save(notification);
+
+        try {
+            emailService.sendEmail(userToRemove.getEmail(), "Projectory - Member Removing Notification", content);
+            System.out.println("Email sent to: " + userToRemove.getEmail());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            System.out.println("Error sending email to: " + userToRemove.getEmail());
+        }
 
         response.put("message", "User successfully removed from the team.");
         return ResponseEntity.ok(response);
