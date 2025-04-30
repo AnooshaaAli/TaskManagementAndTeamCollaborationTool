@@ -15,7 +15,7 @@ const AssignTask = ({ taskID, taskTitle, projectId }) => {
     
         try {
             const token = localStorage.getItem("jwtToken");
-            const response = await fetch(`http://localhost:8080/api/team/get-team/${projectId}`, {
+            const response = await fetch(`/backend/api/team/get-team/${projectId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -56,7 +56,7 @@ const AssignTask = ({ taskID, taskTitle, projectId }) => {
             }
 
             // Assign the task using the selected member's ID
-            const response = await fetch(`http://localhost:8080/assign?taskID=${taskID}&memberID=${selectedMemberId}`, {
+            const response = await fetch(`/backend/assign?taskID=${taskID}&memberID=${selectedMemberId}`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,

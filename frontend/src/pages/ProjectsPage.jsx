@@ -40,7 +40,7 @@ const ProjectsPage = () => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
-        const response = await fetch("http://localhost:8080/auth/user", {
+        const response = await fetch("/backend/auth/user", {
           headers: { Authorization: `Bearer ${token}` }
         });
         const userData = await response.json();
@@ -76,7 +76,7 @@ const ProjectsPage = () => {
       const token = localStorage.getItem("jwtToken");
       const userID = userData?.userID;
 
-      const response = await fetch(`http://localhost:8080/files/user-dp/${userID}`, {
+      const response = await fetch(`/backend/files/user-dp/${userID}`, {
         headers: {
           Authorization: `Bearer ${token}`
         },

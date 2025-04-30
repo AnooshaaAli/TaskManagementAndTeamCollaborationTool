@@ -37,7 +37,7 @@ function UploadFile({ projectID, onFileUploaded }) {
         const token = localStorage.getItem("jwtToken");
 
         try {
-            const response = await fetch("http://localhost:8080/files/upload", {
+            const response = await fetch("/backend/files/upload", {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`, 

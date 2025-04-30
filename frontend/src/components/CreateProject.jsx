@@ -31,7 +31,7 @@ const CreateProject = ({ userID, onProjectCreated }) => {
     const token = localStorage.getItem("jwtToken");
     
     try {
-      const response = await fetch("http://localhost:8080/projects", {
+      const response = await fetch("/backend/projects", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

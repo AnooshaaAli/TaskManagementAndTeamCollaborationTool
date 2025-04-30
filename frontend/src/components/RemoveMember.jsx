@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 export const removeMemberFromTeam = async (searchInput, projectId) => {
     const token = localStorage.getItem("jwtToken");
-    const response = await fetch("http://localhost:8080/api/team/remove-member", {
+    const response = await fetch("/backend/api/team/remove-member", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`, // Attach the token

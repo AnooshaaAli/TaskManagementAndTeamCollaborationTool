@@ -22,7 +22,7 @@ function Comment({ comment }) {
 
     const fetchUserInfo = async (userId) => {
         try {
-            const response = await fetch(`http://localhost:8080/auth/users/${userId}`, {
+            const response = await fetch(`/backend/auth/users/${userId}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }

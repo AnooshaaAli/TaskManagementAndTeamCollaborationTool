@@ -20,7 +20,7 @@ const CreateTask = ({ listID, onTaskCreated }) => {
         };        
 
         try {
-            const response = await fetch("http://localhost:8080/tasks", {
+            const response = await fetch("/backend/tasks", {
                 method: "POST",
                 headers: {
                     "Authorization": "Bearer " + token,

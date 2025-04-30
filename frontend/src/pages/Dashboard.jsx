@@ -70,7 +70,7 @@ const DashboardPage = () => {
       if (!userID || !token) return;
 
       try {
-        const response = await fetch(`http://localhost:8080/api/notifications/${userID}`, {
+        const response = await fetch(`/backend/api/notifications/${userID}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json"
@@ -99,7 +99,7 @@ const DashboardPage = () => {
       try {
         const token = localStorage.getItem("jwtToken");
         console.log(token);
-        const response = await fetch("http://localhost:8080/auth/user", {
+        const response = await fetch("/backend/auth/user", {
           headers: { Authorization: `Bearer ${token}` }
         });
         const userData = await response.json();
@@ -130,7 +130,7 @@ const DashboardPage = () => {
       if (!userID || !token) return;
 
       try {
-        const response = await fetch(`http://localhost:8080/assign/assignedTasks?memberID=${userID}`, {
+        const response = await fetch(`/backend/assign/assignedTasks?memberID=${userID}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -162,7 +162,7 @@ const DashboardPage = () => {
     console.log("user id: " + userData.userID);
     
     try {
-      const response = await fetch("http://localhost:8080/projects/user/" + userData.userID, {
+      const response = await fetch("/backend/projects/user/" + userData.userID, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -188,7 +188,7 @@ const DashboardPage = () => {
       const token = localStorage.getItem("jwtToken");
       const userID = userData?.userID;
 
-      const response = await fetch(`http://localhost:8080/files/user-dp/${userID}`, {
+      const response = await fetch(`/backend/files/user-dp/${userID}`, {
         headers: {
           Authorization: `Bearer ${token}`
         },

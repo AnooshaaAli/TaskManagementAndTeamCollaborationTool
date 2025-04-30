@@ -13,7 +13,7 @@ const EditTask = ({ task, onTaskUpdated }) => {
         if (!editedTask.title.trim()) return;
     
         try {
-            const response = await fetch(`http://localhost:8080/tasks/${task.taskID}`, {
+            const response = await fetch(`/backend/tasks/${task.taskID}`, {
                 method: "PUT",
                 headers: {
                     "Authorization": "Bearer " + token,

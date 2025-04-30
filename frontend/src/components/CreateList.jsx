@@ -16,7 +16,7 @@ function CreateList({ projectID, onListCreated }) {
 
         setIsCreating(true);
         try {
-            const response = await fetch(`http://localhost:8080/lists`, {
+            const response = await fetch(`/backend/lists`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,

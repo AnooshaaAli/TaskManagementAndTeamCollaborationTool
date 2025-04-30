@@ -12,7 +12,7 @@ function DeleteList({ listID, onDeleteSuccess }) {
     const handleDelete = async () => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://localhost:8080/lists/${listID}`, {
+            const response = await fetch(`/backend/lists/${listID}`, {
                 method: "DELETE",
                 headers: {
                   "Authorization": `Bearer ${token}`, // Attach the token
