@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +31,12 @@ public class TeamController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Value("${backend.host}")
+    private String backendHost;
+
+    @Value("${backend.port}")
+    private String backendPort;
 
     @PostMapping("/add-member")
     public ResponseEntity<String> addMember(@RequestBody AddMemberRequest request) {
@@ -79,7 +86,7 @@ public class TeamController {
         for (Integer memberId : memberIds) {
             try {
                 // Make a call to /users/{userId}
-                String url = "http://localhost:8080/auth/users/" + memberId;
+                String url = "http://" + backendHost + ":" + backendPort + "/auth/users/" + memberId;
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", token);

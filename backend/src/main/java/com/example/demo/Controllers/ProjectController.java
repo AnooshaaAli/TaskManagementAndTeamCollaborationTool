@@ -12,6 +12,7 @@ import com.example.demo.dto.TeamProjectDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -40,6 +41,12 @@ public class ProjectController {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Value("${backend.host}")
+    private String backendHost;
+
+    @Value("${backend.port}")
+    private String backendPort;
+
     @Autowired
     public ProjectController(ProjectService projectService, TeamService teamService, RestTemplate restTemplate) {
         this.projectService = projectService;
@@ -51,7 +58,7 @@ public class ProjectController {
     public ResponseEntity<Project> createProject(@RequestBody Project project,
             @RequestHeader("Authorization") String authHeader) {
         Project savedProject = projectService.createProject(project);
-        String taskListApiUrl = "http://localhost:8080/lists";
+        String taskListApiUrl = "http://"+backendHost+":"+backendPort+"/lists";
 
         int projectID = savedProject.getProjectID();
         Map<String, Object> todoListRequest = Map.of("name", "To-Do", "projectID", projectID);
@@ -81,7 +88,6 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
     }
 
-
     // GET: Get a project by ID
     @GetMapping("/{id}")
     public ResponseEntity<Project> getProjectById(@PathVariable int id,
@@ -94,7 +100,7 @@ public class ProjectController {
         }
 
         Project project = projectOptional.get();
-        String taskListApiUrl = "http://localhost:8080/lists/project/" + id;
+        String taskListApiUrl = "http://"+backendHost+":"+backendPort+"/lists/project/" + id;
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", authHeader);
@@ -112,7 +118,7 @@ public class ProjectController {
             HashMap<Integer, TaskList> taskLists = taskListsResponse.getBody();
             project.setLists(taskLists);
         }
-        String commentApiUrl = "http://localhost:8080/comments/" + id;
+        String commentApiUrl = "http://"+backendHost+":"+backendPort+"/comments/" + id;
 
         ResponseEntity<List<Comment>> commentsResponse = restTemplate.exchange(
                 commentApiUrl,
@@ -132,7 +138,7 @@ public class ProjectController {
             project.setComments(commentMap);
         }
 
-        String fileApiUrl = "http://localhost:8080/files/project/" + id;
+        String fileApiUrl = "http://"+backendHost+":"+backendPort+"/files/project/" + id;
 
         ResponseEntity<HashMap<Integer, FileInfoDTO>> filesResponse = restTemplate.exchange(
                 fileApiUrl,
@@ -174,7 +180,7 @@ public class ProjectController {
             projectMap.put(project.getProjectID(), project);
         }
 
-        String teamUrl = "http://localhost:8080/api/team/user/" + userId;
+        String teamUrl = "http://"+backendPort+":"+backendHost+"/api/team/user/" + userId;
 
         // Set the Authorization header for the API call
         HttpHeaders headers = new HttpHeaders();
@@ -221,7 +227,6 @@ public class ProjectController {
         return ResponseEntity.ok(projectMap);
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Project> deleteProject(@PathVariable int id,
             @RequestHeader("Authorization") String authHeader) {
@@ -234,7 +239,7 @@ public class ProjectController {
         Project project = projectOptional.get();
 
         // Delete team via API
-        String deleteTeamUrl = "http://localhost:8080/api/team/project/" + id;
+        String deleteTeamUrl = "http://"+backendHost+":8080/api/team/project/" + id;
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", authHeader);
 

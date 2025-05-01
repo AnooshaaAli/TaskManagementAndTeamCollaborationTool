@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,6 +39,12 @@ public class TaskListControllerTest {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     private static final String AUTH_HEADER = "Bearer faketoken";
+
+    @Value("${backend.host}")
+    private String backendHost;
+
+    @Value("${backend.port}")
+    private String backendPort;
 
     @BeforeEach
     void setUp() {
@@ -94,7 +101,7 @@ public class TaskListControllerTest {
         // Mock the RestTemplate.exchange to return a valid response with tasks
         ResponseEntity<HashMap<Integer, Task>> taskResponseEntity = new ResponseEntity<>(mockTaskMap, HttpStatus.OK);
         when(restTemplate.exchange(
-                eq("http://localhost:8080/tasks/list/" + mockTaskList.getListID()),
+                eq("http://"+backendHost+"localhost:8080/tasks/list/" + mockTaskList.getListID()),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 ArgumentMatchers.<ParameterizedTypeReference<HashMap<Integer, Task>>>any()))
