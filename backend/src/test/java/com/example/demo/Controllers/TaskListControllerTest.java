@@ -101,7 +101,7 @@ public class TaskListControllerTest {
         // Mock the RestTemplate.exchange to return a valid response with tasks
         ResponseEntity<HashMap<Integer, Task>> taskResponseEntity = new ResponseEntity<>(mockTaskMap, HttpStatus.OK);
         when(restTemplate.exchange(
-                eq("http://"+backendHost+"localhost:8080/tasks/list/" + mockTaskList.getListID()),
+                eq("http://"+backendHost+":"+backendPort+"/tasks/list/" + mockTaskList.getListID()),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 ArgumentMatchers.<ParameterizedTypeReference<HashMap<Integer, Task>>>any()))
