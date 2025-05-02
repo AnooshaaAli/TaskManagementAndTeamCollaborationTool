@@ -239,7 +239,7 @@ public class ProjectController {
         Project project = projectOptional.get();
 
         // Delete team via API
-        String deleteTeamUrl = "http://"+backendHost+":8080/api/team/project/" + id;
+        String deleteTeamUrl = "http://"+backendHost+":"+backendPort+"/api/team/project/" + id;
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", authHeader);
 

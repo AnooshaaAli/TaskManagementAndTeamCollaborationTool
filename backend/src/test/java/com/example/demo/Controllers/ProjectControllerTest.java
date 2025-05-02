@@ -77,7 +77,8 @@ public class ProjectControllerTest {
                 TaskList doneList = new TaskList();
                 doneList.setListID(101);
 
-                when(restTemplate.postForEntity(eq("http://"+backendHost+":"+backendPort+"/lists"), any(), eq(TaskList.class)))
+                when(restTemplate.postForEntity(eq("http://" + backendHost + ":" + backendPort + "/lists"), any(),
+                                eq(TaskList.class)))
                                 .thenReturn(new ResponseEntity<>(todoList, HttpStatus.CREATED))
                                 .thenReturn(new ResponseEntity<>(doneList, HttpStatus.CREATED));
 
@@ -92,7 +93,8 @@ public class ProjectControllerTest {
                 assertEquals(2, response.getBody().getLists().size());
 
                 verify(projectService, times(1)).createProject(input);
-                verify(restTemplate, times(2)).postForEntity(eq("http://"+backendHost+":"+backendPort+"/lists"), any(),
+                verify(restTemplate, times(2)).postForEntity(eq("http://" + backendHost + ":" + backendPort + "/lists"),
+                                any(),
                                 eq(TaskList.class));
         }
 
@@ -123,7 +125,7 @@ public class ProjectControllerTest {
                 HashMap<Integer, TaskList> taskListMap = new HashMap<>();
                 taskListMap.put(1, mockTaskList);
                 when(restTemplate.exchange(
-                                eq("http://"+backendHost+":"+backendPort+"/lists/project/" + projectId),
+                                eq("http://" + backendHost + ":" + backendPort + "/lists/project/" + projectId),
                                 eq(HttpMethod.GET),
                                 ArgumentMatchers.<HttpEntity<String>>any(),
                                 ArgumentMatchers.<ParameterizedTypeReference<HashMap<Integer, TaskList>>>any()))
@@ -132,7 +134,7 @@ public class ProjectControllerTest {
                 // Mock Comments
                 List<Comment> commentList = List.of(mockComment);
                 when(restTemplate.exchange(
-                                eq("http://"+backendHost+":"+backendPort+"/comments/" + projectId),
+                                eq("http://" + backendHost + ":" + backendPort + "/comments/" + projectId),
                                 eq(HttpMethod.GET),
                                 ArgumentMatchers.<HttpEntity<String>>any(),
                                 ArgumentMatchers.<ParameterizedTypeReference<List<Comment>>>any()))
@@ -142,7 +144,7 @@ public class ProjectControllerTest {
                 HashMap<Integer, FileInfoDTO> fileDtoMap = new HashMap<>();
                 fileDtoMap.put(1, mockFileDTO);
                 when(restTemplate.exchange(
-                                eq("http://"+backendHost+":"+backendPort+"/files/project/" + projectId),
+                                eq("http://" + backendHost + ":" + backendPort + "/files/project/" + projectId),
                                 eq(HttpMethod.GET),
                                 ArgumentMatchers.<HttpEntity<String>>any(),
                                 ArgumentMatchers.<ParameterizedTypeReference<HashMap<Integer, FileInfoDTO>>>any()))
@@ -182,7 +184,7 @@ public class ProjectControllerTest {
                 mockProject.setName("Test Project");
 
                 String authHeader = "Bearer faketoken";
-                String deleteTeamUrl = "http://"+backendHost+":"+backendPort+"/api/team/project/" + projectId;
+                String deleteTeamUrl = "http://" + backendHost + ":" + backendPort + "/api/team/project/" + projectId;
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", authHeader);
@@ -236,7 +238,7 @@ public class ProjectControllerTest {
 
                 ResponseEntity<List<TeamProjectDTO>> teamsResponse = new ResponseEntity<>(teamDtoList, HttpStatus.OK);
                 when(restTemplate.exchange(
-                                eq("http://"+backendHost+":"+backendPort+"/api/team/user/" + userId),
+                                eq("http://" + backendHost + ":" + backendPort + "/api/team/user/" + userId),
                                 eq(HttpMethod.GET),
                                 any(HttpEntity.class),
                                 ArgumentMatchers.<ParameterizedTypeReference<List<TeamProjectDTO>>>any()))
@@ -268,7 +270,7 @@ public class ProjectControllerTest {
                 // Verify calls
                 verify(projectService, times(1)).getProjectsByTeamLead(userId);
                 verify(restTemplate, times(1)).exchange(
-                                eq("http://"+backendHost":"+backendPort""/api/team/user/" + userId),
+                                eq("http://" + backendHost + ":" + backendPort + "/api/team/user/" + userId),
                                 eq(HttpMethod.GET),
                                 any(HttpEntity.class),
                                 ArgumentMatchers.<ParameterizedTypeReference<List<TeamProjectDTO>>>any());
