@@ -38,7 +38,7 @@ function Project({ id }) {
     useEffect(() => {
         setLoading(true);
         const token = localStorage.getItem("jwtToken");
-        fetch(`http://localhost:8080/projects/${id}`, {
+        fetch(`/backend/projects/${id}`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -71,7 +71,7 @@ function Project({ id }) {
                     throw new Error("No token found. Please log in.");
                 }
 
-                const response = await fetch("http://localhost:8080/auth/user", {
+                const response = await fetch("/backend/auth/user", {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -103,7 +103,7 @@ function Project({ id }) {
         console.log("current user id" + currentUserId);
         console.log("project id " + id);
 
-        fetch(`http://localhost:8080/projects/${id}/isTeamLead/${currentUserId}`, {
+        fetch(`/backend/projects/${id}/isTeamLead/${currentUserId}`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -129,7 +129,7 @@ function Project({ id }) {
     useEffect(() => {
         const fetchSize = async () => {
             const token = localStorage.getItem("jwtToken");
-            const response = await fetch(`http://localhost:8080/api/team/get-team/${id}`, {
+            const response = await fetch(`/backend/api/team/get-team/${id}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -201,7 +201,7 @@ function Project({ id }) {
     const handleDelete = async () => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://localhost:8080/projects/${id}`, {
+            const response = await fetch(`/backend/projects/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`,

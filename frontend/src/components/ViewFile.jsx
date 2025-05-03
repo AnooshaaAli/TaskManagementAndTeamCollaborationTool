@@ -19,7 +19,7 @@ const ViewFile = ({ fileName }) => {
             const token = localStorage.getItem("jwtToken");
 
             try {
-                const response = await fetch(`http://localhost:8080/files/view/${fileName}`, {
+                const response = await fetch(`/backend/files/view/${fileName}`, {
                     method: "GET",
                     headers: {
                         Authorization: `Bearer ${token}`,

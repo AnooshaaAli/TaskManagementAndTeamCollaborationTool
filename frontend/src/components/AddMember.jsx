@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 export const addMemberToTeam = async (searchInput, currentUserId, projectId) => {
     const token = localStorage.getItem("jwtToken");
-    const response = await fetch("http://localhost:8080/api/team/add-member", {
+    const response = await fetch("/backend/api/team/add-member", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`, // Attach the token

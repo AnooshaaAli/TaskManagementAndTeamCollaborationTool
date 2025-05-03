@@ -11,7 +11,7 @@ const ProjectPreview = ({ id, name, onSelect, description, dueDate}) => {
     useEffect(() => {
         const fetchSize = async () => {
             const token = localStorage.getItem("jwtToken");
-            const response = await fetch(`http://localhost:8080/api/team/get-team/${id}`, {
+            const response = await fetch(`/backend/api/team/get-team/${id}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,

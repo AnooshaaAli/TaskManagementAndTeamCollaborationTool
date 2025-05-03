@@ -14,7 +14,7 @@ function DeleteProject({ projectID, onDelete }) {
         setIsDeleting(true);
         try {
             console.log("Project Id: ", projectID);
-            const response = await fetch(`http://localhost:8080/projects/${projectID}`, {
+            const response = await fetch(`/backend/projects/${projectID}`, {
                 method: "DELETE",
                 headers: {
                   "Authorization": `Bearer ${token}`, // Attach the token

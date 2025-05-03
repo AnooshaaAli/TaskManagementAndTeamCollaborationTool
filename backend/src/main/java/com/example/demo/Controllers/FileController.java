@@ -23,7 +23,7 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/files")
 public class FileController {
-    private final String uploadDir = Paths.get("").toAbsolutePath() + File.separator + "files";
+    private final String uploadDir = "/app/files";
 
     @Autowired
     private FileService fileService;
@@ -73,7 +73,7 @@ public class FileController {
 
     @GetMapping("/view/{fileName}")
     public ResponseEntity<?> getFile(@PathVariable String fileName) {
-        File file = new File("files" + File.separator + fileName);
+        File file = new File("/mnt/files" + File.separator + fileName);
         if (!file.exists()) {
             return ResponseEntity.notFound().build();
         }

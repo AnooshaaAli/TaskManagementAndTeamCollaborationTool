@@ -35,7 +35,7 @@ const UploadDp = ({ userID, onUpload, onCancel }) => {
 
         try {
             setUploading(true);
-            const response = await fetch(`http://localhost:8080/files/uploadDp?accountID=${userID}`, {
+            const response = await fetch(`/backend/files/uploadDp?accountID=${userID}`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,

@@ -8,7 +8,7 @@ const DeleteTask = ({ taskID, onTaskDeleted }) => {
 
     const handleDelete = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/tasks/${taskID}`, {
+            const response = await fetch(`/backend/tasks/${taskID}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`,

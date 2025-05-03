@@ -16,7 +16,7 @@ function ViewTeam({ projectId }) {
 
         try {
             const token = localStorage.getItem("jwtToken");
-            const response = await fetch(`http://localhost:8080/api/team/get-team/${projectId}`, {
+            const response = await fetch(`/backend/api/team/get-team/${projectId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -61,7 +61,7 @@ function ViewTeam({ projectId }) {
 
     const fetchProfilePic = async (userID, token) => {
         try {
-            const response = await fetch(`http://localhost:8080/files/user-dp/${userID}`, {
+            const response = await fetch(`/backend/files/user-dp/${userID}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 },

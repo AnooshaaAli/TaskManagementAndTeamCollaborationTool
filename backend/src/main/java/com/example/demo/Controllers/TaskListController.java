@@ -4,6 +4,7 @@ import com.example.demo.Models.TaskList;
 import com.example.demo.Models.Task;
 import com.example.demo.Services.TaskListService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,12 @@ public class TaskListController {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Value("${backend.host}")
+    private String backendHost;
+
+    @Value("${backend.port}")
+    private String backendPort;
+
     @PostMapping
     public ResponseEntity<TaskList> createTaskList(@RequestBody TaskList taskList) {
         TaskList savedTaskList = taskListService.saveTaskList(taskList);
@@ -42,7 +49,7 @@ public class TaskListController {
 
         TaskList taskList = optionalTaskList.get();
         // Fetch tasks for this specific list
-        String taskApiUrl = "http://localhost:8080/tasks/list/" + taskList.getListID();
+        String taskApiUrl = "http://" + backendHost + ":" + backendPort + "/tasks/list/" + taskList.getListID();
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", authHeader);
@@ -64,7 +71,6 @@ public class TaskListController {
         return ResponseEntity.ok(taskList);
     }
 
-
     @GetMapping("/project/{projectID}")
     public ResponseEntity<HashMap<Integer, TaskList>> getTaskListsByProject(@PathVariable int projectID,
             @RequestHeader("Authorization") String authHeader) {
@@ -79,7 +85,7 @@ public class TaskListController {
 
         // Fetch tasks for each task list
         for (TaskList taskList : taskLists.values()) {
-            String taskApiUrl = "http://localhost:8080/tasks/list/" +
+            String taskApiUrl = "http://" + backendHost + ":" + backendPort + "/tasks/list/" +
                     taskList.getListID();
 
             ResponseEntity<HashMap<Integer, Task>> taskResponse = restTemplate.exchange(

@@ -20,7 +20,7 @@ const ProjectContainer = ({ userID }) => {
         const token = localStorage.getItem("jwtToken");
         console.log("user id: " + userID)
 
-        fetch("http://localhost:8080/projects/user/" + userID, {
+        fetch("/backend/projects/user/" + userID, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,

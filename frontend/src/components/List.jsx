@@ -16,7 +16,7 @@ const List = ({ list, onUpdateList, onDelete, isTeamLead, projectId }) => {
         const fetchList = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`http://localhost:8080/lists/${list.listID}`, {
+                const response = await fetch(`/backend/lists/${list.listID}`, {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${token}`,
@@ -66,7 +66,7 @@ const List = ({ list, onUpdateList, onDelete, isTeamLead, projectId }) => {
 
     const handleEditTask = async (updatedTask) => {
         try {
-            const response = await fetch(`http://localhost:8080/tasks/${updatedTask.taskID}`, {
+            const response = await fetch(`/backend/tasks/${updatedTask.taskID}`, {
                 method: "PUT",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -96,7 +96,7 @@ const List = ({ list, onUpdateList, onDelete, isTeamLead, projectId }) => {
 
     const handleDeleteTask = async (taskID) => {
         try {
-            const response = await fetch(`http://localhost:8080/tasks/${taskID}`, {
+            const response = await fetch(`/backend/tasks/${taskID}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`,

@@ -15,7 +15,7 @@ function CreateComment({ userID, projectID, onCommentCreated }) {
         setIsSubmitting(true);
         
         try {
-            const response = await fetch(`http://localhost:8080/comments`, {
+            const response = await fetch(`/backend/comments`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
