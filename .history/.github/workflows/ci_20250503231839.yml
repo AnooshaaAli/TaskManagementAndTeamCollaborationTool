@@ -3,7 +3,6 @@ name: CI Pipeline
 on:
   push:
     branches: [ "main" ]
-    branches: [ "anoosha" ]
   pull_request:
     branches: [ "main" ]
 
