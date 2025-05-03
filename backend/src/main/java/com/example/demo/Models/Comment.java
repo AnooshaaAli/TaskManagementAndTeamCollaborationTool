@@ -3,14 +3,14 @@ package com.example.demo.Models;
 import jakarta.persistence.*; // or javax.persistence.* depending on your version
 
 @Entity
-@Table(name = "comment")
+@Table(name = "Comment")
 public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int commentID;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(name="value", nullable = false, columnDefinition = "TEXT")
     private String value;
 
     @Column(name = "projectID")
