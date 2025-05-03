@@ -52,7 +52,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/projectory-frontend:${{ env.COMMIT_ID }}
+          tags: ${{ secrets.DOCKER_HUBUSERNAME }}/projectory-frontend:${{ env.COMMIT_ID }}
 
     outputs:
       commit_id: ${{ env.COMMIT_ID }}

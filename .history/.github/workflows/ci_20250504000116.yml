@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+
       - name: Shorten commit ID
         shell: bash
         run: |
@@ -44,7 +45,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/projectory-backend:${{ env.COMMIT_ID }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/projectory-backend:${{ env.COMMIT_ID }}
 
       - name: Build and push frontend Docker image
         uses: docker/build-push-action@v6
@@ -52,7 +53,4 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/projectory-frontend:${{ env.COMMIT_ID }}
-
-    outputs:
-      commit_id: ${{ env.COMMIT_ID }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/projectory-frontend:${{ env.COMMIT_ID }}
