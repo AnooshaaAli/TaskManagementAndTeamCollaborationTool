@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+
       - name: Shorten commit ID
         shell: bash
         run: |
@@ -53,6 +54,3 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/projectory-frontend:${{ env.COMMIT_ID }}
-
-    outputs:
-      commit_id: ${{ env.COMMIT_ID }}

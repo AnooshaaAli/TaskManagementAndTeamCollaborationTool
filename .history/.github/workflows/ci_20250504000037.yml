@@ -9,13 +9,8 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    
-    steps:
-      - name: Shorten commit ID
-        shell: bash
-        run: |
-          echo "COMMIT_ID=${GITHUB_SHA::6}" >> "$GITHUB_ENV"
 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -53,6 +48,3 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/projectory-frontend:${{ env.COMMIT_ID }}
-
-    outputs:
-      commit_id: ${{ env.COMMIT_ID }}
