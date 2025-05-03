@@ -3,11 +3,11 @@ name: Docker CI
 on:
   push:
     branches: 
-      - main
-      - anoosha
+    - [ "main" ]
+
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
