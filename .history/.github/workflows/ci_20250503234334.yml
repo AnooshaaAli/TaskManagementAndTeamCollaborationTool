@@ -26,6 +26,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      # --- Frontend Build ---
       - name: Build and push Frontend Docker image
         uses: docker/build-push-action@v6
         with:
