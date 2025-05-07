@@ -75,7 +75,8 @@ jobs:
         working-directory: manifests
         run: |
           sed -i '' "s|image: .*/projectory-backend:.*|image: ***\/projectory-backend:f1446d|" Kubernetes/Backend/backend-deployment.yaml
-          sed -i '' "s|image: .*/projectory-frontend:.*|image: ***\/projectory-frontend:f1446d|" Kubernetes/Frontend/frontend-deployment.yaml
+sed -i '' "s|image: .*/projectory-frontend:.*|image: ***\/projectory-frontend:f1446d|" Kubernetes/Frontend/frontend-deployment.yaml
+
 
       - name: Commit and Push Updated YAMLs
         working-directory: manifests
