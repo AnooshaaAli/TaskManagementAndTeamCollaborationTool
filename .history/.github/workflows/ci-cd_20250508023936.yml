@@ -89,8 +89,10 @@ jobs:
       - name: Install ArgoCD CLI
         run: |
           curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-darwin-amd64
-          chmod +x argocd
-          sudo mv argocd /usr/local/bin/argocd
+chmod +x argocd
+sudo mv argocd /usr/local/bin/argocd
+
+
 
       - name: Sync ArgoCD App
         run: |

@@ -92,6 +92,8 @@ jobs:
           chmod +x argocd
           sudo mv argocd /usr/local/bin/argocd
 
+
+
       - name: Sync ArgoCD App
         run: |
           argocd login my-argocd-server.argocd \
