@@ -64,14 +64,14 @@ jobs:
           sed -i "s|image: .*/projectory-backend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/projectory-backend:${{ needs.ci.outputs.commit_id }}|" Kubernetes/Backend/backend-deployment.yaml
           sed -i "s|image: .*/projectory-frontend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/projectory-frontend:${{ needs.ci.outputs.commit_id }}|" Kubernetes/Frontend/frontend-deployment.yaml
 
-      - name: Commit and Push Updated YAMLs
-        working-directory: manifests
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "github-actions@github.com"
-          git add .
-          git commit -m "Update image tags to ${{ needs.ci.outputs.commit_id }}"
-          git push
+- name: Commit and Push Updated YAMLs
+  working-directory: manifests
+  run: |
+    git config --global user.name "GitHub Actions"
+    git config --global user.email "github-actions@github.com"
+    git add .
+    git commit -m "Update image tags to ${{ needs.ci.outputs.commit_id }}"
+    git push
 
 
       - name: Install ArgoCD CLI

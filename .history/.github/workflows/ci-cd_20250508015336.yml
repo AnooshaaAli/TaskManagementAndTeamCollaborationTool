@@ -66,13 +66,10 @@ jobs:
 
       - name: Commit and Push Updated YAMLs
         working-directory: manifests
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "github-actions@github.com"
-          git add .
-          git commit -m "Update image tags to ${{ needs.ci.outputs.commit_id }}"
-          git push
-
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "Update image tags to ${{ needs.ci.outputs.commit_id }}"
+          push: true
 
       - name: Install ArgoCD CLI
         run: |
