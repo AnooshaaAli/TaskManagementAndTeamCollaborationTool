@@ -1,0 +1,90 @@
+name: CI-CD with ArgoCD
+
+on:
+  push:
+    branches:
+      - main
+      - anoosha
+
+jobs:
+  ci:
+    name: Build Docker Images and Push to Docker Hub
+    runs-on: ubuntu-latest
+    outputs:
+      commit_id: ${{ steps.set_commit_id.outputs.commit_id }}
+    steps:
+      - name: Shorten Commit ID
+        id: set_commit_id
+        run: echo "commit_id=${GITHUB_SHA::6}" >> $GITHUB_OUTPUT
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/build-push-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Backend Image
+        uses: docker/build-push-action@v2
+        with:
+          context: ../backend
+          file: ../backend/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/projectory-backend:${{ steps.set_commit_id.outputs.commit_id }}
+
+      - name: Build and Push Frontend Image
+        uses: docker/build-push-action@v2
+        with:
+          context: ../frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/projectory-frontend:${{ steps.set_commit_id.outputs.commit_id }}
+
+  cd:
+    name: Update Manifests and Sync ArgoCD
+    needs: ci
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Manifests Repo
+        uses: actions/checkout@v2
+        with:
+          repository: AnooshaaAli/DevOps-Project-Projectory-K8s
+          token: ${{ secrets.MANIFESTS_REPO_PAT }}
+          path: manifests
+
+      - name: Update Image Tags in Kubernetes YAMLs
+        working-directory: manifests
+        run: |
+          sed -i "s|image: .*/projectory-backend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/projectory-backend:${{ needs.ci.outputs.commit_id }}|" Kubernetes/Backend/backend-deployment.yaml
+          sed -i "s|image: .*/projectory-frontend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/projectory-frontend:${{ needs.ci.outputs.commit_id }}|" Kubernetes/Frontend/frontend-deployment.yaml
+
+      - name: Commit and Push Updated YAMLs
+        working-directory: manifests
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@github.com"
+          git add .
+          git commit -m "Update image tags to ${{ needs.ci.outputs.commit_id }}"
+          git push
+
+
+      - name: Install ArgoCD CLI
+        run: |
+          curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          chmod +x argocd
+          sudo mv argocd /usr/local/bin/
+
+      - name: Sync ArgoCD App
+        run: |
+          argocd login my-argocd-server.argocd \
+            --username admin \
+            --password ${{ secrets.ARGOCD_PASSWORD }} \
+            --insecure \
+            --grpc-web
+          argocd app sync projectory-app
