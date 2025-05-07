@@ -41,7 +41,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ../frontend
-          file: ../frontend/Dockerfile
+          file: ./frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/projectory-frontend:${{ steps.set_commit_id.outputs.commit_id }}
 
