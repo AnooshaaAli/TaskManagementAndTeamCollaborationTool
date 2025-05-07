@@ -8,7 +8,7 @@ on:
 
 jobs:
   ci:
-    name: Build Docker Images and Push to Docker Hub
+    name: 
     runs-on: ubuntu-latest
     
     steps:
