@@ -94,7 +94,7 @@ jobs:
 
       - name: Sync ArgoCD App
         run: |
-          argocd login argocd.projectory.com \
+          argocd login  \
             --username admin \
             --password ${{ secrets.ARGOCD_PASSWORD }} \
             --insecure \
