@@ -80,11 +80,11 @@ jobs:
       - name: Commit and Push Updated YAMLs
         working-directory: manifests
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "github-actions@github.com"
-          git add .
-          git diff-index --quiet HEAD || git commit -m "Update image tags to ${{ env.COMMIT_ID }}"
-          git push
+    git config --global user.name "GitHub Actions"
+    git config --global user.email "github-actions@github.com"
+    git add .
+    git diff-index --quiet HEAD || git commit -m "Update image tags to ${{ env.COMMIT_ID }}"
+    git push
 
       - name: Install ArgoCD CLI
         run: |

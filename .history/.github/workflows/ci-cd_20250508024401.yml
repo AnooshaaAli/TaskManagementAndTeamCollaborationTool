@@ -83,7 +83,7 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "github-actions@github.com"
           git add .
-          git diff-index --quiet HEAD || git commit -m "Update image tags to ${{ env.COMMIT_ID }}"
+          git commit -m "Update image tags to ${{ needs.ci.outputs.commit_id }}"
           git push
 
       - name: Install ArgoCD CLI
