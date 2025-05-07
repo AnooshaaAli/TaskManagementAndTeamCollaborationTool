@@ -77,7 +77,7 @@ jobs:
           sed -i '' "s|image: .*/projectory-backend:.*|image: ***\/projectory-backend:f1446d|" Kubernetes/Backend/backend-deployment.yaml
           sed -i '' "s|image: .*/projectory-frontend:.*|image: ***\/projectory-frontend:f1446d|" Kubernetes/Frontend/frontend-deployment.yaml
 
-      - name: Commit and Push Updated yamls
+      - name: Commit and Push Updated yamlss
         working-directory: manifests
         run: |
           git config --global user.name "GitHub Actions"
