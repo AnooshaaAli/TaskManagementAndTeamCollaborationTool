@@ -198,9 +198,12 @@ const DashboardPage = () => {
       }
 
       const imageBlob = await response.blob();
+
+      // Create a temporary URL for the image Blob
       const imageUrl = URL.createObjectURL(imageBlob);
 
       console.log(imageUrl);
+      // Set the image URL in state
       setProfilePic(imageUrl);
     } catch (err) {
       setError(err.message);
@@ -233,7 +236,7 @@ useEffect(() => {
   }, [userData]);
 
   const updateProfilePic = async () => {
-    await fetchProfilePic();  
+    await fetchProfilePic();  // Wait for the async function to finish
   };
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
@@ -245,6 +248,7 @@ useEffect(() => {
     navigate('/projects');
   };
 
+  // New function to handle calendar navigation
   const navigateToCalendar = () => {
     setActiveSidebarItem('calendar');
   };

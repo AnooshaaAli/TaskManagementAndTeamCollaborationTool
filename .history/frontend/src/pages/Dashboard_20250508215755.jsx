@@ -233,7 +233,7 @@ useEffect(() => {
   }, [userData]);
 
   const updateProfilePic = async () => {
-    await fetchProfilePic();  
+    await fetchProfilePic();  // Wait for the async function to finish
   };
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
@@ -245,6 +245,7 @@ useEffect(() => {
     navigate('/projects');
   };
 
+  // New function to handle calendar navigation
   const navigateToCalendar = () => {
     setActiveSidebarItem('calendar');
   };
