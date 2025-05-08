@@ -245,6 +245,7 @@ useEffect(() => {
     navigate('/projects');
   };
 
+  // New function to handle calendar navigation
   const navigateToCalendar = () => {
     setActiveSidebarItem('calendar');
   };
