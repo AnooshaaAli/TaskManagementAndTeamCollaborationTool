@@ -58,7 +58,7 @@ const LoginPage = () => {
 
     if (validateForm()) {
       try {
-        const response = await fetch("http://localhost:8080/auth/login", {
+        const response = await fetch("/backend/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -102,8 +102,7 @@ const LoginPage = () => {
       </div>
       <div className="register-wrapper">
         <div className="register-header">
-        <h1 className="register-title">Welcome Back</h1>
-          <h2 className="register-title">Welcome Back</h2>
+          <h1 className="app-name">Projectory-App</h1>
           <p className="register-subtitle">Log in to your account</p>
         </div>
 

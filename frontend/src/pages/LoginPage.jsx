@@ -102,7 +102,7 @@ const LoginPage = () => {
       </div>
       <div className="register-wrapper">
         <div className="register-header">
-          <h1 className="app-name">Projectory</h1>
+          <h1 className="app-name">Projectory-App</h1>
           <p className="register-subtitle">Log in to your account</p>
         </div>
 
