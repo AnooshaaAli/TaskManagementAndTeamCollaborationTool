@@ -74,8 +74,8 @@ jobs:
       - name: Update Image Tags in Kubernetes YAMLs
         working-directory: manifests
         run: |
-          sed -i '' "s|image: .*/projectory-backend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/projectory-backend:${{ needs.ci.outputs.commit_id }}|" Kubernetes/Backend/backend-deployment.yaml
-          sed -i '' "s|image: .*/projectory-frontend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/projectory-frontend:${{ needs.ci.outputs.commit_id }}|" Kubernetes/Frontend/frontend-deployment.yaml
+          sed -i '' "s|image: .*/projectory-backend:.*|image: {{secrets.DOCKERHUB_USERNAME}}/projectory-backend:|" Kubernetes/Backend/backend-deployment.yaml
+          sed -i '' "s|image: .*/projectory-frontend:.*|image: ***\/projectory-frontend:f1446d|" Kubernetes/Frontend/frontend-deployment.yaml
 
       - name: Commit and Push Updated yamls
         working-directory: manifests
